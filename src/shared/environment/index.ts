@@ -1,0 +1,10 @@
+export const Environment = {
+
+    BASE_URL: import.meta.env.VITE_REACT_APP_BASE_URL,
+
+    LISTAGEM_VAZIA: import.meta.env.VITE_REACT_APP_LISTAGEM_VAZIA,
+
+    LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS: import.meta.env.VITE_REACT_APP_LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS,
+
+    INPUT_DE_BUSCA: import.meta.env.VITE_REACT_APP_INPUT_DE_BUSCA,
+};
