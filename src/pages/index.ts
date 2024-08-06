@@ -1,5 +1,5 @@
 export * from './blog/component/Blog';
-
+export * from './blog/Loader/loaderBlog';
 //Página de erro
 export * from './errors/component/Errors';
 

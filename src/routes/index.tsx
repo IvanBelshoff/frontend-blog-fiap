@@ -22,6 +22,7 @@ import {
     ListagemDeUsuariosLoader,
     NovoUsuarioAction,
     NovoUsuario,
+    LoaderBlog,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -86,7 +87,7 @@ export const routes = createBrowserRouter([
 
             return {
                 element: <Blog />,
-                //loader: OrganogramaLoader,
+                loader: LoaderBlog,
 
             };
         }

@@ -4,7 +4,7 @@ import { responseInterceptor } from '../interceptors';
 import { Environment } from '../../environment';
 
 export const Api = () => {
-
+    
     const api = axios.create({
         baseURL: Environment.BASE_URL,
         headers: {

@@ -1,17 +1,3 @@
-@font-face {
-  font-family: 'VolvoBroadPro';
-  src: local('VolvoBroadPro'), url('/assets/fonts/VolvoBroadPro.otf') format('opentype');
-}
-
-@font-face {
-  font-family: 'VolvoNovumMedium';
-  src: local('VolvoNovumMedium'), url('/assets/fonts/VolvoNovumMedium.otf') format('opentype');
-}
-
-@font-face {
-  font-family: 'VolvoNovumRegular';
-  src: local('VolvoNovumRegular'), url('/assets/fonts/VolvoNovumRegular.otf') format('opentype');
-}
 
 html,
 body {

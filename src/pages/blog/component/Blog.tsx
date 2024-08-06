@@ -1,167 +1,121 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import { Icon } from '@mui/material';
+import { AppBar, Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Toolbar, Typography } from '@mui/material';
+import { useLoaderData } from 'react-router-dom';
+import { IBlogLoader } from '../interfaces/interfaces';
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import { IFoto } from '../../../shared/interfaces';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+interface IPostProps {
+    capa: IFoto;
+    titulo: string;
+    conteudo: string;
+    usuario_cadastrador: string;
+    usuario_atualizador: string;
+    data_criacao: Date;
+    data_atualizacao: Date;
+    mode?: 'default' | 'large';
+  }
+  
+  export const Post: React.FC<IPostProps> = ({
+    conteudo,
+    data_atualizacao,
+    data_criacao,
+    capa,
+    titulo,
+    usuario_atualizador,
+    usuario_cadastrador,
+    mode = 'default',
+  }) => {
+
+    const [viewMode, setViewMode] = useState<'default' | 'large'>(mode);
+  
+    const handlePostClick = () => {
+      console.log('Post clicado');
+    };
+  
+    const toggleViewMode = () => {
+      setViewMode((prevMode) => (prevMode === 'default' ? 'large' : 'default'));
+    };
+  
+    return (
+      <Card sx={{ maxWidth: viewMode === 'large' ? '100%' : 345, margin: 'auto', mt: 4, display: 'flex', flexDirection: viewMode === 'large' ? 'row' : 'column' }}>
+        <CardActionArea sx={{ display: 'flex', flexDirection: viewMode === 'large' ? 'row' : 'column' }}>
+          <CardMedia
+            component="img"
+            height={viewMode === 'large' ? '100%' : capa.height}
+            image={capa.url}
+            sx={{ width: viewMode === 'large' ? '30%' : '100%', objectFit: 'cover' }}
+            alt={titulo}
+          />
+          <CardContent sx={{ flex: '1' }}>
+            <Typography gutterBottom variant="h5" component="div">
+              {titulo}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {conteudo.substring(0, 100)}...
+            </Typography>
+            <Box mt={2}>
+              <Typography variant="caption" color="text.secondary">
+                Criado por: {usuario_cadastrador} em {format(new Date(data_criacao), 'yyyy-MM-dd')}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Atualizado por: {usuario_atualizador} em {format(new Date(data_atualizacao), 'yyyy-MM-dd')}
+              </Typography>
+            </Box>
+            <Box mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button variant="contained" color="primary" onClick={handlePostClick}>
+                Ver Detalhes
+              </Button>
+            </Box>
+          </CardContent>
+        </CardActionArea>
+        <Box sx={{ padding: 2, display: 'flex', justifyContent: 'center' }}>
+          <Button variant="outlined" color="secondary" onClick={toggleViewMode}>
+            Alternar Visualização
+          </Button>
+        </Box>
+      </Card>
+    );
+  };
+  
 
 export const Blog = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const loaderData = useLoaderData() as IBlogLoader;
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
+    useEffect(() => {
+        console.log(loaderData);
+    }, []);
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
 
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Icon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} >
-                        adb
-                    </Icon>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
+        <Box>
+            <AppBar position="static">
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <Icon >
-                                menu
-                            </Icon>
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                    <Icon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
-                        adb
-                    </Icon>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+            <Box>
+                {loaderData.data && loaderData.data.map((post) => (
+                    <Post
+                        key={post.id}
+                        conteudo={post.conteudo}
+                        data_atualizacao={post.data_atualizacao}
+                        data_criacao={post.data_criacao}
+                        capa={post.foto}
+                        titulo={post.titulo}
+                        usuario_atualizador={post.usuario_atualizador}
+                        usuario_cadastrador={post.usuario_cadastrador}
+                    />
+                ))}
+            </Box>
+
+
+        </Box>
+
     );
 }
 

@@ -1,5 +1,4 @@
 import { ReactNode, SyntheticEvent } from 'react';
-import { HierarchyPointNode } from 'd3-hierarchy';
 import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 
 // interfaces genéricas
@@ -30,8 +29,11 @@ export interface IFoto {
   originalname: string;
   tipo: string;
   tamanho: number;
+  nuvem: boolean;
   local: string;
   url: string;
+  width: number,
+  height: number,
   data_criacao: string;
   data_atualizacao: string;
 }
@@ -427,41 +429,6 @@ export interface RawNodeDatum {
 export type SyntheticEventHandler = (evt: SyntheticEvent) => void;
 
 export type AddChildrenFunction = (children: RawNodeDatum[]) => void;
-
-export interface CustomNodeElementProps {
-  /**
-   * The full datum of the node that is being rendered.
-   */
-  nodeDatum: TreeNodeDatum;
-  /**
-   * The D3 `HierarchyPointNode` representation of the node, which wraps `nodeDatum`
-   * with additional properties.
-   */
-  hierarchyPointNode: HierarchyPointNode<TreeNodeDatum>;
-  /**
-   * Toggles the expanded/collapsed state of the node.
-   *
-   * Provided for customized control flow; e.g. if we want to toggle the node when its
-   * label is clicked instead of the node itself.
-   */
-  toggleNode: () => void;
-  /**
-   * The `onNodeClick` handler defined for `Tree` (if any).
-   */
-  onNodeClick: SyntheticEventHandler;
-  /**
-   * The `onNodeMouseOver` handler defined for `Tree` (if any).
-   */
-  onNodeMouseOver: SyntheticEventHandler;
-  /**
-   * The `onNodeMouseOut` handler defined for `Tree` (if any).
-   */
-  onNodeMouseOut: SyntheticEventHandler;
-  /**
-   * The `Node` class's internal `addChildren` handler.
-   */
-  addChildren: AddChildrenFunction;
-}
 
 export interface foreignObjectProps {
   width: number;
@@ -1037,6 +1004,23 @@ export interface IChart {
 }
 
 //usuariosService
+
+export interface IPosts {
+  id: number,
+  titulo: string,
+  conteudo: string
+  visivel: boolean,
+  usuario_cadastrador: string,
+  usuario_atualizador: string,
+  data_criacao: Date,
+  data_atualizacao: Date,
+  foto: IFoto
+}
+
+export interface IPostsComTotalCount {
+  data: IPosts[];
+  totalCount: number;
+}
 
 export interface IUsuarios {
   id: number,
