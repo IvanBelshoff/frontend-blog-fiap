@@ -1,4 +1,5 @@
 
+export * from './CardPost/component/CardPost';
 
 // Componente de opções da conta
 export * from './conta-do-usuario/component/AccountUser';
