@@ -5,6 +5,8 @@ export * from './CardPost/component/CardPost';
 export * from './conta-do-usuario/component/AccountUser';
 export * from './conta-do-usuario/loader/AccountUserLoader';
 
+export * from './custom-pagination/CustomPagination'
+
 // Componente de Drawer e Navbar principais
 export * from './drawer-app-bar/component/DrawerAppBar';
 
@@ -23,3 +25,4 @@ export * from './modal-usuario/component/ModalUsuario';
 // Componente de modal de sobre 
 export * from './modal-sobre/component/ModalSobre';
 
+export * from './Navbar/component/Navbar';

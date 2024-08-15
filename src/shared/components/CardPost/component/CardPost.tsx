@@ -13,7 +13,7 @@ export const CardPost: React.FC<ICardPostProps> = ({
 }) => {
 
     return (
-        <Card sx={{ maxWidth: '100%', mt: 2, display: 'flex', flexDirection: 'row' }}>
+        <Card sx={{ maxWidth: '100%', display: 'flex', flexDirection: 'row' }}>
             <CardActionArea sx={{ display: 'flex', flexDirection: 'row' }}>
                 <CardMedia
                     component="img"
