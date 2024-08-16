@@ -23,10 +23,13 @@ import {
     NovoUsuarioAction,
     NovoUsuario,
     LoaderBlog,
+    DetalhesDePosts,
+    DetalhesDePostsLoader,
 } from '../pages';
 import {
     AccountUserLoader,
     DrawerAppBar,
+    Navbar,
 } from '../shared/components';
 import { Api } from '../shared/services/api';
 import { useAuth } from '../shared/contexts/AuthContext';
@@ -79,18 +82,27 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 export const routes = createBrowserRouter([
     {
         path: '/',   // Rota principal do organograma
-        id: 'rootorg',
         errorElement: <Errors />,
-        async lazy() {
+        element: <Navbar />,
+        children: [
+            {
+                index: true,
+                async lazy() {
 
-            const { Blog } = await import('../pages');
+                    const { Blog } = await import('../pages');
 
-            return {
-                element: <Blog />,
-                loader: LoaderBlog,
-
-            };
-        }
+                    return {
+                        element: <Blog />,
+                        loader: LoaderBlog,
+                    };
+                }
+            },
+            {
+                path: '/detalhes/:pagina/:id',
+                element: <DetalhesDePosts />,
+                loader: DetalhesDePostsLoader
+            }
+        ]
     },
     {
         path: 'login', // Rota de login

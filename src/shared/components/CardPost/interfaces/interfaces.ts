@@ -8,4 +8,5 @@ export interface ICardPostProps {
     usuario_atualizador: string;
     data_criacao: Date;
     data_atualizacao: Date;
+    aoCliclarNoCard?: () => void;
 }

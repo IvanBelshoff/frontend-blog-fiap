@@ -9,6 +9,9 @@ export * from './home/component/Home';
 export * from './login/component/Login';
 export * from './login/action/loginAction';
 
+//Detalhes de Posts
+export * from './post-detalhes/component/DetalhesDePosts';
+export * from './post-detalhes/loader/detalhesDePostsLoader';
 
 //Detalhes de Usuários
 export * from './usuarios-detalhes/action/DetalhesDeUsuariosAction';

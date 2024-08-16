@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardActionArea, CardContent, CardMedia, Paper, Typography, useTheme } from "@mui/material";
+import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material";
 import { ICardPostProps } from "../interfaces/interfaces";
 import { format } from "date-fns";
 
@@ -9,11 +9,12 @@ export const CardPost: React.FC<ICardPostProps> = ({
     capa,
     titulo,
     usuario_atualizador,
-    usuario_cadastrador
+    usuario_cadastrador,
+    aoCliclarNoCard
 }) => {
 
     return (
-        <Card sx={{ maxWidth: '100%', display: 'flex', flexDirection: 'row' }}>
+        <Card onClick={aoCliclarNoCard} sx={{ maxWidth: '100%', display: 'flex', flexDirection: 'row' }}>
             <CardActionArea sx={{ display: 'flex', flexDirection: 'row' }}>
                 <CardMedia
                     component="img"

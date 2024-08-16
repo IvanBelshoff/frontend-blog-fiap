@@ -1,16 +1,18 @@
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
-import { useLoaderData, useNavigation, useSearchParams } from 'react-router-dom';
+import { useLoaderData, useNavigate, useNavigation, useOutletContext, useSearchParams } from 'react-router-dom';
 import { IBlogLoader } from '../interfaces/interfaces';
 import { useEffect, useMemo } from 'react';
-import { CardPost, CustomPagination } from '../../../shared/components';
+import { CardPost, CustomPagination, useNavbar } from '../../../shared/components';
 import { LayoutBase } from '../../../shared/layouts';
 import { Environment } from '../../../shared/environment';
 
-
 export const Blog = () => {
+  const { busca: BuscaNav } = useNavbar();
+
   const loaderData = useLoaderData() as IBlogLoader;
   const navigation = useNavigation();
-
+  const navigate = useNavigate();
+  
   const [searchParams, setSearchParams] = useSearchParams();
 
   const pagina = useMemo(() => {
@@ -34,11 +36,17 @@ export const Blog = () => {
   };
   useEffect(() => {
     console.log(loaderData);
-  }, []);
+
+    if (BuscaNav) {
+      handleSearchParams(BuscaNav);
+    }
+    if (!BuscaNav) {
+      handleSearchParams('');
+    }
+  }, [BuscaNav]);
 
   return (
     <LayoutBase
-      aoMudarTextoDeBusca={texto => handleSearchParams(texto)}
       pagination={
         <Box marginTop={0.5} display='flex' justifyContent='center' alignItems='center' width='100%' >
 
@@ -83,6 +91,7 @@ export const Blog = () => {
                         titulo={post.titulo}
                         usuario_atualizador={post.usuario_atualizador}
                         usuario_cadastrador={post.usuario_cadastrador}
+                        aoCliclarNoCard={() => navigate(`/detalhes/${pagina}/${post.id}`)}
                       />
                     </Grid>
 
@@ -91,7 +100,7 @@ export const Blog = () => {
                 </Grid>
               ) : (
                 <Typography variant="h5" component="div" color="textSecondary" align="center" style={{ width: '100%', marginTop: 20 }}>
-                  Não existe computadores
+                  Não existe posts
                 </Typography>
               )}
 

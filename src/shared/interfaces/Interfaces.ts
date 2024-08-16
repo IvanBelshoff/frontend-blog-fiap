@@ -1050,6 +1050,10 @@ export interface IDetalhesDeUsuarios {
   }
 }
 
+export interface IPostCompleto extends IPosts {
+  foto: IFoto
+}
+
 export interface IDataToken {
   accessToken: string,
   id: number
