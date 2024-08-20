@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { json } from 'react-router-dom';
 
 import { UsuariosService } from '../../../services';
-import { IResponseLoaderAccountUser } from '../../../interfaces';
+import { IAccountUserLoader, IResponseLoaderAccountUser } from '../../../interfaces';
 
 export async function AccountUserLoader() {
 
@@ -37,8 +37,9 @@ export async function AccountUserLoader() {
 
     }
 
-    // Retorna um objeto com os dados do usuário
-    return {
+    const data: IAccountUserLoader = {
         data: usuario
     };
+    // Retorna os dados do usuário obtidos com sucesso.
+    return data;
 }

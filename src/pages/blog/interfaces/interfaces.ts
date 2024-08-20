@@ -1,4 +1,4 @@
-import { IPosts } from "../../../shared/interfaces";
+import { IPosts, IUsuarioCompleto } from "../../../shared/interfaces";
 
 export interface ILoaderBlog {
     response?: {
@@ -13,4 +13,5 @@ export interface ILoaderBlog {
 export interface IBlogLoader {
     data: IPosts[];
     totalCount: number;
+    usuario?: IUsuarioCompleto;
 }

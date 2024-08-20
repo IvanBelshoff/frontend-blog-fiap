@@ -23,7 +23,7 @@ import {
     ThemeProvider,
     useTheme
 } from '@mui/material';
-import { VscTypeHierarchySub } from 'react-icons/vsc';
+import { BsFilePost } from "react-icons/bs";
 
 import { useAuth } from '../../../shared/contexts/AuthContext';
 import { LightInputsTheme } from '../../../shared/themes/LightInputs';
@@ -151,9 +151,9 @@ export const Login = () => {
                                 </Typography>
                             </Box>
                             <Box paddingRight={2} width='0%' display='flex' justifyContent='center' alignItems='center'>
-                                <Tooltip title="Ir para Organograma" placement="top">
+                                <Tooltip title="Ver posts" placement="top">
                                     <IconButton size="large" onClick={() => navigate('/')} >
-                                        <Icon sx={{ color: theme.palette.primary.main }} fontSize="medium"><VscTypeHierarchySub /></Icon>
+                                        <Icon sx={{ color: theme.palette.primary.main }} fontSize="medium"><BsFilePost /></Icon>
                                     </IconButton>
                                 </Tooltip>
                             </Box>

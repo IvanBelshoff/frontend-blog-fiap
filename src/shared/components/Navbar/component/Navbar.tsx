@@ -1,18 +1,50 @@
-import React from 'react';
-import { AppBar, Toolbar, IconButton, Box, TextField, Icon } from '@mui/material';
-import { Outlet, useOutletContext } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { AppBar, Toolbar, IconButton, Box, TextField, Icon, useTheme, Tooltip, Avatar, Menu, Divider, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Outlet, useFetcher, useLoaderData, useMatch, useNavigate, useOutletContext, useParams, useResolvedPath } from 'react-router-dom';
+import { useAppThemeContext } from '../../../contexts';
+import { IBlogLoader } from '../../../../pages/blog/interfaces/interfaces';
+import { IPosts } from '../../../interfaces';
 
-/*
-interface INavbarProps {
-    textoDaBusca?: 'busca';
-    aoMudarTextoDeBusca?: (novoTexto: string) => void;
-}
-*/
 
-type ContextType = { busca: string | null };
+type ContextType = {
+    busca: string | null
+    data: IPosts[];
+    totalCount: number;
+};
 export const Navbar = () => {
-
+    // Hook personalizado para realizar chamadas a APIs
+    const fetcher = useFetcher();
+    const theme = useTheme();
+    const navigate = useNavigate();
+    const loaderData = useLoaderData() as IBlogLoader;
+    const { toggleTheme } = useAppThemeContext();
     const [busca, setBusca] = React.useState<string | null>('');
+    const { pagina } = useParams<'pagina'>();
+    const { id } = useParams<'id'>();
+    const resolvedPathHome = useResolvedPath(`/detalhes/${pagina}/${id}`);
+    const matchHome = useMatch({ path: resolvedPathHome.pathname, end: false });
+    // Estado para controlar a abertura/fechamento do menu
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    // Hook para obter o tema atual do Material-UI
+    const isLoggingOut = fetcher.formData != null;
+    
+    // Função para realizar a ação de logout quando necessário
+    const actionLogout = () => {
+        fetcher.submit(
+            { idle: true },
+            { method: 'post', action: '/logout' }
+        );
+    };
+
+    // Manipulador de evento para abrir o menu
+    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    // Manipulador de evento para fechar o menu
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -23,40 +55,138 @@ export const Navbar = () => {
                         <Icon>home</Icon> {/* Substitua pelo seu logo */}
                     </IconButton>
 
-                    {/* Barra de pesquisa centralizada */}
-                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-                        <TextField
-                            size='small'
-                            id="outlined-search"
-                            type="search"
-                            placeholder={'buscar...'}
-                            InputProps={{
-                                startAdornment: (
-                                    <Icon sx={{ marginRight: 1 }}>search</Icon>
-                                ),
-                            }}
-                            onChange={(e) => setBusca(e.target.value)}
-                            sx={{
-                                width: '50%',
-                                backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                                borderRadius: 1,
-                                '&:hover': {
-                                    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                                },
-                            }}
-                        />
+
+                    {!matchHome && (
+                        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                            <TextField
+                                size='small'
+                                id="outlined-search"
+                                type="search"
+                                placeholder={'buscar...'}
+                                InputProps={{
+                                    startAdornment: (
+                                        <Icon sx={{ marginRight: 1 }}>search</Icon>
+                                    ),
+                                }}
+                                onChange={(e) => setBusca(e.target.value)}
+                                sx={{
+                                    width: '50%',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                                    borderRadius: 1,
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                    },
+                                }}
+                            />
+                        </Box>
+                    )}
+
+                    <Box display='flex'>
+                        {theme.palette.mode === 'light' ?
+                            (
+
+                                <Tooltip title="Alterar para tema escuro" placement="left">
+                                    <IconButton size="large" onClick={toggleTheme} >
+                                        <Icon sx={{ color: '#FFF' }} fontSize="medium">dark_mode</Icon>
+                                    </IconButton>
+                                </Tooltip>
+
+                            ) :
+                            <Tooltip title="Alterar para tema claro" placement="left">
+                                <IconButton size="large" onClick={toggleTheme} >
+                                    <Icon sx={{ color: '#FFF' }} fontSize="medium">light_mode</Icon>
+                                </IconButton>
+                            </Tooltip>
+
+                        }
+
+                        {loaderData?.usuario ? (
+                            <Box>
+                                <Avatar
+                                    alt="User Avatar"
+                                    src={loaderData.usuario.foto.url}
+                                    onClick={handleMenuOpen}
+                                    sx={{
+                                        cursor: 'pointer',
+                                        width: 45, // tamanho original
+                                        height: 45, // tamanho original
+                                        transition: 'transform 0.3s',
+                                        transformOrigin: 'center',
+                                        '&:hover': {
+                                            transform: 'scale(1.07)', // aumenta a escala para 7% maior
+                                        }
+                                    }}
+                                />
+
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleMenuClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }}
+                                    slotProps={{
+                                        paper: {
+                                            elevation: 5,
+                                            sx: {
+                                                backgroundColor: theme.palette.background.default,
+                                                overflow: 'visible',
+                                                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                                mt: 1.5,
+                                                '& .MuiAvatar-root': {
+                                                    width: 32,
+                                                    height: 32,
+                                                    ml: -0.5,
+                                                    mr: 1,
+                                                },
+                                                '&:before': {
+                                                    content: '""',
+                                                    display: 'block',
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    right: 25,
+                                                    width: 10,
+                                                    height: 10,
+                                                    backgroundColor: theme.palette.mode == 'dark' ? '#37383a' : theme.palette.background.paper,
+                                                    transform: 'translateY(-50%) rotate(45deg)',
+                                                    zIndex: 0,
+                                                },
+                                            },
+                                        }
+                                    }}
+                                >
+
+                                    <MenuItem disabled={isLoggingOut} onClick={actionLogout}>
+
+                                        <ListItemIcon >
+                                            <Icon>logout</Icon>
+                                        </ListItemIcon>
+                                        <ListItemText primary='Sair' />
+
+                                    </MenuItem>
+
+                                </Menu>
+
+                            </Box >
+                        ) : (
+                            <IconButton size="large" color="inherit" onClick={() => navigate('/login')}>
+                                <Icon>login</Icon>
+                            </IconButton>
+                        )}
+
                     </Box>
 
-                    {/* Ícone de login */}
-                    <IconButton size="large" color="inherit">
-                        <Icon>account_circle</Icon>
-                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Box paddingTop={7} height="100vh" width='100%'>
-                <Outlet context={{ busca } satisfies ContextType} />
+                <Outlet context={{ busca: busca, data: loaderData?.data, totalCount: loaderData?.totalCount } satisfies ContextType} />
             </Box>
-        </Box>
+        </Box >
 
     );
 };

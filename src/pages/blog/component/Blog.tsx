@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
-import { useLoaderData, useNavigate, useNavigation, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useNavigate, useNavigation, useSearchParams } from 'react-router-dom';
 import { IBlogLoader } from '../interfaces/interfaces';
 import { useEffect, useMemo } from 'react';
 import { CardPost, CustomPagination, useNavbar } from '../../../shared/components';
@@ -7,12 +7,13 @@ import { LayoutBase } from '../../../shared/layouts';
 import { Environment } from '../../../shared/environment';
 
 export const Blog = () => {
-  const { busca: BuscaNav } = useNavbar();
+  const { busca: BuscaNav, data, totalCount } = useNavbar();
 
-  const loaderData = useLoaderData() as IBlogLoader;
+  const loaderData: IBlogLoader = { data: data, totalCount: totalCount };
+
   const navigation = useNavigation();
   const navigate = useNavigate();
-  
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const pagina = useMemo(() => {
@@ -35,7 +36,6 @@ export const Blog = () => {
     }, { replace: true });
   };
   useEffect(() => {
-    console.log(loaderData);
 
     if (BuscaNav) {
       handleSearchParams(BuscaNav);

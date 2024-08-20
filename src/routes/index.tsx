@@ -7,7 +7,9 @@ import {
     Navigate,
     createBrowserRouter,
     redirect,
-    useLocation
+    useLocation,
+    useMatch,
+    useResolvedPath
 } from 'react-router-dom';
 
 import {
@@ -84,16 +86,18 @@ export const routes = createBrowserRouter([
         path: '/',   // Rota principal do organograma
         errorElement: <Errors />,
         element: <Navbar />,
+        loader: LoaderBlog,
         children: [
             {
                 index: true,
+                id: 'home',
                 async lazy() {
 
                     const { Blog } = await import('../pages');
 
                     return {
                         element: <Blog />,
-                        loader: LoaderBlog,
+                        //loader: LoaderBlog,
                     };
                 }
             },
@@ -172,6 +176,7 @@ export const routes = createBrowserRouter([
                     Api().defaults.headers.Authorization = null;
 
                     logado = false;
+                
                     return (redirect('/login'));
 
                 } catch (error) {

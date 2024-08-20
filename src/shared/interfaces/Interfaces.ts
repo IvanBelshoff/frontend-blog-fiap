@@ -1,6 +1,30 @@
 import { ReactNode, SyntheticEvent } from 'react';
 import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 
+
+export interface IUsuario {
+  id: number,
+  nome: string,
+  bloqueado: boolean,
+  sobrenome: string,
+  email: string,
+  data_criacao: Date,
+  data_atualizacao: Date,
+  departamento: string,
+  localidade: string,
+  secao: string,
+  ultimo_login: Date,
+  usuario_atualizador: string,
+  usuario_cadastrador: string
+}
+export interface IUsuarioCompleto extends IUsuario {
+  foto: IFoto
+}
+
+export interface IAccountUserLoader {
+  data: IUsuarioCompleto;
+}
+
 // interfaces genéricas
 export interface IAtributosGeneric {
   originalName: string;

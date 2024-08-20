@@ -3,6 +3,7 @@ import { Api } from '../api';
 import {
     IDataToken,
     IDetalhesDeUsuarios,
+    IUsuarioCompleto,
     IUsuarioComTotalCount
 } from '../../interfaces';
 
@@ -128,7 +129,7 @@ const getAll = async (page?: string, filter?: string, limit?: string): Promise<I
     }
 };
 
-const getById = async (id: number): Promise<IDetalhesDeUsuarios | AxiosError> => {
+const getById = async (id: number): Promise<IUsuarioCompleto | AxiosError> => {
 
     try {
         const data = await Api().get(`/usuarios/${id}`);
