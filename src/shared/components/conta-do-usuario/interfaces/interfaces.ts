@@ -1,6 +1,14 @@
-import { IFoto } from "../../../interfaces"
+import { ReactNode } from 'react';
 
-export interface ILoaderAccountUser {
+//AccountUser
+export interface IAccountUserProps {
+    profile: ReactNode,
+    about: ReactNode,
+    logout: ReactNode,
+}
+
+
+export interface ILoaderAccountUser{
     response?: {
         data: {
             errors: {
@@ -9,4 +17,3 @@ export interface ILoaderAccountUser {
         }
     }
 }
-

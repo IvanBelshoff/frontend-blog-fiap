@@ -118,7 +118,7 @@ export const DetalhesDeUsuario = () => {
 
         if (typeSeverity === 'success' && actionDataDeleteFuncionario?.success) {
 
-            navigate(`/organograma/usuarios?busca=&pagina=${pagina}`);
+            navigate(`/blog/usuarios?busca=&pagina=${pagina}`);
 
         }
 
@@ -265,7 +265,7 @@ export const DetalhesDeUsuario = () => {
             barraDeFerramentas={<FerramentasDeDetalhes
                 mostrarBotaoApagar={userId == id ? false : true}
                 mostrarBotaoNovo={false}
-                aoClicarEmVoltar={() => navigate(`/organograma/usuarios?busca=&pagina=${pagina}`)}
+                aoClicarEmVoltar={() => navigate(`/blog/usuarios?busca=&pagina=${pagina}`)}
                 aoClicarEmApagar={() => { setTipo('Dialog'); setOpen(true); }}
             />}
         >
@@ -287,7 +287,7 @@ export const DetalhesDeUsuario = () => {
                 </DialogContent>
                 <DialogActions style={{ justifyContent: 'center' }}>
                     <Button onClick={handleCloseDialog}>Cancelar</Button>
-                    <fetcher.Form method="DELETE" action="/organograma/usuarios" onSubmit={handleCloseDialog}>
+                    <fetcher.Form method="DELETE" action="/blog/usuarios" onSubmit={handleCloseDialog}>
 
                         <input type="hidden" name="id" value={id} />
 

@@ -366,7 +366,7 @@ export interface IResponseLoginAction {
   }
 }
 
-//Organograma começa aqui
+//Blog começa aqui
 export interface IFuncionario {
   id: number;
   nome: string;
@@ -391,11 +391,11 @@ export interface IFuncionario {
   foto: IFoto
 }
 
-export interface IAtributesOrganograma {
+export interface IAtributesBlog {
   data: {
     0: IFuncionario
   }
-  filtros?: IFiltrosOrganograma
+  filtros?: IFiltrosBlog
   atributos: IEntidade[]
 }
 
@@ -470,7 +470,7 @@ export interface RenderForeignObjectNodeProps {
   foreignObjectProps: foreignObjectProps;
 }
 
-export interface IResponseLoaderOrganograma {
+export interface IResponseLoaderBlog {
   response?: {
     data: {
       errors: {
@@ -488,9 +488,9 @@ export interface IResponseLoaderOrganograma {
   }
 }
 
-export interface IDataOrganograma {
+export interface IDataBlog {
   data: IFuncionario
-  filtros?: IFiltrosOrganograma
+  filtros?: IFiltrosBlog
   atributos: IEntidade[];
 }
 
@@ -725,12 +725,12 @@ export interface IFiltroFuncionarios {
   aoClicarEmFecharFiltros: () => void
 }
 
-//FiltroOrganograma
-export interface IFiltroOrganograma {
+//FiltroBlog
+export interface IFiltroBlog {
   exibiFiltros: boolean;
   filtrosAplicados: boolean;
   modoBuscaLivre: boolean;
-  filtrosOrganograma: IFiltrosOrganograma | undefined
+  filtrosBlog: IFiltrosBlog | undefined
   localidade: string | null
   localidadesMap: IAtributosGeneric[]
   secoesMap: IAtributosGeneric[]
@@ -918,12 +918,27 @@ export interface IVerticalToggleButtonsProps {
   selectedView: 'account_circle' | 'supervisor_account' | 'groups'
 }
 
+export interface IResponseErrosGeneric {
+  response?: {
+      data: {
+          errors?: {
+              default?: string
+          }
+      },
+      status?: string
+  }
+}
+
 //AuthContext
 export interface AuthContextProps {
   isAuthenticated: boolean;
   setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   userId: string | null;
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
+  regras: string | null;
+  setRegras: React.Dispatch<React.SetStateAction<string | null>>;
+  permissoes: string | null;
+  setPermissoes: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export interface IAuthContextProps {
@@ -950,8 +965,8 @@ export interface IAppThemeProviderProps {
   children: React.ReactNode
 }
 
-//LayoutBaseDeOrganograma
-export interface ILayoutBaseDeOrganogramaProps {
+//LayoutBaseDeBlog
+export interface ILayoutBaseDeBlogProps {
   children: ReactNode;
 }
 
@@ -992,8 +1007,8 @@ export interface IFuncionarioDetalhes {
   parent: IFuncionarioListagem
 }
 
-//organogramaService
-export interface IFiltrosOrganograma {
+//blogService
+export interface IFiltrosBlog {
   ids: number[];
   idsCount: number;
   nomes: string[];
@@ -1079,8 +1094,10 @@ export interface IPostCompleto extends IPosts {
 }
 
 export interface IDataToken {
-  accessToken: string,
-  id: number
+  accessToken: string;
+  id: number;
+  regras: string[];
+  permissoes: string[];
 }
 
 

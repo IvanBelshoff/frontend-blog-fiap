@@ -1,8 +1,9 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
 import { Api } from '../api';
 import {
     IDataToken,
     IDetalhesDeUsuarios,
+    IResponseErrosGeneric,
     IUsuarioCompleto,
     IUsuarioComTotalCount
 } from '../../interfaces';
@@ -153,6 +154,7 @@ const getById = async (id: number): Promise<IUsuarioCompleto | AxiosError> => {
 };
 
 const login = async (email: string, senha: string): Promise<IDataToken | AxiosError> => {
+
     try {
         const data = await Api().post('/entrar', { email, senha });
 
@@ -163,13 +165,15 @@ const login = async (email: string, senha: string): Promise<IDataToken | AxiosEr
         return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
     } catch (error) {
 
-        if (axios.isAxiosError(error)) {
+        const errors = (error as IResponseErrosGeneric).response;
+
+        if (isAxiosError(error)) {
             return error;
         }
 
-        const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
-
-        return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+        return new AxiosError(
+            errors?.data?.errors?.default || 'Erro ao consultar o registros.',
+            errors?.status || '500');
     }
 };
 

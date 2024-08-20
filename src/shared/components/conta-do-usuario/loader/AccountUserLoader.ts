@@ -2,7 +2,8 @@ import { AxiosError } from 'axios';
 import { json } from 'react-router-dom';
 
 import { UsuariosService } from '../../../services';
-import { IAccountUserLoader, IResponseLoaderAccountUser } from '../../../interfaces';
+import { ILoaderAccountUser } from '../interfaces/interfaces';
+import { IAccountUserLoader } from '../../../interfaces';
 
 export async function AccountUserLoader() {
 
@@ -19,7 +20,7 @@ export async function AccountUserLoader() {
     if (usuario instanceof AxiosError) {
 
         // Extrai mensagens de erro do objeto de resposta
-        const errors = (usuario as IResponseLoaderAccountUser).response?.data.errors;
+        const errors = (usuario as ILoaderAccountUser).response?.data.errors;
 
         // Manipulação de erros específicos
         if ((usuario.response?.status == 401 || usuario.response?.status == 500) && logado == true) {
@@ -42,4 +43,5 @@ export async function AccountUserLoader() {
     };
     // Retorna os dados do usuário obtidos com sucesso.
     return data;
+
 }

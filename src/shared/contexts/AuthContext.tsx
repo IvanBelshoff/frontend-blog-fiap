@@ -20,8 +20,12 @@ export const AuthProvider: React.FC<IAuthContextProps> = ({ children }) => {
 
     const [userId, setUserId] = useState<string | null>(localStorage.getItem('userId'));
 
+    const [regras, setRegras] = useState<string | null>(localStorage.getItem('regras'));
+
+    const [permissoes, setPermissoes] = useState<string | null>(localStorage.getItem('permissoes'));
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, userId, setUserId }}>
+        <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, userId, setUserId, regras, setRegras, permissoes, setPermissoes }}>
             {children}
         </AuthContext.Provider>
     );

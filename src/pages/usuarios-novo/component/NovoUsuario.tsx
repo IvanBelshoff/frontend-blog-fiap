@@ -77,7 +77,7 @@ export const NovoUsuario = () => {
     setMessage('');
 
     if (severity == 'success') {
-      navigate('/organograma/usuarios');
+      navigate('/blog/usuarios');
     }
 
   };
@@ -157,7 +157,7 @@ export const NovoUsuario = () => {
           </Form>
 
         }
-        aoClicarEmVoltar={() => navigate('/organograma/usuarios')}
+        aoClicarEmVoltar={() => navigate('/blog/usuarios')}
       />}
     >
       <Box display="flex" width='auto' height='auto' flexDirection="column" justifyContent="center" margin={1} component={Paper} elevation={3} >

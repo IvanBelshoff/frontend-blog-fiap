@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     styled,
     useTheme,
@@ -17,51 +17,53 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    MenuItem,
     Toolbar,
     Tooltip,
-    Typography
+    Typography,
+    MenuItem
 } from '@mui/material';
 import {
     Outlet,
-    useLocation,
+    useFetcher,
     useMatch,
     useNavigate,
     useResolvedPath
 } from 'react-router-dom';
-import { VscTypeHierarchySub } from 'react-icons/vsc';
 
 import {
     useAppThemeContext,
+    useAuth,
     useIndex
 } from '../../../contexts';
-import {
-    AccountUser,
-    ModalSobre,
-    ModalUsuario
-} from '../..';
-import { AppBarProps } from '../../../interfaces';
+
+import { AccountUser, ModalSobre, ModalUsuario } from '../..';
+import { AppBarProps } from './interfaces/interfaces';
+import { Environment } from '../../../environment';
+import { BsFilePost } from 'react-icons/bs';
 
 export const DrawerAppBar = () => {
+
+    // Hook personalizado para realizar chamadas a APIs
+    const fetcher = useFetcher();
+    const navigate = useNavigate();
 
     // Obtenção de temas, contexto, e hooks de navegação
     const theme = useTheme();
     const { toggleTheme } = useAppThemeContext();
     const { selectedIndex, setSelectedIndex } = useIndex();
+    const isLoading = fetcher.formData != null;
+    const { regras } = useAuth();
     const [openModalConta, setOpenModalConta] = useState<boolean>(false);
     const [openModalSobre, setOpenModalSobre] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const [logout, setLogout] = useState<boolean>(false);
 
-    // Configuração de caminhos e correspondências de rotas
-    const resolvedPathUsuarios = useResolvedPath('/organograma/usuarios');
+    const resolvedPathHome = useResolvedPath('/blog');
+    const matchHome = useMatch({ path: resolvedPathHome.pathname, end: false });
+    const resolvedPathUsuarios = useResolvedPath('/usuarios');
     const matchUsuarios = useMatch({ path: resolvedPathUsuarios.pathname, end: false });
-    const resolvedPathFuncionarios = useResolvedPath('/organograma/funcionarios');
-    const matchFuncionarios = useMatch({ path: resolvedPathFuncionarios.pathname, end: false });
-    const resolvedPathPreview = useResolvedPath('/organograma/preview');
-    const matchPreview = useMatch({ path: resolvedPathPreview.pathname, end: false });
-
+    const resolvedPathPosts = useResolvedPath('/posts');
+    const matchPosts = useMatch({ path: resolvedPathPosts.pathname, end: false });
     // Largura da gaveta
     const drawerWidth = 280;
 
@@ -133,27 +135,7 @@ export const DrawerAppBar = () => {
         }),
     );
 
-    // Função auxiliar para definir o índice padrão com base no caminho da rota
-    const defaultIndex = (path: string) => {
 
-        const resolvedPath = useResolvedPath(path);
-
-        const match = useMatch({ path: resolvedPath.pathname, end: false });
-
-        if (path == '/organograma' && !!match) {
-            return 1;
-        } else if (path == '/organograma/funcionarios' && !!match) {
-            return 2;
-        } else if (path == '/organograma/usuarios' && !!match) {
-            return 3;
-        }
-
-    };
-
-    // Índice padrão para a rota atual
-    const selectedIndexHome = defaultIndex(location.pathname);
-
-    // Manipuladores de clique e abertura/fechamento da gaveta
     const handleListItemClick = (
         _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
@@ -168,6 +150,19 @@ export const DrawerAppBar = () => {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const HandleActionLogout = (logout: boolean) => {
+        if (logout == true) {
+            fetcher.submit(
+                { idle: true },
+                { method: 'post', action: '/logout' }
+            );
+        }
+    };
+
+    useEffect(() => {
+        HandleActionLogout(logout);
+    }, [logout]);
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -187,7 +182,7 @@ export const DrawerAppBar = () => {
                         <Icon sx={{ color: '#FFF' }} fontSize="large">menu</Icon>
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, color: '#FFF' }}>
-                        SISTEMA DE ORGANOGRAMA LUVEP
+                        Blog Fiap
                     </Typography>
                     <Box display='flex' flexDirection='row' alignItems='center' gap={1}>
 
@@ -210,8 +205,9 @@ export const DrawerAppBar = () => {
 
                             }
                         </Box>
+
                         <AccountUser
-                            account_circle={
+                            profile={
 
                                 <MenuItem onClick={() => setOpenModalConta(true)}>
                                     <ListItemIcon >
@@ -229,7 +225,18 @@ export const DrawerAppBar = () => {
                                     <ListItemText primary='Sobre' />
                                 </MenuItem>
                             }
+                            logout={
+                                <MenuItem disabled={isLoading} onClick={() => setLogout(true)}>
+
+                                    <ListItemIcon >
+                                        <Icon>logout</Icon>
+                                    </ListItemIcon>
+                                    <ListItemText primary='Sair' />
+
+                                </MenuItem>
+                            }
                         />
+
                     </Box>
                 </Toolbar>
 
@@ -243,6 +250,7 @@ export const DrawerAppBar = () => {
                 <Divider />
                 <Box flex={1}>
                     <List component='nav'>
+
                         <ListItemButton
                             sx={{
                                 minHeight: 48,
@@ -250,8 +258,8 @@ export const DrawerAppBar = () => {
                                 px: 2.5,
                             }}
 
-                            selected={selectedIndex != undefined ? selectedIndex == 1 : selectedIndexHome == 1}
-                            onClick={(event) => { handleListItemClick(event, 1), navigate('/organograma'); }}
+                            selected={selectedIndex != undefined ? selectedIndex === 1 : !!matchHome}
+                            onClick={(event) => { handleListItemClick(event, 1), navigate('/blog'); }}
                         >
                             <ListItemIcon
                                 sx={{
@@ -259,86 +267,71 @@ export const DrawerAppBar = () => {
                                     mr: open ? 3 : 'auto',
                                     justifyContent: 'center',
                                 }}
-
                             >
                                 <Icon>home</Icon>
                             </ListItemIcon>
-                            <ListItemText primary='Página inicial' sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
 
-                            selected={selectedIndex != undefined ? selectedIndex === 2 : !!matchFuncionarios}
-                            onClick={(event) => { handleListItemClick(event, 2), navigate('/organograma/funcionarios'); }}
-                        >
-                            <ListItemIcon
+                        {Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_PROFESSOR]) && (
+                            <ListItemButton
                                 sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
                                 }}
-                            >
-                                <Icon>people</Icon>
-                            </ListItemIcon>
-                            <ListItemText primary='Gerenciar Funcionarios' sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
 
-                            selected={selectedIndex != undefined ? selectedIndex === 3 : !!matchPreview}
-                            onClick={(event) => { handleListItemClick(event, 3), navigate('/organograma/preview'); }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
+                                selected={selectedIndex != undefined ? selectedIndex === 2 : !!matchPosts}
+                                onClick={(event) => { handleListItemClick(event, 2), navigate('posts'); }}
                             >
-                                <Icon><VscTypeHierarchySub /></Icon>
-                            </ListItemIcon>
-                            <ListItemText primary='Pré-Visualização do Organograma' sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                    </List>
-                </Box>
-                <Divider />
-                <Box>
-
-                    <List component='nav'>
-
-                        <ListItemButton sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
-                        }}
-                            selected={selectedIndex != undefined ? selectedIndex === 4 : !!matchUsuarios}
-                            onClick={(event) => { handleListItemClick(event, 4), navigate('usuarios'); }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <Icon>manage_accounts</Icon>
-                            </ListItemIcon>
-                            <ListItemText primary='Gerenciar Usuários' sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Icon><BsFilePost /></Icon>
+                                </ListItemIcon>
+                                <ListItemText primary='Gerenciar Posts' sx={{ opacity: open ? 1 : 0 }} />
+                            </ListItemButton>
+                        )}
                     </List>
 
                 </Box>
-                <Box>
 
-                </Box>
+                {Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO]) && (
+                    <>
+                        <Divider />
+                        <Box>
+
+                            <List component='nav'>
+
+                                <ListItemButton sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
+                                }}
+                                    selected={selectedIndex != undefined ? selectedIndex === 3 : !!matchUsuarios}
+                                    onClick={(event) => { handleListItemClick(event, 3), navigate('usuarios'); }}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <Icon>manage_accounts</Icon>
+                                    </ListItemIcon>
+                                    <ListItemText primary='Gerenciar Usuários' sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+
+                            </List>
+
+                        </Box>
+                    </>
+                )}
             </Drawer >
 
             {openModalConta && (
@@ -358,6 +351,7 @@ export const DrawerAppBar = () => {
             <Box paddingTop={7} height="100vh" width='100%'>
                 <Outlet />
             </Box>
+
         </Box >
     );
 };

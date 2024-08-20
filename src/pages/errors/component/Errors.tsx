@@ -145,7 +145,7 @@ export const Errors: React.FC = () => {
                                         variant='contained'
                                         color='primary'
                                         disabled={isLoading}
-                                        onClick={() => navigate('/organograma')}
+                                        onClick={() => navigate('/blog')}
                                         startIcon={<Icon>home</Icon>}
                                     >
                                         <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
@@ -161,7 +161,7 @@ export const Errors: React.FC = () => {
                                         startIcon={<Icon><VscTypeHierarchySub /></Icon>}
                                     >
                                         <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
-                                            Ir para organograma
+                                            Ir para blog
                                         </Typography>
                                     </Button>
 
@@ -193,7 +193,7 @@ export const Errors: React.FC = () => {
                                         startIcon={<Icon><VscTypeHierarchySub /></Icon>}
                                     >
                                         <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
-                                            Voltar para organograma
+                                            Voltar para blog
                                         </Typography>
                                     </Button>
 
@@ -258,7 +258,7 @@ export const Errors: React.FC = () => {
                                         variant='contained'
                                         color='primary'
                                         disabled={isLoading}
-                                        onClick={() => navigate('/organograma')}
+                                        onClick={() => navigate('/blog')}
                                         startIcon={<Icon>home</Icon>}
                                     >
                                         <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
@@ -274,7 +274,7 @@ export const Errors: React.FC = () => {
                                         startIcon={<Icon><VscTypeHierarchySub /></Icon>}
                                     >
                                         <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
-                                            Ir para organograma
+                                            Ir para blog
                                         </Typography>
                                     </Button>
 

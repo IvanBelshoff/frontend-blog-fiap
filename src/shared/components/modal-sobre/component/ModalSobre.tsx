@@ -56,7 +56,7 @@ export const ModalSobre: React.FC<IModalSobreProps> = ({
 
                     <Box width='100%' height='auto' display="flex" flexDirection="column" alignItems='center' justifyContent='center' gap={2} padding={2}>
 
-                        <Typography variant='h4'>Sistema de Organograma Luvep</Typography>
+                        <Typography variant='h4'>Sistema de Blog Luvep</Typography>
 
                         <Typography variant='h5'> Luvep - Luz Veiculos e Peças LTDA</Typography>
 

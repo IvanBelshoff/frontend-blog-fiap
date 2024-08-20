@@ -7,9 +7,7 @@ import {
     Navigate,
     createBrowserRouter,
     redirect,
-    useLocation,
-    useMatch,
-    useResolvedPath
+    useLocation
 } from 'react-router-dom';
 
 import {
@@ -27,6 +25,7 @@ import {
     LoaderBlog,
     DetalhesDePosts,
     DetalhesDePostsLoader,
+    Post,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -83,7 +82,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 // Configuração das rotas
 export const routes = createBrowserRouter([
     {
-        path: '/',   // Rota principal do organograma
+        path: '/',   // Rota principal do blog
         errorElement: <Errors />,
         element: <Navbar />,
         loader: LoaderBlog,
@@ -117,7 +116,7 @@ export const routes = createBrowserRouter([
         errorElement: <Errors />
     },
     {
-        path: 'blog',  // Rota principal de gerenciamento do organograma
+        path: 'blog',  // Rota principal de gerenciamento do blog
         id: 'root',
         element: <ProtectedRoute ><DrawerAppBar /></ProtectedRoute >,
         loader: AccountUserLoader,
@@ -134,6 +133,10 @@ export const routes = createBrowserRouter([
                         //loader: HomeLoader
                     };
                 }
+            },
+            {
+                path: 'posts',
+                element: <Post />
             },
             {
                 path: 'usuarios',

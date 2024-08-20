@@ -218,7 +218,7 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                 </Snackbar>
 
                 <Box width='80%' justifyContent="center" component={Paper} elevation={2}  >
-                    <fetcher.Form key={userId} action="/organograma/usuarios/detalhes/:pagina/:id" method={formMethod} encType='multipart/form-data'>
+                    <fetcher.Form key={userId} action="/blog/usuarios/detalhes/:pagina/:id" method={formMethod} encType='multipart/form-data'>
 
                         <input type="hidden" name="id" value={Number(userId)} />
                         <input type="hidden" name="nome" value={form.nome} />

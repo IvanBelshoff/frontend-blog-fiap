@@ -102,7 +102,7 @@ export const ListagemDeUsuarios = () => {
   useEffect(() => {
 
     if (loaderData.totalCount <= 4) {
-      navigate('/organograma/usuarios?busca=&pagina=1');
+      navigate('/blog/usuarios?busca=&pagina=1');
     }
 
     if (actionData?.errors?.default) {
@@ -193,7 +193,7 @@ export const ListagemDeUsuarios = () => {
 
                 <TableCell style={{ textAlign: 'center' }}>
                   <Tooltip title="Visualizar e editar detalhes">
-                    <IconButton size="medium" onClick={() => navigate(`/organograma/usuarios/detalhes/${pagina}/${usuario.id}`)}>
+                    <IconButton size="medium" onClick={() => navigate(`/blog/usuarios/detalhes/${pagina}/${usuario.id}`)}>
                       <Icon color="primary" fontSize="medium">open_in_new</Icon>
                     </IconButton>
                   </Tooltip>

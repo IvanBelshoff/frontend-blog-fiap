@@ -13,6 +13,8 @@ export * from './login/action/loginAction';
 export * from './post-detalhes/component/DetalhesDePosts';
 export * from './post-detalhes/loader/detalhesDePostsLoader';
 
+export * from './posts/component/Post';
+
 //Detalhes de Usuários
 export * from './usuarios-detalhes/action/DetalhesDeUsuariosAction';
 export * from './usuarios-detalhes/component/DetalhesDeUsuario';

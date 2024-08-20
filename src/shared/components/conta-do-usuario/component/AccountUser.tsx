@@ -1,57 +1,32 @@
 import React, {
-    useEffect,
     useState
 } from 'react';
 import {
     Avatar,
     Box,
     Divider,
-    Icon,
-    ListItemIcon,
-    ListItemText,
     Menu,
-    MenuItem,
     useTheme
 } from '@mui/material';
 import {
-    useFetcher,
     useRouteLoaderData
 } from 'react-router-dom';
 
-import {
-    IAccountUserProps,
-    IDetalhesDeUsuarios
-} from '../../../interfaces';
 
-export const AccountUser: React.FC<IAccountUserProps> = ({ account_circle, about }) => {
+import { IAccountUserProps } from '../interfaces/interfaces';
+import { IAccountUserLoader } from '../../../interfaces';
 
-    // Hook personalizado para realizar chamadas a APIs
-    const fetcher = useFetcher();
+
+export const AccountUser: React.FC<IAccountUserProps> = ({ profile, logout, about }) => {
+
+    // Estado para controlar o logout
+    const loaderData = useRouteLoaderData('root') as IAccountUserLoader;
 
     // Hook para obter dados da rota atual
     const theme = useTheme();
 
-    // Hook para obter o tema atual do Material-UI
-    const isLoggingOut = fetcher.formData != null;
-
-    // Verifica se o usuário está realizando o logout
-    const [logout, setLogout] = useState<boolean>(false);
-
     // Estado para controlar a abertura/fechamento do menu
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-    // Estado para controlar o logout
-    const loaderData = useRouteLoaderData('root') as IDetalhesDeUsuarios;
-
-    // Função para realizar a ação de logout quando necessário
-    const actionLogout = (logout: boolean) => {
-        if (logout == true) {
-            fetcher.submit(
-                { idle: true },
-                { method: 'post', action: '/logout' }
-            );
-        }
-    };
 
     // Manipulador de evento para abrir o menu
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -63,16 +38,11 @@ export const AccountUser: React.FC<IAccountUserProps> = ({ account_circle, about
         setAnchorEl(null);
     };
 
-    // Efeito colateral para realizar a ação de logout quando o estado de logout muda
-    useEffect(() => {
-        actionLogout(logout);
-    }, [logout]);
-
     return (
         <Box>
             <Avatar
                 alt="User Avatar"
-                src={loaderData.data.foto.url}
+                src={loaderData?.data?.foto?.url || `${import.meta.env.VITE_REACT_APP_BASE_URL}/profile/profile.jpg`}
                 onClick={handleMenuOpen}
                 sx={{
                     cursor: 'pointer',
@@ -129,8 +99,8 @@ export const AccountUser: React.FC<IAccountUserProps> = ({ account_circle, about
                 }}
             >
 
-                {account_circle && (
-                    account_circle
+                {profile && (
+                    profile
                 )}
 
                 {about && (
@@ -139,14 +109,9 @@ export const AccountUser: React.FC<IAccountUserProps> = ({ account_circle, about
 
                 <Divider />
 
-                <MenuItem disabled={isLoggingOut} onClick={() => setLogout(true)}>
-
-                    <ListItemIcon >
-                        <Icon>logout</Icon>
-                    </ListItemIcon>
-                    <ListItemText primary='Sair' />
-
-                </MenuItem>
+                {logout && (
+                    logout
+                )}
 
             </Menu>
 

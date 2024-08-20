@@ -53,7 +53,7 @@ export const Blog = () => {
           {loaderData?.data && loaderData?.totalCount > 2 && (
             <CustomPagination
               totalExibido={loaderData.data.length}
-              totalPages={Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS))}
+              totalPages={Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_POSTS))}
               totalCount={loaderData.totalCount}
               pagina={pagina}
               aoSelecionarPagina={pagina => handleSearchParams(undefined, pagina)}
