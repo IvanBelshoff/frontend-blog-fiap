@@ -10,7 +10,6 @@ import {
     useTheme,
 } from '@mui/material';
 
-import { DarkInputsTheme, LightInputsTheme } from '../../../themes';
 import { IModalSobreProps } from '../../../interfaces';
 import { Environment } from '../../../environment';
 
@@ -64,11 +63,8 @@ export const ModalSobre: React.FC<IModalSobreProps> = ({
 
                         <Box width='100%' alignItems='center' display='flex' flexDirection='column' gap={2} justifyContent="center" padding={1} component={Paper} variant='outlined'  >
 
-                            <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
 
                                 <Typography variant='subtitle1'>Software de propriedade privada, seu uso é restrito aos fins internos da organização.</Typography>
-
-                            </ThemeProvider>
 
                             <Button
                                 variant='outlined'

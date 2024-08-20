@@ -10,8 +10,6 @@ import {
 } from '@mui/material';
 
 import { Environment } from '../../../environment';
-import { LightInputsTheme } from '../../../themes/LightInputs';
-import { DarkInputsTheme } from '../../../themes/DarkInputs';
 import { IFerramentasDaListagemProps } from '../../../interfaces';
 
 export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
@@ -40,7 +38,6 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
             component={Paper}
         >
             {mostrarInputBusca && (
-                <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
                     <TextField
                         size='small'
                         id="outlined-search"
@@ -49,9 +46,6 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
                         onChange={(e) => aoMudarTextoDeBusca?.(e.target.value)}
                         placeholder={Environment.INPUT_DE_BUSCA}
                     />
-                </ThemeProvider>
-
-
             )}
 
             {!mostrarBotaoVoltar && mostrarBotaoNovo ? (

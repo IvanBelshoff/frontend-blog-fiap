@@ -2,7 +2,6 @@ import axios, { AxiosError, isAxiosError } from 'axios';
 import { Api } from '../api';
 import {
     IDataToken,
-    IDetalhesDeUsuarios,
     IResponseErrosGeneric,
     IUsuarioCompleto,
     IUsuarioComTotalCount

@@ -35,8 +35,6 @@ import {
     IUsuarioModal
 } from '../../../interfaces';
 import { useAuth } from '../../../contexts';
-import { LightInputsTheme } from '../../../themes/LightInputs';
-import { DarkInputsTheme } from '../../../themes/DarkInputs';
 import { Environment } from '../../../environment';
 
 export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoClicarEmFecharModal }) => {
@@ -296,7 +294,6 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                     <Grid item xs={12} sm={12} md={11} lg={10} xl={8}>
                                         <Typography variant="h6" align="center">Dados do Usuário</Typography> {/* Centralize o texto */}
                                     </Grid>
-                                    <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
                                                 error={!!actionData?.errors?.body?.nome}
@@ -356,7 +353,6 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                                 }}
                                             />
                                         </Grid>
-                                    </ThemeProvider>
                                 </Grid>
 
                             </Box>
@@ -369,7 +365,6 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                     <Grid item>
                                         <Typography variant="h6">Alterar Senha</Typography>
                                     </Grid>
-                                    <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
                                         <Grid container item justifyContent='center'>
                                             <Grid item xs={12} sm={12}>
                                                 <TextField
@@ -388,7 +383,6 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                                 />
                                             </Grid>
                                         </Grid>
-                                    </ThemeProvider>
                                 </Grid>
 
                             </Box>

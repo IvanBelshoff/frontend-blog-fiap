@@ -17,7 +17,6 @@ import {
   Paper,
   Snackbar,
   TextField,
-  ThemeProvider,
   Typography,
   useTheme
 } from '@mui/material';
@@ -28,8 +27,6 @@ import {
 } from '../../../shared/interfaces';
 import { FerramentasDeDetalhes } from '../../../shared/components';
 import { LayoutBaseDePagina } from '../../../shared/layouts/LayoutBaseDePagina';
-import { LightInputsTheme } from '../../../shared/themes/LightInputs';
-import { DarkInputsTheme } from '../../../shared/themes/DarkInputs';
 import { Environment } from '../../../shared/environment';
 
 export const NovoUsuario = () => {
@@ -196,8 +193,6 @@ export const NovoUsuario = () => {
           </Box>
 
           <Box width='70%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
-
-            <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
               <Grid container spacing={3} justifyContent='center' alignItems='center'>
                 <Grid item xs={12} sm={6} >
                   <TextField
@@ -260,7 +255,6 @@ export const NovoUsuario = () => {
                 </Grid>
 
               </Grid>
-            </ThemeProvider>
           </Box>
 
         </Box>

@@ -20,15 +20,12 @@ import {
     Divider,
     IconButton,
     Tooltip,
-    ThemeProvider,
     useTheme
 } from '@mui/material';
 import { BsFilePost } from "react-icons/bs";
 
 import { useAuth } from '../../../shared/contexts/AuthContext';
-import { LightInputsTheme } from '../../../shared/themes/LightInputs';
 import { useAppThemeContext } from '../../../shared/contexts';
-import { DarkInputsTheme } from '../../../shared/themes/DarkInputs';
 import { IResponseLoginAction } from '../../../shared/interfaces';
 
 export const Login = () => {
@@ -160,8 +157,6 @@ export const Login = () => {
 
                         </Box>
 
-                        <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
-
                             <TextField
                                 sx={{ marginBottom: 2, marginTop: 2, }}
                                 error={!!actionData?.errors?.body?.email}
@@ -205,7 +200,6 @@ export const Login = () => {
                                     },
                                 }}
                             />
-                        </ThemeProvider>
 
                         <Box textAlign="center">
                             {!recuperaSenha ? (
@@ -243,7 +237,6 @@ export const Login = () => {
                                             Informe o e-mail para recuperação de senha
                                         </Typography>
                                     </Box>
-                                    <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
                                         <TextField
                                             sx={{ marginBottom: 2, marginTop: 1.5 }}
                                             error={!!actionData?.errors?.body?.emailRecuperacao}
@@ -271,7 +264,6 @@ export const Login = () => {
                                             variant="outlined"
                                             placeholder='E-mail'
                                         />
-                                    </ThemeProvider>
 
                                     <Box textAlign="center">
                                         <Button

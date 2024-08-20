@@ -26,7 +26,6 @@ import {
     SelectChangeEvent,
     Snackbar,
     TextField,
-    ThemeProvider,
     Tooltip,
     Typography,
     useTheme
@@ -49,8 +48,6 @@ import {
 import { LayoutBaseDePagina } from '../../../shared/layouts/LayoutBaseDePagina';
 import { FerramentasDeDetalhes } from '../../../shared/components';
 import { useAuth } from '../../../shared/contexts';
-import { LightInputsTheme } from '../../../shared/themes/LightInputs';
-import { DarkInputsTheme } from '../../../shared/themes/DarkInputs';
 import { Environment } from '../../../shared/environment';
 
 export const DetalhesDeUsuario = () => {
@@ -373,7 +370,6 @@ export const DetalhesDeUsuario = () => {
                                 </Grid>
 
                                 <Grid container spacing={3} justifyContent='center' >
-                                    <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
                                                 error={!!actionData?.errors?.body?.nome}
@@ -461,13 +457,11 @@ export const DetalhesDeUsuario = () => {
                                                 )}
                                             </FormControl>
                                         </Grid>
-                                    </ThemeProvider>
                                     {form.bloqueado == 'false' && userId != id && (
                                         <>
                                             <Grid item>
                                                 <Typography variant="h6">Alterar Senha</Typography>
                                             </Grid>
-                                            <ThemeProvider theme={theme.palette.mode == 'light' ? LightInputsTheme : DarkInputsTheme}>
                                                 <Grid container item justifyContent='center'>
                                                     <Grid item xs={12} sm={12}>
                                                         <TextField
@@ -486,7 +480,6 @@ export const DetalhesDeUsuario = () => {
                                                         />
                                                     </Grid>
                                                 </Grid>
-                                            </ThemeProvider>
                                         </>
                                     )}
 
