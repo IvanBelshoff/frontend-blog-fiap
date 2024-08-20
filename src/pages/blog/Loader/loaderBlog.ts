@@ -51,7 +51,7 @@ export async function LoaderBlog({ request }: LoaderFunctionArgs) {
         const posts = await PostsService.getAll(
             page ? page : '1',
             busca && busca,
-            Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS
+            Environment.LIMITE_DE_POSTS
         );
 
         // Tratando erros de requisição
@@ -92,7 +92,7 @@ export async function LoaderBlog({ request }: LoaderFunctionArgs) {
         const posts = await PostsService.getAll(
             page ? page : '1',
             busca && busca,
-            Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS
+            Environment.LIMITE_DE_POSTS
         );
 
         // Tratando erros de requisição

@@ -59,7 +59,7 @@ export const Blog = () => {
               aoSelecionarPagina={pagina => handleSearchParams(undefined, pagina)}
               aoClicarEmKeyBoardArrowUp={() => handleSearchParams(undefined, `${pagina - 1}`)}
               aoClicarEmKeyboardArrowDown={() => handleSearchParams(undefined, `${pagina + 1}`)}
-              aoClicarEmKeyboardDoubleArrowDown={() => handleSearchParams(undefined, `${Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS))}`)}
+              aoClicarEmKeyboardDoubleArrowDown={() => handleSearchParams(undefined, `${Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_POSTS))}`)}
               aoClicarEmKeyboardDoubleArrowUp={() => handleSearchParams(undefined, '1')}
             />
           )}

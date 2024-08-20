@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AppBar, Toolbar, IconButton, Box, TextField, Icon, useTheme, Tooltip, Avatar, Menu, Divider, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Outlet, useFetcher, useLoaderData, useMatch, useNavigate, useOutletContext, useParams, useResolvedPath } from 'react-router-dom';
+import { Outlet, useFetcher, useLoaderData, useMatch, useNavigate, useOutletContext, useParams, useResolvedPath, useSearchParams } from 'react-router-dom';
 import { useAppThemeContext } from '../../../contexts';
 import { IBlogLoader } from '../../../../pages/blog/interfaces/interfaces';
 import { IPosts } from '../../../interfaces';
@@ -27,7 +27,7 @@ export const Navbar = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     // Hook para obter o tema atual do Material-UI
     const isLoggingOut = fetcher.formData != null;
-    
+
     // Função para realizar a ação de logout quando necessário
     const actionLogout = () => {
         fetcher.submit(
@@ -45,7 +45,6 @@ export const Navbar = () => {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
-
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed">
@@ -68,6 +67,7 @@ export const Navbar = () => {
                                         <Icon sx={{ marginRight: 1 }}>search</Icon>
                                     ),
                                 }}
+                                value={busca}
                                 onChange={(e) => setBusca(e.target.value)}
                                 sx={{
                                     width: '50%',
