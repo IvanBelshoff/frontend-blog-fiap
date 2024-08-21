@@ -20,7 +20,7 @@ export const DarkTheme = createTheme({
         mode: 'dark',
     },
     typography: {
-        fontFamily: '"Noto Serif", serif',
+        fontFamily: '"Roboto", sans-serif',
         h1: {
             color: '#FFF'
         },

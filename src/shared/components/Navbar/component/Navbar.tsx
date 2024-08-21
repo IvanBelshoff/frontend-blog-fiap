@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { AppBar, Toolbar, IconButton, Box, TextField, Icon, useTheme, Tooltip, Avatar, Menu, Divider, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Outlet, useFetcher, useLoaderData, useMatch, useNavigate, useOutletContext, useParams, useResolvedPath, useSearchParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, IconButton, Box, TextField, Icon, useTheme, Tooltip, Avatar, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material';
+import { Outlet, useFetcher, useLoaderData, useMatch, useNavigate, useOutletContext, useParams, useResolvedPath } from 'react-router-dom';
 import { useAppThemeContext } from '../../../contexts';
 import { IBlogLoader } from '../../../../pages/blog/interfaces/interfaces';
 import { IPosts } from '../../../interfaces';
+import { Environment } from '../../../environment';
 
 
 type ContextType = {
@@ -48,7 +49,7 @@ export const Navbar = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed">
-                <Toolbar sx={{ justifyContent: 'space-between' }}>
+                <Toolbar sx={{ justifyContent: 'space-between', background: 'linear-gradient(to right, #f4729c, #ED145B)' }}>
                     {/* Logo */}
                     <IconButton edge="start" color="inherit" aria-label="logo">
                         <Icon>home</Icon> {/* Substitua pelo seu logo */}
@@ -58,30 +59,52 @@ export const Navbar = () => {
                     {!matchHome && (
                         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
                             <TextField
-                                size='small'
+                                size="small"
                                 id="outlined-search"
                                 type="search"
-                                placeholder={'buscar...'}
                                 InputProps={{
                                     startAdornment: (
-                                        <Icon sx={{ marginRight: 1 }}>search</Icon>
+                                        <Icon sx={{ color: 'white', marginRight: 1 }}>search</Icon>
                                     ),
+                                    style: { borderColor: 'white' } // Ajusta a cor da borda
+                                }}
+                                variant="outlined"
+                                sx={{
+                                    width: '40%',
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: 'white', // Cor da borda
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'white', // Cor da borda ao passar o mouse
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'white', // Cor da borda quando focado
+                                        },
+                                    },
+                                    '& .MuiInputBase-input': {
+                                        color: 'white', // Cor do texto
+                                    },
+                                    '& .MuiInputLabel-root': {
+                                        color: 'white', // Cor do placeholder quando o campo não está focado
+                                    },
+                                    '& .MuiInputLabel-shrink': {
+                                        color: 'white', // Cor do placeholder quando o campo está focado
+                                    }
                                 }}
                                 value={busca}
                                 onChange={(e) => setBusca(e.target.value)}
-                                sx={{
-                                    width: '50%',
-                                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                                    },
-                                }}
+                                placeholder={Environment.INPUT_DE_BUSCA}
                             />
+
+
+
                         </Box>
                     )}
 
-                    <Box display='flex'>
+                    <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
+
+
                         {theme.palette.mode === 'light' ?
                             (
 
@@ -100,6 +123,12 @@ export const Navbar = () => {
 
                         }
 
+                        {loaderData?.usuario && (
+                            <Typography color={'white'} variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                                Bem-vindo, {loaderData.usuario.nome}!
+                            </Typography>
+                        )}
+                        
                         {loaderData?.usuario ? (
                             <Box>
                                 <Avatar

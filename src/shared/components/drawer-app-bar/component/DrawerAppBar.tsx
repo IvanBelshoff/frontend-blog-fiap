@@ -37,7 +37,7 @@ import {
 } from '../../../contexts';
 
 import { AccountUser, ModalSobre, ModalUsuario } from '../..';
-import { AppBarProps } from './interfaces/interfaces';
+import { AppBarProps } from '../interfaces/interfaces';
 import { Environment } from '../../../environment';
 import { BsFilePost } from 'react-icons/bs';
 
@@ -167,7 +167,7 @@ export const DrawerAppBar = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
+            <AppBar position="fixed" sx={{ justifyContent: 'space-between', background: 'linear-gradient(to right, #f4729c, #ED145B)' }} open={open}>
                 <Toolbar>
                     <IconButton
                         color="inherit"

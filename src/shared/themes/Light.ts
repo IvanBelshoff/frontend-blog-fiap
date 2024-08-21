@@ -20,7 +20,7 @@ export const LightTheme = createTheme({
         mode: 'light'
     },
     typography: {
-        fontFamily: '"Noto Serif", serif',
+        fontFamily: '"Roboto", sans-serif',
         h1: {
             color: '#464a4e'
         },
