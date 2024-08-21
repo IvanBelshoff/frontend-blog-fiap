@@ -4,7 +4,6 @@ import {
     Icon,
     Paper,
     TextField,
-    ThemeProvider,
     Typography,
     useTheme
 } from '@mui/material';

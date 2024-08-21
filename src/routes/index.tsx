@@ -26,6 +26,7 @@ import {
     DetalhesDePosts,
     DetalhesDePostsLoader,
     Post,
+    LoaderPost,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -136,7 +137,8 @@ export const routes = createBrowserRouter([
             },
             {
                 path: 'posts',
-                element: <Post />
+                element: <Post />,
+                loader: LoaderPost
             },
             {
                 path: 'usuarios',

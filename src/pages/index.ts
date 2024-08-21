@@ -14,6 +14,7 @@ export * from './post-detalhes/component/DetalhesDePosts';
 export * from './post-detalhes/loader/detalhesDePostsLoader';
 
 export * from './posts/component/Post';
+export * from './posts/loader/loaderPost';
 
 //Detalhes de Usuários
 export * from './usuarios-detalhes/action/DetalhesDeUsuariosAction';
