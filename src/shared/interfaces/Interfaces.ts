@@ -193,7 +193,7 @@ export interface IResponseListagemDeFuncionariosAction {
 }
 
 export interface IListagemDeUsuarios {
-  data: IUsuarios[],
+  data: IUsuario[],
   totalCount: number
 }
 
@@ -1061,18 +1061,24 @@ export interface IPostsComTotalCount {
   totalCount: number;
 }
 
-export interface IUsuarios {
+export interface IUsuario {
   id: number,
   nome: string,
+  bloqueado: boolean,
   sobrenome: string,
   email: string,
-  bloqueado: boolean,
   data_criacao: Date,
   data_atualizacao: Date,
+  departamento: string,
+  localidade: string,
+  secao: string,
+  ultimo_login: Date,
+  usuario_atualizador: string,
+  usuario_cadastrador: string
 }
 
 export interface IUsuarioComTotalCount {
-  data: IUsuarios[];
+  data: IUsuario[];
   totalCount: number;
 }
 

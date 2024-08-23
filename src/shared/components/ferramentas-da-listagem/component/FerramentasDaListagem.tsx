@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    Divider,
     Icon,
     Paper,
     TextField,
@@ -9,15 +10,20 @@ import {
 } from '@mui/material';
 
 import { Environment } from '../../../environment';
-import { IFerramentasDaListagemProps } from '../../../interfaces';
+import { IFerramentasDaListagemProps } from '../interfaces/interfaces';
+
 
 export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
     aoMudarTextoDeBusca,
     mostrarInputBusca = false,
     textoDaBusca = '',
+    mostrarFavoritos = false,
     aoClicarEmNovo,
     aoClicarEmVoltar,
     mostrarBotaoNovo = true,
+    disabledBotaoNovo,
+    mostrarBotaoLogin = false,
+    aoClicarEmLogin,
     mostrarBotaoVoltar = false,
     textoBotaoNovo = 'Novo'
 }) => {
@@ -37,36 +43,12 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
             component={Paper}
         >
             {mostrarInputBusca && (
-                    <TextField
-                        size='small'
-                        id="outlined-search"
-                        type="search"
-                        value={textoDaBusca}
-                        onChange={(e) => aoMudarTextoDeBusca?.(e.target.value)}
-                        placeholder={Environment.INPUT_DE_BUSCA}
-                    />
-            )}
 
-            {!mostrarBotaoVoltar && mostrarBotaoNovo ? (
-                <Box flex={1} display='flex' justifyContent='end'>
-                    {mostrarBotaoNovo && (
-                        <Button
-                            variant='contained'
-                            color='primary'
-                            disableElevation
-                            onClick={aoClicarEmNovo}
-                            endIcon={<Icon>add</Icon>}
-                        >
-                            {textoBotaoNovo}</Button>
-                    )}
-
-                </Box>
-            ) :
-                (
-                    <Box flex={1} display='flex' justifyContent='end'>
-                        {mostrarBotaoVoltar && (
+                <>
+                    {mostrarBotaoVoltar && (
+                        <>
                             <Button
-                                variant='contained'
+                                variant='outlined'
                                 color='primary'
                                 disableElevation
                                 onClick={aoClicarEmVoltar}
@@ -74,12 +56,54 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
                             >
                                 <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
                                     Voltar
-                                </Typography></Button>
-                        )}
+                                </Typography>
+                            </Button>
+                            <Divider variant='middle' orientation='vertical' />
+                        </>
+                    )}
 
-                    </Box>
-                )
-            }
+                    <TextField
+                        size='small'
+                        id="outlined-search"
+                        type="search"
+                        defaultValue={textoDaBusca}
+                        onChange={(e) => aoMudarTextoDeBusca?.(e.target.value)}
+                        placeholder={Environment.INPUT_DE_BUSCA}
+                    />
+
+                </>
+            )}
+
+            <Box flex={1} display='flex' justifyContent='end'>
+
+                {mostrarFavoritos && (
+                    mostrarFavoritos
+                )}
+
+                {mostrarBotaoNovo && (
+                    <Button
+                        variant='contained'
+                        color='primary'
+                        disableElevation
+                        disabled={disabledBotaoNovo}
+                        onClick={aoClicarEmNovo}
+                        endIcon={<Icon>add</Icon>}
+                    >
+                        {textoBotaoNovo}</Button>
+                )}
+
+
+                {mostrarBotaoLogin && (
+                    <Button
+                        variant='contained'
+                        color='primary'
+                        disableElevation
+                        onClick={aoClicarEmLogin}
+                        startIcon={<Icon>meeting_room</Icon>}
+                    >
+                        Entrar</Button>
+                )}
+            </Box>
 
         </Box>
     );

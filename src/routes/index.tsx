@@ -30,14 +30,77 @@ import {
 } from '../pages';
 import {
     AccountUserLoader,
+    AcessoNegado,
     DrawerAppBar,
     Navbar,
 } from '../shared/components';
 import { Api } from '../shared/services/api';
 import { useAuth } from '../shared/contexts/AuthContext';
+import { Environment } from '../shared/environment';
+
 
 // Variável para verificar se o usuário está logado
 let logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
+
+// eslint-disable-next-line prefer-const
+let regras: string[] | null = null;
+
+const regrasString = localStorage.getItem('regras');
+
+if (regrasString) {
+    try {
+        regras = JSON.parse(regrasString);
+    } catch (error) {
+        console.error('Erro ao fazer parse do JSON:', error);
+    }
+}
+
+let permissoes: string[] | null = null;
+
+const permissoesString = localStorage.getItem('permissoes');
+
+if (permissoesString) {
+    try {
+        permissoes = JSON.parse(permissoesString);
+    } catch (error) {
+        console.error('Erro ao fazer parse do JSON:', error);
+    }
+}
+
+const PrivateRoute = ({ children, requiredRoles, requiredPermissions }: { children: JSX.Element, requiredRoles: string[], requiredPermissions?: string[] }) => {
+
+    const { regras, permissoes } = useAuth();
+
+    const regrasUsuario: string[] = JSON.parse(regras || '');
+
+    const permissoesUsuario: string[] = JSON.parse(permissoes || '');
+
+    const hasRequiredRoles = requiredRoles.every(role => regrasUsuario?.includes(role));
+
+    const hasRequiredPermissions = requiredPermissions?.every(permission => permissoesUsuario?.includes(permission));
+
+    if (requiredRoles.every(() => regras?.includes(Environment.REGRAS.REGRA_ADMIN))) {
+        return children;
+    }
+
+    if (requiredRoles && !hasRequiredRoles) {
+
+        console.log('não possui a regra desejada');
+        //return <Navigate to={`/acesso-negado${location.pathname}`} state={{ from: location }} replace />;
+        return <AcessoNegado regras={requiredRoles} permissoes={requiredPermissions} />;
+    }
+
+    if (requiredPermissions && !hasRequiredPermissions) {
+
+        console.log('não possui a permissao desejada');
+        //return <Navigate to={`/acesso-negado${location.pathname}`} state={{ from: location }} replace />;
+        return <AcessoNegado regras={requiredRoles} permissoes={requiredPermissions} />;
+    }
+
+    // console.log('permitido');
+
+    return children;
+};
 
 // Componente de redirecionamento para a página de login
 const RedirectLogin = ({ children }: { children: JSX.Element }) => {
@@ -142,20 +205,32 @@ export const routes = createBrowserRouter([
             },
             {
                 path: 'usuarios',
-                element: <ListagemDeUsuarios />,
-                loader: ListagemDeUsuariosLoader,
+                element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_USUARIO]}><ListagemDeUsuarios /></PrivateRoute>,
                 action: ListagemDeUsuariosAction,
+                async loader({ request }) {
+                    if (Environment.validaRegraPermissaoComponentsMetodos(regras, [Environment.REGRAS.REGRA_USUARIO])) {
+                        return ListagemDeUsuariosLoader(request);
+                    } else {
+                        return null;
+                    }
+                }
             },
             {
                 path: 'usuarios/novo',
-                element: <NovoUsuario />,
-                action: NovoUsuarioAction
+                element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_USUARIO]} requiredPermissions={[Environment.PERMISSOES.PERMISSAO_CRIAR_USUARIO]}><NovoUsuario /></PrivateRoute>,
+                action: NovoUsuarioAction,
             },
             {
                 path: 'usuarios/detalhes/:pagina/:id',
-                element: <DetalhesDeUsuario />,
+                element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_USUARIO]}><DetalhesDeUsuario /></PrivateRoute>,
                 action: DetalhesDeUsuariosAction,
-                loader: DetalhesDeUsuarioLoader
+                async loader({ params }) {
+                    if (Environment.validaRegraPermissaoComponentsMetodos(regras, [Environment.REGRAS.REGRA_USUARIO])) {
+                        return DetalhesDeUsuarioLoader(params);
+                    } else {
+                        return null;
+                    }
+                },
             }
         ],
         async action({ request }) {
@@ -181,7 +256,7 @@ export const routes = createBrowserRouter([
                     Api().defaults.headers.Authorization = null;
 
                     logado = false;
-                
+
                     return (redirect('/login'));
 
                 } catch (error) {

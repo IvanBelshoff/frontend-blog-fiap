@@ -21,39 +21,30 @@ import {
   useTheme
 } from '@mui/material';
 
-import {
-  IResponseNovoUsuarioAction,
-  IUsuarioNovo
-} from '../../../shared/interfaces';
 import { FerramentasDeDetalhes } from '../../../shared/components';
-import { LayoutBaseDePagina } from '../../../shared/layouts/LayoutBaseDePagina';
 import { Environment } from '../../../shared/environment';
+import { LayoutBaseDePagina } from '../../../shared/layouts';
+import { IFormUsuario, INovoUsuarioAction } from '../interfaces/interfaces';
 
 export const NovoUsuario = () => {
 
-  // Hook de navegação do React Router
+  const actionData = useActionData() as INovoUsuarioAction;
   const navigate = useNavigate();
 
   // Hook para obter o tema atual do Material-UI
   const theme = useTheme();
 
-  // Hook para obter dados de ação
-  const actionData = useActionData() as IResponseNovoUsuarioAction;
-
-  // Estados locais para controlar o estado do Snackbar
   const [open, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [severity, setSeverity] = useState<'success' | 'error'>('success');
-
   const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | null>(null);
-
-  // Estado local para o formulário do novo usuário
-  const [form, setForm] = useState<IUsuarioNovo>({
+  const [form, setForm] = useState<IFormUsuario>({
     nome: '',
     sobrenome: '',
     email: '',
     senha: ''
   });
+
 
   // Função para remover a imagem
   const handleRemoveImage = () => {
@@ -85,6 +76,7 @@ export const NovoUsuario = () => {
     setForm(prevState => ({ ...prevState, [name]: value }));
   };
 
+
   // Manipulador de evento para a mudança de imagem
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
@@ -103,14 +95,13 @@ export const NovoUsuario = () => {
 
     if (actionData?.errors?.default) {
       setSeverity('error');
-      setMessage(actionData?.errors?.default);
+      setMessage(actionData.errors.default);
       setOpen(true);
-
     }
 
     if (actionData?.success?.message) {
       setSeverity('success');
-      setMessage(actionData?.success?.message);
+      setMessage(actionData.success.message);
       setOpen(true);
     }
 
@@ -119,43 +110,44 @@ export const NovoUsuario = () => {
   return (
     <LayoutBaseDePagina
       titulo='Crie um novo Usuário'
-      barraDeFerramentas={<FerramentasDeDetalhes
-        mostrarBotaoApagar={false}
-        mostrarBotaoNovo={false}
-        salvar={
-          <Form method="POST" replace encType='multipart/form-data'>
+      barraDeFerramentas={
+        <FerramentasDeDetalhes
+          mostrarBotaoApagar={false}
+          mostrarBotaoNovo={false}
+          salvar={
+            <Form method="POST" replace encType='multipart/form-data'>
 
-            <input id='nome' type="hidden" name="nome" value={form.nome} />
-            <input id='sobrenome' type="hidden" name="sobrenome" value={form.sobrenome} />
-            <input id='email' type="hidden" name="email" value={form.email} />
-            <input id='senha' type="hidden" name="senha" value={form.senha} />
-            <input
-              style={{ display: 'none' }}
-              id="upload-photo"
-              name="foto"
-              type="file"
-              onChange={handleImageChange}
-              accept="image/*" // Aceita apenas imagens
-            />
+              <input id='nome' type="hidden" name="nome" value={form.nome} />
+              <input id='sobrenome' type="hidden" name="sobrenome" value={form.sobrenome} />
+              <input id='email' type="hidden" name="email" value={form.email} />
+              <input id='senha' type="hidden" name="senha" value={form.senha} />
+              <input
+                style={{ display: 'none' }}
+                id="upload-photo"
+                name="foto"
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*" // Aceita apenas imagens
+              />
 
-            <Button
-              variant='contained'
-              color='primary'
-              disableElevation
-              type='submit'
-              startIcon={<Icon>save</Icon>}
-            >
+              <Button
+                variant='contained'
+                color='primary'
+                disableElevation
+                type='submit'
+                startIcon={<Icon>save</Icon>}
+              >
 
-              <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
-                Salvar
-              </Typography>
+                <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
+                  Salvar
+                </Typography>
 
-            </Button>
-          </Form>
+              </Button>
+            </Form>
 
-        }
-        aoClicarEmVoltar={() => navigate('/blog/usuarios')}
-      />}
+          }
+          aoClicarEmVoltar={() => navigate('/blog/usuarios')}
+        />}
     >
       <Box display="flex" width='auto' height='auto' flexDirection="column" justifyContent="center" margin={1} component={Paper} elevation={3} >
 
@@ -167,7 +159,7 @@ export const NovoUsuario = () => {
               Foto do Usuário
             </Typography>
             <Avatar
-              src={uploadedImage as string || `${Environment.BASE_URL}/profile/profile.jpg`}
+              src={uploadedImage as string || `${Environment.BASE_URL}profile/profile.jpg`}
               alt="Foto do funcionário"
               style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
             />
@@ -180,20 +172,24 @@ export const NovoUsuario = () => {
               onChange={handleImageChange}
               accept="image/*" // Aceita apenas imagens
             />
+
             <label htmlFor="upload-photo">
               <Button variant="contained" component="span" startIcon={<Icon>file_upload</Icon>}>
                 Carregar Foto
               </Button>
             </label>
             {uploadedImage && (
-              <Button variant="outlined" color="error" onClick={handleRemoveImage} startIcon={<Icon>delete</Icon>}>
+              <Button variant="outlined" color="error" startIcon={<Icon>delete</Icon>} onClick={handleRemoveImage}>
                 Remover Foto
               </Button>
             )}
           </Box>
 
           <Box width='70%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
+
+
               <Grid container spacing={3} justifyContent='center' alignItems='center'>
+
                 <Grid item xs={12} sm={6} >
                   <TextField
                     error={!!actionData?.errors?.body?.nome}
@@ -222,7 +218,7 @@ export const NovoUsuario = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={12}>
+                <Grid item xs={12}>
                   <TextField
                     error={!!actionData?.errors?.body?.email}
                     helperText={!!actionData?.errors?.body?.email && ('E-mail: ' + actionData?.errors?.body.email)}
@@ -255,6 +251,7 @@ export const NovoUsuario = () => {
                 </Grid>
 
               </Grid>
+
           </Box>
 
         </Box>

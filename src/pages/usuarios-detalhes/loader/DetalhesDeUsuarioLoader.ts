@@ -1,16 +1,19 @@
 import { AxiosError } from 'axios';
 import {
-    LoaderFunctionArgs,
+    Params,
     json
 } from 'react-router-dom';
 
-import { IResponseLoaderDetalhesDeUsuarios } from '../../../shared/interfaces';
 import { UsuariosService } from '../../../shared/services';
+import { IDetalhesDeUsuarioLoader, ILoaderDetalhesDeUsuario } from '../interfaces/interfaces';
 
-export async function DetalhesDeUsuarioLoader({ params }: LoaderFunctionArgs) {
+export async function DetalhesDeUsuarioLoader(params: Params) {
+
+    // Verificação se o usuário está logado
+    const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
 
     // Obtém o ID do usuário a partir dos parâmetros da URL.
-    const id = params.id;
+    const id = params.id as unknown as number;
 
     // Chama o serviço para obter os detalhes do usuário pelo ID.
     const usuario = await UsuariosService.getById(Number(id));
@@ -18,11 +21,8 @@ export async function DetalhesDeUsuarioLoader({ params }: LoaderFunctionArgs) {
     // Verifica se ocorreu um erro durante a solicitação.
     if (usuario instanceof AxiosError) {
 
-        // Verificação se o usuário está logado
-        const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
-
         // Extrai informações de erro da resposta.
-        const errors = (usuario as IResponseLoaderDetalhesDeUsuarios).response?.data.errors;
+        const errors = (usuario as ILoaderDetalhesDeUsuario).response?.data.errors;
 
         // Manipulação de erros específicos
 
@@ -42,9 +42,10 @@ export async function DetalhesDeUsuarioLoader({ params }: LoaderFunctionArgs) {
 
     }
 
-    // Retorna os dados do usuário obtidos com sucesso.
-    return {
-        data: usuario
+    const data: IDetalhesDeUsuarioLoader = {
+        usuario: usuario
     };
+    // Retorna os dados do usuário obtidos com sucesso.
+    return data;
 
 }

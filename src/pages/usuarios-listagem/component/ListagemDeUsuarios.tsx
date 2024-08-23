@@ -38,47 +38,49 @@ import {
 } from '@mui/material';
 
 import { useAuth } from '../../../shared/contexts';
-import { FerramentasDaListagem } from '../../../shared/components/ferramentas-da-listagem/component/FerramentasDaListagem';
-import { LayoutBaseDePagina } from '../../../shared/layouts/LayoutBaseDePagina';
-import {
-  IListagemDeUsuarios,
-  IResponseListagemDeUsuariosAction
-} from '../../../shared/interfaces';
 import { Environment } from '../../../shared/environment';
+
+import { FerramentasDaListagem } from '../../../shared/components';
+import { LayoutBaseDePagina } from '../../../shared/layouts';
 import { format } from 'date-fns';
+import {
+  IListagemDeUsuariosAction,
+  IListagemDeUsuariosLoader
+} from '../interfaces/interfaces';
+import { useDebouncedCallback } from 'use-debounce';
 
 export const ListagemDeUsuarios = () => {
 
-  // Hooks do React para navegação, tema, etc.
-  const navigation = useNavigation();
-  const { userId } = useAuth();
-  const theme = useTheme();
+  const actionData = useActionData() as IListagemDeUsuariosAction;
+  const loaderData = useLoaderData() as IListagemDeUsuariosLoader;
   const navigate = useNavigate();
-  const loaderData = useLoaderData() as IListagemDeUsuarios;
-  const actionData = useActionData() as IResponseListagemDeUsuariosAction;
+  const navigation = useNavigation();
 
-  // State para controle do diálogo de confirmação e snackbar
+  const theme = useTheme();
+  const { permissoes, regras } = useAuth();
+  const { userId } = useAuth();
+  const isLoading = navigation.state != 'idle';
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const pagina = useMemo(() => {
+    return Number(searchParams.get('pagina') || '1');
+  }, [searchParams]);
+
+  const busca = useMemo(() => {
+    return searchParams.get('busca') || '';
+  }, [searchParams]);
+
   const [usuarioId, setUsuarioId] = useState<number>();
   const [tipo, setTipo] = useState<'Dialog' | 'Snackbar' | ''>('');
   const [open, setOpen] = useState<boolean>(false);
   const [messageSnackbar, setMessageSnackbar] = useState<string>('');
   const [typeSeverity, setTypeSeverity] = useState<'success' | 'error'>('success');
 
-  // Hooks para manipulação da barra de busca e paginação
-  const [searchParams, setSearchParams] = useSearchParams();
-  const pagina = useMemo(() => {
-    return Number(searchParams.get('pagina') || '1');
-  }, [searchParams]);
-  const busca = useMemo(() => {
-    return searchParams.get('busca') || '';
-  }, [searchParams]);
-
-  // Função para fechar o diálogo de confirmação
   const handleCloseDialog = () => {
     setOpen(false);
   };
 
-  // Função para fechar a snackbar
   const handleCloseSnackbar = (_event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -87,7 +89,14 @@ export const ListagemDeUsuarios = () => {
     setMessageSnackbar('');
   };
 
-  // Função para atualizar os parâmetros da busca na URL
+  const handleSearch = useDebouncedCallback((
+    paramBusca: string = busca,
+  ) => {
+    setSearchParams({
+      busca: paramBusca,
+    }, { replace: true });
+  }, Environment.TIME_DEBOUNCE);
+
   const handleSearchParams = (
     paramBusca: string = busca,
     paramPagina: string = String(pagina),
@@ -102,7 +111,7 @@ export const ListagemDeUsuarios = () => {
   useEffect(() => {
 
     if (loaderData.totalCount <= 4) {
-      navigate('/blog/usuarios?busca=&pagina=1');
+      navigate(`/blog/usuarios?busca=${busca}&pagina=1`);
     }
 
     if (actionData?.errors?.default) {
@@ -121,20 +130,21 @@ export const ListagemDeUsuarios = () => {
       handleSearchParams();
     }
 
+    console.log(loaderData)
   }, [actionData]);
 
   return (
     <LayoutBaseDePagina
-      titulo='Gerenciamento de Usuários'
+      titulo={'Gerenciamento de Usuários'}
       barraDeFerramentas={
         <FerramentasDaListagem
           textoBotaoNovo="novo"
           mostrarInputBusca={true}
+          disabledBotaoNovo={Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_CRIAR_USUARIO])}
           textoDaBusca={busca}
           aoClicarEmNovo={() => navigate('novo')}
-          aoMudarTextoDeBusca={texto => handleSearchParams(texto)}
+          aoMudarTextoDeBusca={texto => handleSearch(texto)}
         />
-
       }
     >
 
@@ -161,7 +171,6 @@ export const ListagemDeUsuarios = () => {
               Apagar
             </Button>
           </Form>
-
         </DialogActions>
       </Dialog>
 
@@ -183,17 +192,21 @@ export const ListagemDeUsuarios = () => {
               <TableCell style={{ textAlign: 'center' }}>Nome</TableCell>
               <TableCell style={{ textAlign: 'center' }}>Status</TableCell>
               <TableCell style={{ textAlign: 'center' }}>E-mail</TableCell>
+              {Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_ADMIN]) && (
+                <TableCell style={{ textAlign: 'center' }}>Permissões</TableCell>
+              )}
               <TableCell style={{ textAlign: 'center' }}>Data de criação</TableCell>
+              <TableCell style={{ textAlign: 'center' }}>Último Acesso</TableCell>
               <TableCell style={{ textAlign: 'center' }}>Excluir</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {loaderData.data.map((usuario) => (
+            {loaderData?.data && loaderData.data.map((usuario) => (
               <TableRow key={usuario.id}>
 
                 <TableCell style={{ textAlign: 'center' }}>
                   <Tooltip title="Visualizar e editar detalhes">
-                    <IconButton size="medium" onClick={() => navigate(`/blog/usuarios/detalhes/${pagina}/${usuario.id}`)}>
+                    <IconButton size="medium" onClick={() => navigate(`detalhes/${pagina}/${usuario.id}`)}>
                       <Icon color="primary" fontSize="medium">open_in_new</Icon>
                     </IconButton>
                   </Tooltip>
@@ -217,30 +230,49 @@ export const ListagemDeUsuarios = () => {
 
                 <TableCell style={{ textAlign: 'center' }}><Typography variant='body2'>{usuario.email}</Typography></TableCell>
 
-                <TableCell style={{ textAlign: 'center' }}><Typography variant='body2'>{usuario.data_criacao ? format(new Date(usuario.data_criacao), 'dd/MM/yyyy') : 'Desconhecido'}</Typography></TableCell>
+                {Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_ADMIN]) && (
+                  <TableCell style={{ textAlign: 'center' }}>
+
+                    <IconButton
+                      size="medium"
+                      onClick={() => navigate(`detalhes/${pagina}/${usuario.id}/regras/permissoes`)}
+                    >
+                      <Tooltip title="Visualizar e editar permissoes">
+                        <Icon color={'primary'} fontSize="medium">rule</Icon>
+                      </Tooltip>
+                    </IconButton>
+
+                  </TableCell>
+                )}
+
+                <TableCell style={{ textAlign: 'center' }}><Typography variant='body2'>{usuario.data_criacao ? format(new Date(usuario.data_criacao), 'dd/MM/yyyy HH:mm:ss') : 'Desconhecido'}</Typography></TableCell>
+
+                <TableCell style={{ textAlign: 'center' }}><Typography variant='body2'>{usuario.ultimo_login ? format(new Date(usuario.ultimo_login), 'dd/MM/yyyy HH:mm:ss') : 'Desconhecido'}</Typography></TableCell>
 
                 <TableCell style={{ textAlign: 'center' }}>
 
-                  <IconButton onClick={() => {
-                    setUsuarioId(usuario.id);
-                    setTipo('Dialog');
-                    setOpen(true);
-                  }}
-                    disabled={Number(userId) == usuario.id ? true : false}
+                  <IconButton
+                    onClick={() => {
+                      setUsuarioId(usuario.id);
+                      setTipo('Dialog');
+                      setOpen(true);
+                    }}
+                    disabled={Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_DELETAR_USUARIO]) || Number(userId) == usuario.id}
                   >
 
-                    <Tooltip title="Deletar Usuário">
-                      <Icon color={Number(userId) == usuario.id ? 'disabled' : 'primary'} >delete</Icon>
+                    <Tooltip title="Deletar Funcionario">
+                      <Icon color={Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_DELETAR_USUARIO]) || Number(userId) == usuario.id ? 'disabled' : 'primary'} >delete</Icon>
                     </Tooltip>
 
                   </IconButton>
 
                 </TableCell>
+
               </TableRow>
 
             ))}
           </TableBody>
-          {loaderData.totalCount === 0 && navigation.state == 'idle' && (
+          {(loaderData?.totalCount && loaderData.totalCount) === 0 && !isLoading && (
             <caption>{Environment.LISTAGEM_VAZIA}</caption>
           )}
           <TableFooter>

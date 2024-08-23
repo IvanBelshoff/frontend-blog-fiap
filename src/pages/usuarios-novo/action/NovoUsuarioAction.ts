@@ -1,8 +1,11 @@
 import { AxiosError } from 'axios';
-import { LoaderFunctionArgs, json } from 'react-router-dom';
+import {
+    LoaderFunctionArgs,
+    json
+} from 'react-router-dom';
 
-import { IResponseActionNovoUsuario } from '../../../shared/interfaces';
 import { UsuariosService } from '../../../shared/services';
+import { IActionNovoUsuario, INovoUsuarioAction } from '../interfaces/interfaces';
 
 export async function NovoUsuarioAction({ request }: LoaderFunctionArgs) {
 
@@ -16,24 +19,24 @@ export async function NovoUsuarioAction({ request }: LoaderFunctionArgs) {
         const nome = formData.get('nome') as string;
         const sobrenome = formData.get('sobrenome') as string;
         const email = formData.get('email') as string;
-        const senha = formData.get('senha') as string;
         const foto = formData.get('foto') as File;
-
+        const senha = formData.get('senha') as string;
+        
         // Chama a função createUsuario para criar um novo usuário
         const usuario = await UsuariosService.create(
-            nome && nome,
-            sobrenome && sobrenome,
-            email && email,
+            nome,
+            sobrenome,
+            email,
             'false',
-            senha && senha,
-            foto && foto
+            senha,
+            foto || undefined
         );
 
         // Verifica se ocorreu um erro durante a criação do usuário
         if (usuario instanceof AxiosError) {
 
             // Extrai os erros da resposta, se disponíveis
-            const errors = (usuario as IResponseActionNovoUsuario).response?.data.errors;
+            const errors = (usuario as IActionNovoUsuario).response?.data.errors;
 
             // Manipulação de erros específicos
             if (usuario.response?.status != 400) {
@@ -45,19 +48,24 @@ export async function NovoUsuarioAction({ request }: LoaderFunctionArgs) {
                 );
 
             }
-            
-            // Retorna um objeto contendo os erros
-            return {
+
+            const response: INovoUsuarioAction = {
                 errors: errors
             };
 
+            // Retorna um objeto contendo os erros
+            return response;
+
         }
 
-        // Se a criação do usuário foi bem-sucedida, retorna um objeto indicando sucesso
-        return {
+        const response: INovoUsuarioAction = {
             success: {
                 message: 'Cadastro foi criado',
             }
         };
+
+
+        // Se a criação do usuário foi bem-sucedida, retorna um objeto indicando sucesso
+        return response;
     }
 }

@@ -1,21 +1,19 @@
 import { AxiosError } from 'axios';
 import {
-    LoaderFunctionArgs,
     json
 } from 'react-router-dom';
 
-import { Environment } from '../../../shared/environment';
-import {
-    IListagemDeUsuarios,
-    IResponseLoaderListagemDeUsuarios
-} from '../../../shared/interfaces';
 import { UsuariosService } from '../../../shared/services';
+import {
+    IListagemDeUsuariosLoader,
+    ILoaderListagemDeUsuarios
+} from '../interfaces/interfaces';
 
-export async function ListagemDeUsuariosLoader({ request }: LoaderFunctionArgs) {
+export async function ListagemDeUsuariosLoader(request: Request) {
 
     // Verificação se o usuário está logado
     const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
-    
+
     // Obtendo parâmetros da URL da requisição
     const url = new URL(request.url);
     const busca = url.searchParams.get('busca') || '';
@@ -24,15 +22,14 @@ export async function ListagemDeUsuariosLoader({ request }: LoaderFunctionArgs) 
     // Chamando serviço para obter lista de usuários
     const usuarios = await UsuariosService.getAll(
         page ? page : '1',
-        busca && busca,
-        Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS
+        busca || undefined
     );
 
     // Tratando erros de requisição
     if (usuarios instanceof AxiosError) {
 
         // Obtendo mensagem de erro da resposta
-        const errors = (usuarios as IResponseLoaderListagemDeUsuarios).response?.data.errors;
+        const errors = (usuarios as ILoaderListagemDeUsuarios).response?.data.errors;
 
         // Manipulação de erros específicos
         if ((usuarios.response?.status == 401 || usuarios.response?.status == 500) && logado == true) {
@@ -51,7 +48,7 @@ export async function ListagemDeUsuariosLoader({ request }: LoaderFunctionArgs) 
     }
 
     // Construção do objeto de dados a ser retornado
-    const data: IListagemDeUsuarios = {
+    const data: IListagemDeUsuariosLoader = {
         data: usuarios.data,
         totalCount: usuarios.totalCount,
     };

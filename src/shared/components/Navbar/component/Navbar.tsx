@@ -92,7 +92,7 @@ export const Navbar = () => {
                                         color: 'white', // Cor do placeholder quando o campo está focado
                                     }
                                 }}
-                                value={busca}
+                                defaultValue={busca}
                                 onChange={(e) => setBusca(e.target.value)}
                                 placeholder={Environment.INPUT_DE_BUSCA}
                             />

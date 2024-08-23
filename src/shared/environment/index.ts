@@ -91,6 +91,8 @@ export const Environment = {
 
     INPUT_DE_BUSCA: import.meta.env.VITE_REACT_APP_INPUT_DE_BUSCA,
 
+    TIME_DEBOUNCE: import.meta.env.VITE_REACT_APP_TIME_DEBOUNCE || 300,
+
     REGRAS: {
         REGRA_ADMIN: 'REGRA_ADMIN',
         REGRA_USUARIO: 'REGRA_USUARIO',

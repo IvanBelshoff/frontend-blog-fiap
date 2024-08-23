@@ -6,6 +6,7 @@ import {
     IUsuarioCompleto,
     IUsuarioComTotalCount
 } from '../../interfaces';
+import { Environment } from '../../environment';
 
 const create = async (
     nome: string,
@@ -96,21 +97,21 @@ const deleteFotoById = async (id: number): Promise<void | AxiosError> => {
     }
 };
 
-const getAll = async (page?: string, filter?: string, limit?: string): Promise<IUsuarioComTotalCount | AxiosError> => {
+const getAll = async (page?: string, filter?: string): Promise<IUsuarioComTotalCount | AxiosError> => {
     try {
 
         const data = await Api().get('usuarios', {
             params: {
                 page: Number(page),
                 filter: filter,
-                limit: limit,
+                limit: Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS,
             }
         });
 
         if (data.status == 200) {
             return {
                 data: data.data,
-                totalCount: Number(data.headers['x-total-count'] || limit),
+                totalCount: Number(data.headers['x-total-count'] || Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS),
             };
         }
 
@@ -118,13 +119,15 @@ const getAll = async (page?: string, filter?: string, limit?: string): Promise<I
 
     } catch (error) {
 
-        if (axios.isAxiosError(error)) {
+        const errors = (error as IResponseErrosGeneric).response;
+
+        if (isAxiosError(error)) {
             return error;
         }
 
-        const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
-
-        return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+        return new AxiosError(
+            errors?.data?.errors?.default || 'Erro ao consultar o registros.',
+            errors?.status || '500');
 
     }
 };
@@ -202,9 +205,13 @@ export const updateById = async (
     nome?: string,
     sobrenome?: string,
     email?: string,
+    localidade?: string,
+    departamento?: string,
+    secao?: string,
     foto?: File,
     bloqueado?: string,
-    senha?: string
+    senha?: string,
+    id_copy_regras?: string,
 ): Promise<void | AxiosError> => {
     try {
 
@@ -222,6 +229,18 @@ export const updateById = async (
             formData.append('email', email)
         );
 
+        localidade && (
+            formData.append('localidade', localidade)
+        );
+
+        departamento && (
+            formData.append('departamento', departamento)
+        );
+
+        secao && (
+            formData.append('secao', secao)
+        );
+
         bloqueado && (
             formData.append('bloqueado', bloqueado)
         );
@@ -234,7 +253,11 @@ export const updateById = async (
             formData.append('senha', senha)
         );
 
-        const data = await Api().patch(`/usuarios/${id}`, formData, {
+        id_copy_regras && (
+            formData.append('id_copy_regras', id_copy_regras)
+        );
+
+        const data = await Api().put(`/usuarios/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -248,13 +271,15 @@ export const updateById = async (
 
     } catch (error) {
 
-        if (axios.isAxiosError(error)) {
+        const errors = (error as IResponseErrosGeneric).response;
+
+        if (isAxiosError(error)) {
             return error;
         }
 
-        const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
-
-        return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+        return new AxiosError(
+            errors?.data?.errors?.default || 'Erro ao consultar o registros.',
+            errors?.status || '500');
     }
 };
 

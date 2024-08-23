@@ -5,6 +5,7 @@ import { useEffect, useMemo } from 'react';
 import { CardPost, CustomPagination, useNavbar } from '../../../shared/components';
 import { LayoutBase } from '../../../shared/layouts';
 import { Environment } from '../../../shared/environment';
+import { useDebouncedCallback } from 'use-debounce';
 
 export const Blog = () => {
   const { busca: BuscaNav, data, totalCount } = useNavbar();
@@ -26,6 +27,14 @@ export const Blog = () => {
 
   const isLoading = navigation.state !== 'idle';
 
+  const handleSearch = useDebouncedCallback((
+    paramBusca: string = busca,
+  ) => {
+    setSearchParams({
+      busca: paramBusca,
+    }, { replace: true });
+  }, Environment.TIME_DEBOUNCE);
+
   const handleSearchParams = (
     paramBusca: string = busca,
     paramPagina: string = pagina.toString(),
@@ -38,7 +47,7 @@ export const Blog = () => {
   useEffect(() => {
 
     if (BuscaNav) {
-      handleSearchParams(BuscaNav);
+      handleSearch(BuscaNav);
     }
     if (!BuscaNav) {
       handleSearchParams('');

@@ -60,9 +60,9 @@ export const DrawerAppBar = () => {
 
     const resolvedPathHome = useResolvedPath('/blog');
     const matchHome = useMatch({ path: resolvedPathHome.pathname, end: false });
-    const resolvedPathUsuarios = useResolvedPath('/usuarios');
+    const resolvedPathUsuarios = useResolvedPath('/blog/usuarios');
     const matchUsuarios = useMatch({ path: resolvedPathUsuarios.pathname, end: false });
-    const resolvedPathPosts = useResolvedPath('/posts');
+    const resolvedPathPosts = useResolvedPath('/blog/posts');
     const matchPosts = useMatch({ path: resolvedPathPosts.pathname, end: false });
     // Largura da gaveta
     const drawerWidth = 280;
@@ -135,6 +135,25 @@ export const DrawerAppBar = () => {
         }),
     );
 
+       // Função auxiliar para definir o índice padrão com base no caminho da rota
+       const defaultIndex = (path: string) => {
+
+        const resolvedPath = useResolvedPath(path);
+
+        const match = useMatch({ path: resolvedPath.pathname, end: false });
+
+        if (path == '/blog' && !!match) {
+            return 1;
+        } else if (path == '/blog/posts' && !!match) {
+            return 2;
+        } else if (path == '/blog/usuarios' && !!match) {
+            return 3;
+        }
+
+    };
+
+    // Índice padrão para a rota atual
+    const selectedIndexHome = defaultIndex(location.pathname);
 
     const handleListItemClick = (
         _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -258,7 +277,7 @@ export const DrawerAppBar = () => {
                                 px: 2.5,
                             }}
 
-                            selected={selectedIndex != undefined ? selectedIndex === 1 : !!matchHome}
+                            selected={selectedIndex != undefined ? selectedIndex == 1 : selectedIndexHome == 1}
                             onClick={(event) => { handleListItemClick(event, 1), navigate('/blog'); }}
                         >
                             <ListItemIcon
