@@ -15,11 +15,11 @@ export async function DetalhesDePostsLoader({ params }: LoaderFunctionArgs) {
     // Chama o serviço para obter os detalhes do usuário pelo ID.
     const post = await PostsService.getById(Number(id));
 
+    // Verificação se o usuário está logado
+    const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
+
     // Verifica se ocorreu um erro durante a solicitação.
     if (post instanceof AxiosError) {
-
-        // Verificação se o usuário está logado
-        const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
 
         // Extrai informações de erro da resposta.
         const errors = (post as ILoaderDetalhesDePosts).response?.data.errors;
@@ -45,7 +45,8 @@ export async function DetalhesDePostsLoader({ params }: LoaderFunctionArgs) {
 
 
     const data: IDetalhesDePostLoader = {
-        post: post
+        post: post,
+        logado: logado
     }
 
     // Retorna os dados do usuário obtidos com sucesso.

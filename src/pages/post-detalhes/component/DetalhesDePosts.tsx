@@ -7,7 +7,7 @@ export const DetalhesDePosts = () => {
     const loaderData = useLoaderData() as IDetalhesDePostLoader;
     const { pagina } = useParams<'pagina'>();
     const { titulo, conteudo, usuario_cadastrador, data_atualizacao, foto } = loaderData.post;
-
+    console.log(loaderData.logado)
     return (
         <LayoutBase>
             <Box width='100%' height='auto' display='flex' justifyContent='center' alignItems='center'>
@@ -44,6 +44,7 @@ export const DetalhesDePosts = () => {
                             </Typography>
                         </CardContent>
                     </Card>
+                    
                 </Box>
             </Box>
         </LayoutBase>

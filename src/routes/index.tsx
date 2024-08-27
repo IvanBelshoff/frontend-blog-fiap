@@ -56,6 +56,7 @@ if (regrasString) {
 }
 
 let permissoes: string[] | null = null;
+console.log(permissoes)
 
 const permissoesString = localStorage.getItem('permissoes');
 

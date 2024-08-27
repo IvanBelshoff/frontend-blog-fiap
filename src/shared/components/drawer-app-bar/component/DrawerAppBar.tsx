@@ -154,6 +154,7 @@ export const DrawerAppBar = () => {
 
     // Índice padrão para a rota atual
     const selectedIndexHome = defaultIndex(location.pathname);
+    console.log(selectedIndexHome)
 
     const handleListItemClick = (
         _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -277,7 +278,7 @@ export const DrawerAppBar = () => {
                                 px: 2.5,
                             }}
 
-                            selected={selectedIndex != undefined ? selectedIndex == 1 : selectedIndexHome == 1}
+                            selected={selectedIndex != undefined ? selectedIndex == 1 : !!matchHome}
                             onClick={(event) => { handleListItemClick(event, 1), navigate('/blog'); }}
                         >
                             <ListItemIcon

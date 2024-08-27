@@ -49,6 +49,7 @@ export const Post = () => {
                     mostrarInputBusca={true}
                     textoDaBusca={busca}
                     aoMudarTextoDeBusca={texto => handleSearchParams(texto)}
+                    disabledBotaoNovo={false}
                 />
             }
         >

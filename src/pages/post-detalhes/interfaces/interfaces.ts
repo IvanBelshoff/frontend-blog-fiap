@@ -12,4 +12,5 @@ export interface ILoaderDetalhesDePosts {
 
 export interface IDetalhesDePostLoader {
     post: IPostCompleto;
+    logado: Boolean
 }

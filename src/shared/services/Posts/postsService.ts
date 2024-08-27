@@ -58,6 +58,7 @@ const getById = async (id: number): Promise<IPostCompleto | AxiosError> => {
 
 };
 
+
 export const PostsService = {
     getAll,
     getById
