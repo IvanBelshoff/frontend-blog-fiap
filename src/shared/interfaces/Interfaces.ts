@@ -1061,6 +1061,43 @@ export interface IPostsComTotalCount {
   totalCount: number;
 }
 
+export interface IResponseActionPosts {
+  response?: {
+    data: {
+      errors?: {
+        default?: string
+      },
+    }
+  }
+  success?: {
+    message: string
+  },
+}
+
+export interface IListagemDePosts {
+  data: IPosts[],
+  totalCount: number
+}
+
+export interface IResponseLoaderListagemDePosts {
+  response?: {
+    data: {
+      errors: {
+        default?: string
+      }
+    }
+  }
+}
+
+export interface IResponseListagemDePostsAction {
+  errors?: {
+    default: string
+  },
+  success?: {
+    message: string
+  }
+}
+
 export interface IUsuarios {
   id: number,
   nome: string,

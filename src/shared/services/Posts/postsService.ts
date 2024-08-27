@@ -58,7 +58,31 @@ const getById = async (id: number): Promise<IPostCompleto | AxiosError> => {
 
 };
 
+const deleteById = async (id: number): Promise<IPostCompleto | AxiosError> => {
+
+    try {
+        const data = await Api().delete(`/posts/${id}`);
+
+        if (data.status == 200) {
+            return data.data;
+        }
+
+        return new AxiosError('Erro ao deletar o post.', undefined, data.config);
+
+    } catch (error) {
+
+        if (axios.isAxiosError(error)) {
+            return error;
+        }
+        const errorMessage = (error as { message: string }).message || 'Erro ao deletar o post.';
+
+        return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+    }
+
+};
+
 export const PostsService = {
     getAll,
-    getById
+    getById,
+    deleteById
 };

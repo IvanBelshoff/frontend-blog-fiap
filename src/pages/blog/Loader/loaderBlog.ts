@@ -47,7 +47,7 @@ export async function LoaderBlog({ request }: LoaderFunctionArgs) {
 
         }
 
-        // Chamando serviço para obter lista de usuários
+        // Chamando serviço para obter lista de posts
         const posts = await PostsService.getAll(
             page ? page : '1',
             busca && busca,
@@ -88,7 +88,7 @@ export async function LoaderBlog({ request }: LoaderFunctionArgs) {
 
     } else {
 
-        // Chamando serviço para obter lista de usuários
+        // Chamando serviço para obter lista de posts
         const posts = await PostsService.getAll(
             page ? page : '1',
             busca && busca,

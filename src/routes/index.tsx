@@ -25,7 +25,9 @@ import {
     LoaderBlog,
     DetalhesDePosts,
     DetalhesDePostsLoader,
-    Post,
+    ListagemDePostsLoader,
+    ListagemDePostsAction,
+    ListagemDePosts,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -136,7 +138,9 @@ export const routes = createBrowserRouter([
             },
             {
                 path: 'posts',
-                element: <Post />
+                element: <ListagemDePosts />,
+                loader: ListagemDePostsLoader,
+                action: ListagemDePostsAction,
             },
             {
                 path: 'usuarios',

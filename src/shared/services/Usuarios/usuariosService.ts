@@ -133,7 +133,7 @@ const getAll = async (page?: string, filter?: string, limit?: string): Promise<I
 const getById = async (id: number): Promise<IUsuarioCompleto | AxiosError> => {
 
     try {
-        const data = await Api().get(`/usuarios/${id}`);
+        const data = await Api().get(`/usuarios/id/${id}`);
 
         if (data.status == 200) {
             return data.data;

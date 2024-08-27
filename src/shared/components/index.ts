@@ -3,7 +3,7 @@ export * from './CardPost/component/CardPost';
 
 // Componente de opções da conta
 export * from './conta-do-usuario/component/AccountUser';
-export * from './conta-do-usuario/loader/accountUserLoader';
+export * from './conta-do-usuario/loader/AccountUserLoader';
 
 export * from './custom-pagination/CustomPagination'
 
