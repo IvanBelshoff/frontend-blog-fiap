@@ -27,6 +27,9 @@ import {
     DetalhesDePostsLoader,
     Post,
     LoaderPost,
+    RegrasEPermissoes,
+    RegrasEPermissoesAction,
+    RegrasEPermissoesLoader,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -185,6 +188,15 @@ export const routes = createBrowserRouter([
         element: <ProtectedRoute ><DrawerAppBar /></ProtectedRoute >,
         loader: AccountUserLoader,
         errorElement: <Errors />,
+        async action({ request }) {
+
+            if (logado == true) {
+                return null;
+            } else {
+                return LoginAction(request);
+            }
+
+        },
         children: [
             {
                 index: true,
@@ -231,18 +243,23 @@ export const routes = createBrowserRouter([
                         return null;
                     }
                 },
+                children: [
+                    {
+                        path: 'regras/permissoes',
+                        element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_ADMIN]}><RegrasEPermissoes /></PrivateRoute>,
+                        action: RegrasEPermissoesAction,
+                        async loader({ request, params }) {
+                            if (Environment.validaRegraPermissaoComponentsMetodos(regras, [Environment.REGRAS.REGRA_ADMIN])) {
+                                return RegrasEPermissoesLoader(request, params);
+                            } else {
+                                return null;
+                            }
+
+                        }
+                    },
+                ]
             }
-        ],
-        async action({ request }) {
-
-            if (logado == true) {
-                return null;
-            } else {
-                return LoginAction(request);
-            }
-
-        }
-
+        ]
     },
     {
         path: 'logout',

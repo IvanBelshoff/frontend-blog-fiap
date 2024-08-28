@@ -23,6 +23,10 @@ export * from './loading/component/Loading';
 // Componente de modal do usuario logado
 export * from './modal-usuario/component/ModalUsuario';
 
+export * from './regras-accordions/component/RegrasAccordions';
+
+export * from './status-rolagem/component/StatusDeRolagem';
+
 // Componente de modal de sobre 
 export * from './modal-sobre/component/ModalSobre';
 

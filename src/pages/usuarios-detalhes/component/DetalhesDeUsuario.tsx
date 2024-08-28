@@ -275,12 +275,11 @@ export const DetalhesDeUsuario = () => {
 
     }, [actionData, actionDataDeleteUsuario, fetcher, loaderData]);
 
-    if (location.pathname == String(`/usuarios/detalhes/${pagina}/${id}/regras/permissoes`)) {
+    if (location.pathname == String(`/blog/usuarios/detalhes/${pagina}/${id}/regras/permissoes`)) {
 
         return <Outlet />;
 
     }
-
     return (
         < LayoutBaseDePagina
             titulo={`${form.nome} ${form.sobrenome}`}

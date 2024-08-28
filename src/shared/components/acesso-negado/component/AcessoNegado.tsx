@@ -16,10 +16,12 @@ import {
     useFetcher,
     useNavigate
 } from 'react-router-dom';
+import { BsFilePost } from 'react-icons/bs';
 
 import '../css/styles.css';
 import { useAuth } from '../../../contexts';
 import { IAcessoNegado } from '../interfaces/interfaces';
+
 
 export const AcessoNegado: React.FC<IAcessoNegado> = ({ regras, permissoes }) => {
 
@@ -75,10 +77,10 @@ export const AcessoNegado: React.FC<IAcessoNegado> = ({ regras, permissoes }) =>
                             color='primary'
                             disabled={isLoading}
                             onClick={() => navigate('/dashprivate')}
-                            startIcon={<Icon>insert_chart</Icon>}
+                            startIcon={<Icon><BsFilePost /></Icon>}
                         >
                             <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
-                                meus Dashboards
+                                meus Professors
                             </Typography>
                         </Button>
                         <fetcher.Form method="post" action="/logout">

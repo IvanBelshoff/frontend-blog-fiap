@@ -941,6 +941,23 @@ export interface AuthContextProps {
   setPermissoes: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
+export interface IPermissao {
+  id: number;
+  nome: string;
+  descricao: string;
+  data_criacao: Date,
+  data_atualizacao: Date,
+}
+
+export interface IRegra {
+  id: number;
+  nome: string;
+  descricao: string;
+  data_criacao: Date,
+  data_atualizacao: Date,
+  permissao: IPermissao[];
+}
+
 export interface IAuthContextProps {
   children: React.ReactNode
 }
