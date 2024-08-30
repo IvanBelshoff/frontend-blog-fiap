@@ -1053,7 +1053,7 @@ export interface IPosts {
   usuario_atualizador: string,
   data_criacao: Date,
   data_atualizacao: Date,
-  foto: IFoto
+  foto?: IFoto
 }
 
 export interface IPostsComTotalCount {

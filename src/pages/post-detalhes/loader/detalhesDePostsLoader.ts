@@ -14,6 +14,7 @@ export async function DetalhesDePostsLoader({ params }: LoaderFunctionArgs) {
 
     // Chama o serviço para obter os detalhes do usuário pelo ID.
     const post = await PostsService.getById(Number(id));
+    console.log("loader >>> post: ", post)
 
     // Verificação se o usuário está logado
     const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
