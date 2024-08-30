@@ -17,8 +17,12 @@ export * from './regras-permissoes/loader/regrasEPermissoesLoader';
 export * from './post-detalhes/component/DetalhesDePosts';
 export * from './post-detalhes/loader/detalhesDePostsLoader';
 
-export * from './posts/component/Post';
-export * from './posts/loader/loaderPost';
+export * from './posts-listagem/component/ListagemDePosts';
+export * from './posts-listagem/loader/loaderPost';
+
+//Editar Post
+export * from './post-editar/component/EditarPost';
+export * from './post-editar/loader/editarPostLoader';
 
 //Detalhes de Usuários
 export * from './usuarios-detalhes/action/DetalhesDeUsuariosAction';

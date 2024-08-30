@@ -51,6 +51,7 @@ export async function LoaderPost({ request }: LoaderFunctionArgs) {
     const data: IPostLoader = {
         data: posts.data,
         totalCount: posts.totalCount,
+        logado: logado
     };
 
     // Retorno dos dados

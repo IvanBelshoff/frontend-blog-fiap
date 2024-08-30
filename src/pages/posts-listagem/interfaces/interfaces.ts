@@ -13,4 +13,5 @@ export interface ILoaderPost{
 export interface IPostLoader {
     data: IPosts[];
     totalCount: number;
+    logado: boolean
 }

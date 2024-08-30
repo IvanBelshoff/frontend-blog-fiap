@@ -5,9 +5,9 @@ import {
     Icon,
     Modal,
     Paper,
-    ThemeProvider,
+    // ThemeProvider,
     Typography,
-    useTheme,
+    // useTheme,
 } from '@mui/material';
 
 import { IModalSobreProps } from '../../../interfaces';
@@ -17,7 +17,7 @@ export const ModalSobre: React.FC<IModalSobreProps> = ({
     openModalSobre,
     aoClicarEmFecharModal }) => {
 
-    const theme = useTheme();
+    // const theme = useTheme();
 
     const lgpd = `${Environment.BASE_URL}/luvep/politica_de_privacidade.pdf`;
 

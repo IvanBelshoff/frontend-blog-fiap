@@ -27,6 +27,8 @@ import {
     DetalhesDePostsLoader,
     Post,
     LoaderPost,
+    EditarPosts,
+    EditarPostLoader,
     RegrasEPermissoes,
     RegrasEPermissoesAction,
     RegrasEPermissoesLoader,
@@ -59,6 +61,7 @@ if (regrasString) {
 }
 
 let permissoes: string[] | null = null;
+console.log(permissoes)
 
 const permissoesString = localStorage.getItem('permissoes');
 
@@ -214,6 +217,17 @@ export const routes = createBrowserRouter([
                 path: 'posts',
                 element: <Post />,
                 loader: LoaderPost
+            },
+            {
+                path: 'posts/detalhes/:pagina/:id',
+                element: <DetalhesDePosts />,
+                loader: DetalhesDePostsLoader
+            },
+            ,
+            {
+                path: 'posts/edit/:pagina/:id/',
+                element: <EditarPosts />,
+                loader: EditarPostLoader
             },
             {
                 path: 'usuarios',

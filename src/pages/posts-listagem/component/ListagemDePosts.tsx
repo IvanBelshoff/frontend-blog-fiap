@@ -57,8 +57,9 @@ export const Post = () => {
                     textoBotaoNovo="novo"
                     mostrarInputBusca={true}
                     textoDaBusca={busca}
-                    aoMudarTextoDeBusca={texto => handleSearch(texto)}
-                    disabledBotaoNovo={false} />
+                    aoMudarTextoDeBusca={texto => handleSearchParams(texto)}
+                    disabledBotaoNovo={false}
+                />
             }
         >
 
@@ -96,7 +97,7 @@ export const Post = () => {
                                         titulo={post.titulo}
                                         usuario_atualizador={post.usuario_atualizador}
                                         usuario_cadastrador={post.usuario_cadastrador}
-                                        aoCliclarNoCard={() => navigate(`/detalhes/${pagina}/${post.id}`)}
+                                        aoCliclarNoCard={() => navigate(loaderData.logado ? `/blog/posts/detalhes/${pagina}/${post.id}` : `/detalhes/${pagina}/${post.id}`)}
                                     />
                                 </Grid>
 
