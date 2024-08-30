@@ -110,7 +110,7 @@ export const ListagemDeUsuarios = () => {
   // Efeito colateral para tratar ações após a execução da carga de dados
   useEffect(() => {
 
-    if (loaderData.totalCount <= 4) {
+    if (loaderData?.totalCount <= Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS) {
       navigate(`/blog/usuarios?busca=${busca}&pagina=1`);
     }
 

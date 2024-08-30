@@ -43,6 +43,7 @@ import {
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import {
+    CropperModal,
     FerramentasDeDetalhes,
 } from '../../../shared/components';
 import { useAuth } from '../../../shared/contexts';
@@ -53,7 +54,6 @@ import { IDetalhesDeUsuarioAction, IDetalhesDeUsuarioLoader, IFormUsuario } from
 
 
 export const DetalhesDeUsuario = () => {
-
 
     const actionData = useActionData() as IDetalhesDeUsuarioAction;
     const loaderData = useLoaderData() as IDetalhesDeUsuarioLoader;
@@ -82,7 +82,9 @@ export const DetalhesDeUsuario = () => {
     };
 
     const [originalImage, setOriginalImage] = useState<string | ArrayBuffer | null>(loaderData?.usuario?.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`);
-    const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | null>(originalImage);
+    const [statePhoto, setStatePhoto] = useState<'original' | 'edição' | 'preview'>('original');
+    const [filename, setFilename] = useState<string>('');
+    const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | Blob | null>(originalImage);
     const [icone, setIcone] = useState<string>('content_copy');
     const [open, setOpen] = useState<boolean>(false);
     const [messageSnackbar, setMessageSnackbar] = useState<string>('');
@@ -93,14 +95,15 @@ export const DetalhesDeUsuario = () => {
     const [form, setForm] = useState<IFormUsuario>(initialForm);
     const [formMethod, setFormMethod] = useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('PATCH');
 
-    const HandleResetForm = () => {
+    const reader = new FileReader();
 
+    const HandleResetForm = () => {
+        setStatePhoto('original');
         setForm(initialForm);
         setIsModified(false);
         setUploadedImage(originalImage);
         setOriginalImage(loaderData?.usuario?.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`);
     };
-
 
     // Função para lidar com o fechamento da notificação.
     const handleCloseSnackbar = (_event: SyntheticEvent | Event, reason?: string) => {
@@ -109,13 +112,12 @@ export const DetalhesDeUsuario = () => {
             return;
         }
 
+        setStatePhoto('original');
         setOpen(false);
         setMessageSnackbar('');
 
         setForm(prevState => ({
             ...prevState,
-            id_copy_dashboards: '',
-            id_copy_regras: ''
         }));
 
         if (typeSeverity === 'success' && actionDataDeleteUsuario?.success) {
@@ -163,17 +165,54 @@ export const DetalhesDeUsuario = () => {
 
     };
 
-    // Função para lidar com a mudança na imagem.
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleSaveEditedImage = (blob: Blob, state?: 'original' | 'edição' | 'preview') => {
+
+        reader.onloadend = () => {
+
+            setUploadedImage(blob);
+
+            // Criando uma FileList simulando a seleção de arquivos pelo usuário
+            const editedFile = new File([blob], filename || 'edited_photo.jpg', { type: blob.type });
+            const fileList = new DataTransfer();
+            fileList.items.add(editedFile);
+
+            // Setando o valor do input para a FileList criada
+            const uploadedPhotoInput = document.getElementById('upload-photo') as HTMLInputElement;
+            uploadedPhotoInput.files = fileList.files;
+
+            if (state) {
+                setStatePhoto(state);
+                setIsModified(true);
+            }
+        };
+        reader.readAsDataURL(blob);
+    };
+
+    // Função para remover a imagem
+    const handleRemoveImage = () => {
+
+        setIsModified(false);
+        // Resetando o valor do input para garantir que o evento onChange seja acionado novamente
+        if (document.getElementById('upload-photo')) {
+            (document.getElementById('upload-photo') as HTMLInputElement).value = '';
+            setUploadedImage(originalImage || `${Environment.BASE_URL}/profile/profile.jpg`);
+        }
+        setStatePhoto('original');
+
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
+
         if (file) {
-            const reader = new FileReader();
+
             reader.onloadend = () => {
                 setUploadedImage(reader.result);
+                setStatePhoto('edição');
+                setFilename(file.name);
             };
             reader.readAsDataURL(file);
         }
-        setIsModified(true); // Adicione esta linha
     };
 
     const handleDisabledPassWord = () => {
@@ -209,7 +248,9 @@ export const DetalhesDeUsuario = () => {
     // Efeitos colaterais para lidar com as respostas das ações.
     useEffect(() => {
 
-        setActionDataDeleteUsuario(fetcher.data);
+        if (fetcher?.data) {
+            setActionDataDeleteUsuario(fetcher.data);
+        }
 
         if (actionData?.success?.message && actionData?.tipo == 'senha') {
             setMessageSnackbar(actionData.success.message || '');
@@ -280,6 +321,7 @@ export const DetalhesDeUsuario = () => {
         return <Outlet />;
 
     }
+
     return (
         < LayoutBaseDePagina
             titulo={`${form.nome} ${form.sobrenome}`}
@@ -339,14 +381,13 @@ export const DetalhesDeUsuario = () => {
 
             <Box display='flex' flexDirection={'column'} width='100%' height='100%'>
 
-
-
                 <Form replace method={formMethod} encType='multipart/form-data'>
 
                     <Box display="flex" width='auto' height='auto' flexDirection="column" justifyContent="center" marginLeft={1} marginRight={1} marginBottom={1} component={Paper} elevation={3}  >
 
                         <Box width='100%' height='100%' display="flex" flexDirection="row" gap={2} padding={3}>
                             <Box width='30%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
+                                
                                 {Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]) && (
                                     <Box width='100%' marginBottom={1} display='flex' justifyContent='center' alignItems='center' gap={1}>
                                         <Typography variant='h6'>modo de edição está bloqueado
@@ -355,47 +396,58 @@ export const DetalhesDeUsuario = () => {
                                         <Icon color='primary'>lock</Icon>
                                     </Box>
                                 )}
+
                                 <Typography variant='h5'>
                                     Foto do Usuário
                                 </Typography>
-                                <Avatar
-                                    src={uploadedImage as string}
-                                    alt="Foto do funcionário"
-                                    style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
-                                />
 
-                                <input
-                                    style={{ display: 'none' }}
-                                    id="upload-photo"
-                                    type="file"
-                                    name='foto'
-                                    onChange={handleImageChange}
-                                    accept="image/*" // Aceita apenas imagens
-                                />
-                                <label htmlFor="upload-photo">
-                                    <Button
-                                        disabled={
-                                            Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]) || form.bloqueado == 'true'
-                                        }
-                                        variant="contained"
-                                        startIcon={<Icon>file_upload</Icon>}
-                                        component="span">
-                                        Carregar Foto
-                                    </Button>
-                                </label>
+                                {(statePhoto == 'original' || statePhoto == 'preview') ? (
+                                    <>
+                                        <Avatar
+                                            src={typeof uploadedImage == 'string' ? uploadedImage : URL.createObjectURL(uploadedImage as Blob)}
+                                            alt="Foto do usuário"
+                                            style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
+                                        />
 
-                                <Button
-                                    type='submit'
-                                    disabled={
-                                        Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]) || form.bloqueado == 'true'
-                                    }
-                                    variant="outlined"
-                                    color="error"
-                                    startIcon={<Icon>delete</Icon>}
-                                    onClick={() => setFormMethod('DELETE')}
-                                >
-                                    Remover Foto
-                                </Button>
+                                        <label htmlFor="upload-photo">
+                                            <Button
+                                                disabled={
+                                                    Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]) || form.bloqueado == 'true'
+                                                }
+                                                variant="contained"
+                                                startIcon={<Icon>file_upload</Icon>}
+                                                component="span">
+                                                Carregar Foto
+                                            </Button>
+                                        </label>
+
+                                        {statePhoto != 'original' ? (
+                                            <Button variant="outlined" color="error" onClick={(e) => { e?.preventDefault(); handleRemoveImage(); }}>
+                                                Cancelar alteração
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                type='submit'
+                                                disabled={
+                                                    Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]) || form.bloqueado == 'true'
+                                                }
+                                                variant="outlined"
+                                                color="error"
+                                                startIcon={<Icon>delete</Icon>}
+                                                onClick={() => setFormMethod('DELETE')}
+                                            >
+                                                Remover Foto
+                                            </Button>
+                                        )}
+
+                                    </>) : (
+                                    <CropperModal
+                                        src={uploadedImage as string}
+                                        setPreview={setUploadedImage}
+                                        cancelPhoto={handleRemoveImage}
+                                        onSave={handleSaveEditedImage}
+                                    />)}
+
                             </Box>
 
                             <Box width='70%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
@@ -554,7 +606,7 @@ export const DetalhesDeUsuario = () => {
                                             type='date'
                                         />
                                     </Grid>
-                                    
+
                                     {form.bloqueado == 'false' && userId != id && (
                                         <>
                                             <Grid item>
@@ -591,6 +643,14 @@ export const DetalhesDeUsuario = () => {
                                 <input id='nome' type="hidden" name="nome" value={form.nome} />
                                 <input id='sobrenome' type="hidden" name="sobrenome" value={form.sobrenome} />
                                 <input id='email' type="hidden" name="email" value={form.email} />
+                                <input
+                                    style={{ display: 'none' }}
+                                    id="upload-photo"
+                                    type="file"
+                                    name='foto'
+                                    onChange={handleImageChange}
+                                    accept="image/*" // Aceita apenas imagens
+                                />
 
                                 {isModified && Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]) && (
                                     <Box width='100%' display='flex' justifyContent='center' alignItems='center' gap={2}>

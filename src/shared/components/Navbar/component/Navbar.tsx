@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Box, TextField, Icon, useTheme, Tooltip, Avatar, Menu, MenuItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Box, TextField, Icon, useTheme, Tooltip, Avatar, Menu, MenuItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { Outlet, useFetcher, useLoaderData, useMatch, useNavigate, useOutletContext, useParams, useResolvedPath } from 'react-router-dom';
 import { useAppThemeContext } from '../../../contexts';
 import { IBlogLoader } from '../../../../pages/blog/interfaces/interfaces';
@@ -128,7 +128,7 @@ export const Navbar = () => {
                                 Bem-vindo, {loaderData.usuario.nome}!
                             </Typography>
                         )}
-                        
+
                         {loaderData?.usuario ? (
                             <Box>
                                 <Avatar
