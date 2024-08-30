@@ -17,7 +17,6 @@ import {
     Paper,
     Snackbar,
     TextField,
-    // ThemeProvider,
     Tooltip,
     Typography,
     useTheme
@@ -36,6 +35,7 @@ import {
 } from '../../../interfaces';
 import { useAuth } from '../../../contexts';
 import { Environment } from '../../../environment';
+import { CropperModal } from '../..';
 
 export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoClicarEmFecharModal }) => {
 
@@ -47,11 +47,12 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
     const loaderData = useRouteLoaderData('root') as IDetalhesDeUsuarios;
     const [actionData, setActionData] = useState<IResponseModalUsuarioAction>(fetcher.data);
     const [originalImage, setOriginalImage] = useState<string | ArrayBuffer | null>(loaderData?.data?.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`);
-    const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | null>(originalImage);
+    const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | Blob | null>(originalImage);
     const [open, setOpen] = useState<boolean>(false);
     const [messageSnackbar, setMessageSnackbar] = useState<string>('');
     const [typeSeverity, setTypeSeverity] = useState<'success' | 'error'>('success');
     const [icone, setIcone] = useState<string>('content_copy');
+    const [filename, setFilename] = useState<string>('');
     const initialForm: IUsuarioModal = {
         nome: loaderData?.data?.nome || '',
         sobrenome: loaderData?.data?.sobrenome || '',
@@ -59,7 +60,11 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
         id: loaderData?.data?.id || 0,
         senha: ''
     };
+
+    const reader = new FileReader();
+
     const [form, setForm] = useState<IUsuarioModal>(initialForm);
+    const [statePhoto, setStatePhoto] = useState<'original' | 'edição' | 'preview'>('original');
     const [formMethod, setFormMethod] = useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('PATCH');
     const [isModified, setIsModified] = useState<boolean>(false);
 
@@ -96,17 +101,55 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
 
     };
 
-    // Manipulação de mudança de imagem
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
+
         if (file) {
-            const reader = new FileReader();
+
             reader.onloadend = () => {
                 setUploadedImage(reader.result);
+                setStatePhoto('edição');
+                setFilename(file.name);
             };
             reader.readAsDataURL(file);
         }
-        setIsModified(true); // Adicione esta linha
+    };
+
+    const handleSaveEditedImage = (blob: Blob, state?: 'original' | 'edição' | 'preview') => {
+
+        reader.onloadend = () => {
+
+            setUploadedImage(blob);
+
+            // Criando uma FileList simulando a seleção de arquivos pelo usuário
+            const editedFile = new File([blob], filename || 'edited_photo.jpg', { type: blob.type });
+            const fileList = new DataTransfer();
+            fileList.items.add(editedFile);
+
+            // Setando o valor do input para a FileList criada
+            const uploadedPhotoInput = document.getElementById('upload-photo-modal') as HTMLInputElement;
+            uploadedPhotoInput.files = fileList.files;
+
+            if (state) {
+                setStatePhoto(state);
+                setIsModified(true);
+            }
+        };
+        reader.readAsDataURL(blob);
+    };
+
+    // Função para remover a imagem
+    const handleRemoveImage = () => {
+
+
+        setIsModified(false);
+        // Resetando o valor do input para garantir que o evento onChange seja acionado novamente
+        if (document.getElementById('upload-photo-modal')) {
+            (document.getElementById('upload-photo-modal') as HTMLInputElement).value = '';
+            setUploadedImage(originalImage || `${Environment.BASE_URL}/profile/profile.jpg`);
+        }
+        setStatePhoto('original');
+
     };
 
     // Manipulação de fechamento do modal
@@ -150,10 +193,14 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
     // Efeito para atualizar dados quando há mudanças
     useEffect(() => {
 
-        setUploadedImage(loaderData?.data?.foto?.url);
-        setOriginalImage(loaderData?.data?.foto?.url);
-
-        setForm({ nome: loaderData.data.nome, email: loaderData.data.email, id: loaderData.data.id, sobrenome: loaderData.data.sobrenome, senha: form.senha || '' });
+        if (loaderData?.data?.foto?.url) {
+            setUploadedImage(loaderData.data.foto.url);
+            setOriginalImage(loaderData.data.foto.url);
+        }
+        
+        if (fetcher?.data) {
+            setActionData(fetcher.data);
+        }
 
         if (actionData?.success?.message && actionData?.tipo == 'foto') {
 
@@ -192,8 +239,6 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
             setTypeSeverity('error');
         }
 
-        setActionData(fetcher.data);
-
     }, [openModalConta, fetcher, loaderData]);
 
     return (
@@ -222,7 +267,14 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                         <input type="hidden" name="nome" value={form.nome} />
                         <input type="hidden" name="sobrenome" value={form.sobrenome} />
                         <input type="hidden" name="email" value={form.email} />
-
+                        <input
+                            style={{ display: 'none' }}
+                            id="upload-photo-modal"
+                            type="file"
+                            name='foto'
+                            onChange={handleImageChange}
+                            accept="image/*" // Aceita apenas imagens
+                        />
 
                         <Box padding={1} width='100%' display='flex' justifyContent='right'>
                             <Button
@@ -254,36 +306,51 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                         Foto do Usuário
                                     </Typography>
 
-                                    <Avatar
-                                        src={uploadedImage as string}
-                                        alt="Foto do funcionário"
-                                        style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
-                                    />
+                                    {(statePhoto == 'original' || statePhoto == 'preview') ? (
+                                        <>
+                                            <Avatar
+                                                src={typeof uploadedImage == 'string' ? uploadedImage : URL.createObjectURL(uploadedImage as Blob)}
+                                                alt="Foto do usuário"
+                                                style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
+                                            />
 
-                                    <input
-                                        style={{ display: 'none' }}
-                                        id="upload-photo-modal"
-                                        type="file"
-                                        name='foto'
-                                        onChange={handleImageChange}
-                                        accept="image/*" // Aceita apenas imagens
-                                    />
-                                    <label htmlFor="upload-photo-modal">
-                                        <Button variant="contained" component="span" startIcon={<Icon>file_upload</Icon>} disabled={form.senha != ''}>
-                                            Carregar Foto
-                                        </Button>
-                                    </label>
+                                            <label htmlFor="upload-photo-modal">
+                                                <Button
+                                                    variant="contained"
+                                                    component="span"
+                                                    startIcon={<Icon>file_upload</Icon>}
+                                                    disabled={form.senha != ''}>
+                                                    Carregar Foto
+                                                </Button>
+                                            </label>
 
-                                    <Button
-                                        type='submit'
-                                        variant="outlined"
-                                        color="error"
-                                        startIcon={<Icon>delete</Icon>}
-                                        disabled={form.senha != ''}
-                                        onClick={() => setFormMethod('DELETE')}
-                                    >
-                                        Remover Foto
-                                    </Button>
+                                            {statePhoto != 'original' ? (
+                                                <Button variant="outlined" color="error" onClick={(e) => { e?.preventDefault(); handleRemoveImage(); }}>
+                                                    Cancelar alteração
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    type='submit'
+                                                    variant="outlined"
+                                                    color="error"
+                                                    startIcon={<Icon>delete</Icon>}
+                                                    disabled={form.senha != ''}
+                                                    onClick={() => setFormMethod('DELETE')}
+                                                >
+                                                    Remover Foto
+                                                </Button>
+                                            )}
+
+                                        </>
+                                    ) : (
+                                        <CropperModal
+                                            src={uploadedImage as string}
+                                            setPreview={setUploadedImage}
+                                            cancelPhoto={handleRemoveImage}
+                                            onSave={handleSaveEditedImage}
+                                        />
+                                    )}
+                                    
                                 </Box>
 
                             )}

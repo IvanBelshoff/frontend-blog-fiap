@@ -128,7 +128,7 @@ export const Navbar = () => {
                                 Bem-vindo, {loaderData.usuario.nome}!
                             </Typography>
                         )}
-                        
+
                         {loaderData?.usuario ? (
                             <Box>
                                 <Avatar

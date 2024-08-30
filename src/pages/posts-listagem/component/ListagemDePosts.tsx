@@ -5,6 +5,7 @@ import { IPostLoader } from '../interfaces/interfaces';
 import { useEffect, useMemo } from 'react';
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { Environment } from '../../../shared/environment';
+import { useDebouncedCallback } from 'use-debounce';
 
 export const Post = () => {
 
@@ -25,6 +26,14 @@ export const Post = () => {
     const busca = useMemo(() => {
         return searchParams.get('busca') || '';
     }, [searchParams]);
+
+    const handleSearch = useDebouncedCallback((
+        paramBusca: string = busca,
+    ) => {
+        setSearchParams({
+            busca: paramBusca,
+        }, { replace: true });
+    }, Environment.TIME_DEBOUNCE);
 
     const handleSearchParams = (
         paramBusca: string = busca,

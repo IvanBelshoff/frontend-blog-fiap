@@ -21,7 +21,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import { FerramentasDeDetalhes } from '../../../shared/components';
+import { CropperModal, FerramentasDeDetalhes } from '../../../shared/components';
 import { Environment } from '../../../shared/environment';
 import { LayoutBaseDePagina } from '../../../shared/layouts';
 import { IFormUsuario, INovoUsuarioAction } from '../interfaces/interfaces';
@@ -37,7 +37,9 @@ export const NovoUsuario = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [severity, setSeverity] = useState<'success' | 'error'>('success');
-  const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | null>(null);
+  const [filename, setFilename] = useState<string>('');
+  const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | Blob | null>(`${Environment.BASE_URL}/profile/profile.jpg`);
+  const [statePhoto, setStatePhoto] = useState<'original' | 'edição' | 'preview'>('original');
   const [form, setForm] = useState<IFormUsuario>({
     nome: '',
     sobrenome: '',
@@ -45,15 +47,7 @@ export const NovoUsuario = () => {
     senha: ''
   });
 
-
-  // Função para remover a imagem
-  const handleRemoveImage = () => {
-    setUploadedImage(null);
-    // Resetando o valor do input para garantir que o evento onChange seja acionado novamente
-    if (document.getElementById('upload-photo')) {
-      (document.getElementById('upload-photo') as HTMLInputElement).value = '';
-    }
-  };
+  const reader = new FileReader();
 
   // Função para fechar o Snackbar
   const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
@@ -61,6 +55,7 @@ export const NovoUsuario = () => {
       return;
     }
 
+    setStatePhoto('original');
     setOpen(false);
     setMessage('');
 
@@ -76,18 +71,52 @@ export const NovoUsuario = () => {
     setForm(prevState => ({ ...prevState, [name]: value }));
   };
 
-
   // Manipulador de evento para a mudança de imagem
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
 
     if (file) {
-      const reader = new FileReader();
+
       reader.onloadend = () => {
         setUploadedImage(reader.result);
+        setStatePhoto('edição');
+        setFilename(file.name);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Função para remover a imagem
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    setStatePhoto('original');
+    // Resetando o valor do input para garantir que o evento onChange seja acionado novamente
+    if (document.getElementById('upload-photo')) {
+      (document.getElementById('upload-photo') as HTMLInputElement).value = '';
+      setUploadedImage(`${Environment.BASE_URL}/profile/profile.jpg`);
+    }
+  };
+
+  const handleSaveEditedImage = (blob: Blob, state?: 'original' | 'edição' | 'preview') => {
+
+    reader.onloadend = () => {
+
+      setUploadedImage(blob);
+
+      // Criando uma FileList simulando a seleção de arquivos pelo usuário
+      const editedFile = new File([blob], filename || 'edited_photo.jpg', { type: blob.type });
+      const fileList = new DataTransfer();
+      fileList.items.add(editedFile);
+
+      // Setando o valor do input para a FileList criada
+      const uploadedPhotoInput = document.getElementById('upload-photo') as HTMLInputElement;
+      uploadedPhotoInput.files = fileList.files;
+
+      if (state) {
+        setStatePhoto(state);
+      }
+    };
+    reader.readAsDataURL(blob);
   };
 
   // Efeito colateral para lidar com os dados de ação
@@ -114,6 +143,7 @@ export const NovoUsuario = () => {
         <FerramentasDeDetalhes
           mostrarBotaoApagar={false}
           mostrarBotaoNovo={false}
+          aoClicarEmVoltar={() => navigate('/blog/usuarios')}
           salvar={
             <Form method="POST" replace encType='multipart/form-data'>
 
@@ -146,7 +176,6 @@ export const NovoUsuario = () => {
             </Form>
 
           }
-          aoClicarEmVoltar={() => navigate('/blog/usuarios')}
         />}
     >
       <Box display="flex" width='auto' height='auto' flexDirection="column" justifyContent="center" margin={1} component={Paper} elevation={3} >
@@ -158,99 +187,102 @@ export const NovoUsuario = () => {
             <Typography variant='h5'>
               Foto do Usuário
             </Typography>
-            <Avatar
-              src={uploadedImage as string || `${Environment.BASE_URL}profile/profile.jpg`}
-              alt="Foto do funcionário"
-              style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
-            />
 
-            <input
-              style={{ display: 'none' }}
-              id="upload-photo"
-              type="file"
-              name='foto'
-              onChange={handleImageChange}
-              accept="image/*" // Aceita apenas imagens
-            />
-
-            <label htmlFor="upload-photo">
-              <Button variant="contained" component="span" startIcon={<Icon>file_upload</Icon>}>
-                Carregar Foto
-              </Button>
-            </label>
-            {uploadedImage && (
-              <Button variant="outlined" color="error" startIcon={<Icon>delete</Icon>} onClick={handleRemoveImage}>
-                Remover Foto
-              </Button>
+            {(statePhoto == 'original' || statePhoto == 'preview') ? (
+              <>
+                <Avatar
+                  src={typeof uploadedImage == 'string' ? uploadedImage : URL.createObjectURL(uploadedImage as Blob)}
+                  alt="Foto do funcionário"
+                  style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
+                />
+                <label htmlFor="upload-photo">
+                  <Button variant="contained" component="span" startIcon={<Icon>file_upload</Icon>}>
+                    Carregar Foto
+                  </Button>
+                </label>
+                {statePhoto != 'original' && (
+                  <Button variant="outlined" color="error" startIcon={<Icon>delete</Icon>} onClick={handleRemoveImage}>
+                    Remover Foto
+                  </Button>
+                )}
+              </>
+            ) : (
+              <CropperModal
+                src={uploadedImage as string}
+                setPreview={setUploadedImage}
+                cancelPhoto={handleRemoveImage}
+                onSave={handleSaveEditedImage}
+              />
             )}
+
           </Box>
 
           <Box width='70%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
 
 
-              <Grid container spacing={3} justifyContent='center' alignItems='center'>
+            <Grid container spacing={3} justifyContent='center' alignItems='center'>
 
-                <Grid item xs={12} sm={6} >
-                  <TextField
-                    error={!!actionData?.errors?.body?.nome}
-                    helperText={!!actionData?.errors?.body?.nome && ('Nome: ' + actionData?.errors?.body.nome)}
-                    color={!!actionData?.errors?.body?.nome === false ? ('primary') : 'error'}
-                    focused={!!actionData?.errors?.body?.nome === false}
-                    fullWidth
-                    name='nome'
-                    variant="outlined"
-                    label="Nome"
-                    onChange={handleInputChange}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    error={!!actionData?.errors?.body?.sobrenome}
-                    helperText={!!actionData?.errors?.body?.sobrenome && ('Sobrenome: ' + actionData?.errors?.body.sobrenome)}
-                    color={!!actionData?.errors?.body?.sobrenome === false ? ('primary') : 'error'}
-                    focused={!!actionData?.errors?.body?.sobrenome === false}
-                    fullWidth
-                    name='sobrenome'
-                    variant="outlined"
-                    label="Sobrenome"
-                    onChange={handleInputChange}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    error={!!actionData?.errors?.body?.email}
-                    helperText={!!actionData?.errors?.body?.email && ('E-mail: ' + actionData?.errors?.body.email)}
-                    color={!!actionData?.errors?.body?.email === false ? ('primary') : 'error'}
-                    focused={!!actionData?.errors?.body?.email === false}
-                    fullWidth
-                    name='email'
-                    variant="outlined"
-                    label="E-mail"
-                    onChange={handleInputChange}
-                  />
-                </Grid>
-
-                <Grid container item justifyContent='center'>
-                  <Grid item xs={12} sm={12}>
-                    <TextField
-                      error={!!actionData?.errors?.body?.senha}
-                      helperText={!!actionData?.errors?.body?.senha && ('Senha: ' + actionData?.errors?.body.senha)}
-                      color={!!actionData?.errors?.body?.senha === false ? ('primary') : 'error'}
-                      focused={!!actionData?.errors?.body?.senha === false}
-                      fullWidth
-                      type='password'
-                      name='senha'
-                      variant="outlined"
-                      label="Nova senha"
-                      value={form.senha}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                </Grid>
-
+              <Grid item xs={12} sm={6} >
+                <TextField
+                  error={!!actionData?.errors?.body?.nome}
+                  helperText={!!actionData?.errors?.body?.nome && ('Nome: ' + actionData?.errors?.body.nome)}
+                  color={!!actionData?.errors?.body?.nome === false ? ('primary') : 'error'}
+                  focused={!!actionData?.errors?.body?.nome === false}
+                  fullWidth
+                  name='nome'
+                  variant="outlined"
+                  label="Nome"
+                  onChange={handleInputChange}
+                />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  error={!!actionData?.errors?.body?.sobrenome}
+                  helperText={!!actionData?.errors?.body?.sobrenome && ('Sobrenome: ' + actionData?.errors?.body.sobrenome)}
+                  color={!!actionData?.errors?.body?.sobrenome === false ? ('primary') : 'error'}
+                  focused={!!actionData?.errors?.body?.sobrenome === false}
+                  fullWidth
+                  name='sobrenome'
+                  variant="outlined"
+                  label="Sobrenome"
+                  onChange={handleInputChange}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  error={!!actionData?.errors?.body?.email}
+                  helperText={!!actionData?.errors?.body?.email && ('E-mail: ' + actionData?.errors?.body.email)}
+                  color={!!actionData?.errors?.body?.email === false ? ('primary') : 'error'}
+                  focused={!!actionData?.errors?.body?.email === false}
+                  fullWidth
+                  name='email'
+                  variant="outlined"
+                  label="E-mail"
+                  onChange={handleInputChange}
+                />
+              </Grid>
+
+              <Grid container item justifyContent='center'>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    error={!!actionData?.errors?.body?.senha}
+                    helperText={!!actionData?.errors?.body?.senha && ('Senha: ' + actionData?.errors?.body.senha)}
+                    color={!!actionData?.errors?.body?.senha === false ? ('primary') : 'error'}
+                    focused={!!actionData?.errors?.body?.senha === false}
+                    fullWidth
+                    type='password'
+                    name='senha'
+                    variant="outlined"
+                    label="Nova senha"
+                    value={form.senha}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+              </Grid>
+
+            </Grid>
 
           </Box>
 
