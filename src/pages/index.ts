@@ -23,19 +23,20 @@ export * from './posts-listagem/loader/loaderPost';
 //Editar Post
 export * from './post-editar/component/EditarPost';
 export * from './post-editar/loader/editarPostLoader';
+export * from './post-editar/action/editarPostAction';
 
 //Detalhes de Usuários
-export * from './usuarios-detalhes/action/DetalhesDeUsuariosAction';
+export * from './usuarios-detalhes/action/detalhesDeUsuariosAction';
 export * from './usuarios-detalhes/component/DetalhesDeUsuario';
-export * from './usuarios-detalhes/loader/DetalhesDeUsuarioLoader';
+export * from './usuarios-detalhes/loader/detalhesDeUsuarioLoader';
 
 //Listagem de Usuários
-export * from './usuarios-listagem/action/ListagemDeUsuariosAction';
+export * from './usuarios-listagem/action/listagemDeUsuariosAction';
 export * from './usuarios-listagem/component/ListagemDeUsuarios';
 export * from './usuarios-listagem/loader/listagemDeUsuariosLoader';
 
 //Novo Usuário
-export * from './usuarios-novo/action/NovoUsuarioAction';
+export * from './usuarios-novo/action/novoUsuarioAction';
 export * from './usuarios-novo/component/NovoUsuario';
 
 

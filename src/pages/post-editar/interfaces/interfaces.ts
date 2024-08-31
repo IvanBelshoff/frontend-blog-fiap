@@ -1,4 +1,4 @@
-import { IPostCompleto, IUsuarioCompleto } from "../../../shared/interfaces";
+import { IPostCompleto } from "../../../shared/interfaces";
 
 export interface ILoaderDetalhesDePosts {
     response?: {
@@ -12,6 +12,44 @@ export interface ILoaderDetalhesDePosts {
 
 export interface IDetalhesDePostLoader {
     post: IPostCompleto;
-    logado: Boolean
-    usuarioLogado: IUsuarioCompleto | undefined
+}
+
+export interface IActionEditarPost {
+    response?: {
+        data: {
+            errors?: {
+                default?: string
+                body?: {
+                    conteudo: string;
+                    data_atualizacao: Date;
+                    data_criacao: Date;
+                    titulo: string;
+                    usuario_atualizador: string;
+                    usuario_cadastrador: string
+                    visivel: boolean
+                }
+            },
+            success?: {
+                message: string
+            }
+        }
+    }
+}
+
+export interface IEditarPostAction {
+    errors?: {
+        default?: string
+        body?: {
+            conteudo: string;
+            data_atualizacao: Date;
+            data_criacao: Date;
+            titulo: string;
+            usuario_atualizador: string;
+            usuario_cadastrador: string
+            visivel: boolean
+        }
+    },
+    success?: {
+        message: string
+    }
 }

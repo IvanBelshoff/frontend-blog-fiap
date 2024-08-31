@@ -32,6 +32,7 @@ import {
     RegrasEPermissoes,
     RegrasEPermissoesAction,
     RegrasEPermissoesLoader,
+    EditarPostAction,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -227,7 +228,8 @@ export const routes = createBrowserRouter([
             {
                 path: 'posts/edit/:pagina/:id/',
                 element: <EditarPosts />,
-                loader: EditarPostLoader
+                loader: EditarPostLoader,
+                action: EditarPostAction
             },
             {
                 path: 'usuarios',

@@ -109,33 +109,54 @@ const deleteById = async (id: number): Promise<IPostCompleto | AxiosError> => {
   }
 };
 
-const updateById = async (
+export const updateById = async (
   id: number,
-  postagem: IPosts
+  titulo?: string,
+  conteudo?: string,
+  visivel?: string,
+  foto?: File,
 ): Promise<void | AxiosError> => {
   try {
-    const data = await Api().put(`/posts/${id}`, postagem, {
+
+    const formData = new FormData();
+
+    titulo && (
+      formData.append('titulo', titulo)
+    );
+
+    conteudo && (
+      formData.append('conteudo', conteudo)
+    );
+
+    visivel && (
+      formData.append('visivel', visivel)
+    );
+
+    foto && (
+      formData.append('foto', foto)
+    );
+
+    const data = await Api().put(`/posts/${id}`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     });
 
     if (data.status == 204) {
       return;
     }
 
-    return new AxiosError("Erro ao atualizar o post.", undefined, data.config);
-  } catch (error) {
-    const errors = (error as IResponseErrosGeneric).response;
+    return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
 
-    if (isAxiosError(error)) {
+  } catch (error) {
+
+    if (axios.isAxiosError(error)) {
       return error;
     }
 
-    return new AxiosError(
-      errors?.data?.errors?.default || "Erro ao consultar o registros.",
-      errors?.status || "500"
-    );
+    const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
+
+    return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
   }
 };
 
