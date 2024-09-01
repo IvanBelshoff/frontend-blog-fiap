@@ -87,10 +87,10 @@ export const Blog = () => {
 
               {loaderData?.data && loaderData?.totalCount > 0 ? (
 
-                <Grid container width='100%' marginTop={1} spacing={2}  >
+                <Grid container width='100%' marginTop={1}>
 
                   {loaderData.data.map(post => (
-                    <Grid key={post.id} item xs={2} sm={3} md={4} lg={6} xl={12} >
+                    <Grid key={post.id} item xs={12} >
                       <CardPost
                         key={post.id}
                         conteudo={post.conteudo}
