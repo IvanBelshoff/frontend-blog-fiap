@@ -13,7 +13,7 @@ export const CardPost: React.FC<ICardPostProps> = ({
   conteudo,
   data_atualizacao,
   data_criacao,
-  capa,
+  capa_url,
   titulo,
   usuario_atualizador,
   usuario_cadastrador,
@@ -34,9 +34,7 @@ export const CardPost: React.FC<ICardPostProps> = ({
         }}
       >
         <CardMedia
-          component="img"
-          image={capa.url}
-          alt={`Imagem de: ${titulo}`}
+          image={capa_url}
           sx={{
             width: { xs: "100%", sm: "30%" },
             objectFit: "cover",

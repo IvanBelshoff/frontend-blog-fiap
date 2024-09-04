@@ -23,16 +23,15 @@ import {
     NovoUsuarioAction,
     NovoUsuario,
     LoaderBlog,
-    DetalhesDePosts,
-    DetalhesDePostsLoader,
     Post,
     LoaderPost,
-    EditarPosts,
-    EditarPostLoader,
     RegrasEPermissoes,
     RegrasEPermissoesAction,
     RegrasEPermissoesLoader,
-    EditarPostAction,
+    DetalhesDePost,
+    DetalhesDePostLoader,
+    BlogPost,
+    BlogPostLoader,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -62,7 +61,6 @@ if (regrasString) {
 }
 
 let permissoes: string[] | null = null;
-console.log(permissoes)
 
 const permissoesString = localStorage.getItem('permissoes');
 
@@ -167,14 +165,13 @@ export const routes = createBrowserRouter([
 
                     return {
                         element: <Blog />,
-                        //loader: LoaderBlog,
                     };
                 }
             },
             {
                 path: '/detalhes/:pagina/:id',
-                element: <DetalhesDePosts />,
-                loader: DetalhesDePostsLoader
+                element: <BlogPost />,
+                loader: BlogPostLoader
             }
         ]
     },
@@ -221,15 +218,9 @@ export const routes = createBrowserRouter([
             },
             {
                 path: 'posts/detalhes/:pagina/:id',
-                element: <DetalhesDePosts />,
-                loader: DetalhesDePostsLoader
-            },
-            ,
-            {
-                path: 'posts/edit/:pagina/:id/',
-                element: <EditarPosts />,
-                loader: EditarPostLoader,
-                action: EditarPostAction
+                element: <DetalhesDePost />,
+                loader: DetalhesDePostLoader,
+                action: DetalhesDeUsuariosAction
             },
             {
                 path: 'usuarios',

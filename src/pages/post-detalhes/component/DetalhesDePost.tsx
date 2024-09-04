@@ -40,7 +40,7 @@ interface IFormPost {
   visivel: boolean
 }
 
-export const EditarPosts = () => {
+export const DetalhesDePost = () => {
 
   const actionData = useActionData() as IDetalhesDePostAction;
   const loaderData = useLoaderData() as IDetalhesDePostLoader;

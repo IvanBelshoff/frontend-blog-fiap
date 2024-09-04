@@ -57,7 +57,7 @@ export const Post = () => {
                     textoBotaoNovo="novo"
                     mostrarInputBusca={true}
                     textoDaBusca={busca}
-                    aoMudarTextoDeBusca={texto => handleSearchParams(texto)}
+                    aoMudarTextoDeBusca={texto => handleSearch(texto)}
                     disabledBotaoNovo={false}
                 />
             }
@@ -93,11 +93,11 @@ export const Post = () => {
                                         conteudo={post.conteudo}
                                         data_atualizacao={post.data_atualizacao}
                                         data_criacao={post.data_criacao}
-                                        capa={post.foto}
+                                        capa_url={post.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`}
                                         titulo={post.titulo}
                                         usuario_atualizador={post.usuario_atualizador}
                                         usuario_cadastrador={post.usuario_cadastrador}
-                                        aoCliclarNoCard={() => navigate(loaderData.logado ? `/blog/posts/detalhes/${pagina}/${post.id}` : `/detalhes/${pagina}/${post.id}`)}
+                                        aoCliclarNoCard={() => navigate(`/blog/posts/detalhes/${pagina}/${post.id}`)}
                                     />
                                 </Grid>
 

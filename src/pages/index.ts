@@ -1,5 +1,9 @@
 export * from './blog/component/Blog';
 export * from './blog/Loader/loaderBlog';
+
+export * from './blog-post/component/BlogPost';
+export * from './blog-post/loader/blogPostLoader';
+
 //Página de erro
 export * from './errors/component/Errors';
 
@@ -14,16 +18,13 @@ export * from './regras-permissoes/component/RegrasEPermissoes';
 export * from './regras-permissoes/loader/regrasEPermissoesLoader';
 
 //Detalhes de Posts
-export * from './post-detalhes/component/DetalhesDePosts';
-export * from './post-detalhes/loader/detalhesDePostsLoader';
+export * from './post-detalhes/component/DetalhesDePost';
+export * from './post-detalhes/loader/detalhesDePostLoader';
+export * from './post-detalhes/action/detalhesDePostAction';
 
 export * from './posts-listagem/component/ListagemDePosts';
 export * from './posts-listagem/loader/loaderPost';
 
-//Editar Post
-export * from './post-editar/component/EditarPost';
-export * from './post-editar/loader/editarPostLoader';
-export * from './post-editar/action/editarPostAction';
 
 //Detalhes de Usuários
 export * from './usuarios-detalhes/action/detalhesDeUsuariosAction';

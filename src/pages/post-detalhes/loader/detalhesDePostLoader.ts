@@ -1,13 +1,13 @@
 import { AxiosError } from "axios";
 import { LoaderFunctionArgs, json } from "react-router-dom";
 
-import { PostsService, UsuariosService } from "../../../shared/services";
+import { PostsService } from "../../../shared/services";
 import {
   IDetalhesDePostLoader,
   ILoaderDetalhesDePosts,
 } from "../interfaces/interfaces";
 
-export async function EditarPostLoader({ params }: LoaderFunctionArgs) {
+export async function DetalhesDePostLoader({ params }: LoaderFunctionArgs) {
   // Obtém o ID do usuário a partir dos parâmetros da URL.
   const id = params.id;
 

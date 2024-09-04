@@ -1,7 +1,7 @@
 import { IFoto } from "../../../interfaces";
 
 export interface ICardPostProps {
-    capa: IFoto;
+    capa_url: string;
     titulo: string;
     conteudo: string;
     usuario_cadastrador: string;

@@ -58,8 +58,6 @@ export const DrawerAppBar = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [logout, setLogout] = useState<boolean>(false);
 
-    const resolvedPathHome = useResolvedPath('/blog');
-    const matchHome = useMatch({ path: resolvedPathHome.pathname, end: false });
     const resolvedPathUsuarios = useResolvedPath('/blog/usuarios');
     const matchUsuarios = useMatch({ path: resolvedPathUsuarios.pathname, end: false });
     const resolvedPathPosts = useResolvedPath('/blog/posts');
@@ -135,8 +133,8 @@ export const DrawerAppBar = () => {
         }),
     );
 
-       // Função auxiliar para definir o índice padrão com base no caminho da rota
-       const defaultIndex = (path: string) => {
+    // Função auxiliar para definir o índice padrão com base no caminho da rota
+    const defaultIndex = (path: string) => {
 
         const resolvedPath = useResolvedPath(path);
 
@@ -154,7 +152,6 @@ export const DrawerAppBar = () => {
 
     // Índice padrão para a rota atual
     const selectedIndexHome = defaultIndex(location.pathname);
-    console.log(selectedIndexHome)
 
     const handleListItemClick = (
         _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -278,7 +275,7 @@ export const DrawerAppBar = () => {
                                 px: 2.5,
                             }}
 
-                            selected={selectedIndex != undefined ? selectedIndex == 1 : !!matchHome}
+                            selected={selectedIndex != undefined ? selectedIndex == 1 : selectedIndexHome == 1}
                             onClick={(event) => { handleListItemClick(event, 1), navigate('/blog'); }}
                         >
                             <ListItemIcon

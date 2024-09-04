@@ -5,16 +5,16 @@ import {
 } from 'react-router-dom';
 
 import { PostsService } from '../../../shared/services';
-import { IDetalhesDePostLoader, ILoaderDetalhesDePosts } from '../interfaces/interfaces';
+import { ILoaderBlogPost, IBlogPostLoader } from '../interfaces/interfaces';
 
-export async function DetalhesDePostsLoader({ params }: LoaderFunctionArgs) {
+
+export async function BlogPostLoader({ params }: LoaderFunctionArgs) {
 
     // Obtém o ID do usuário a partir dos parâmetros da URL.
     const id = params.id;
 
     // Chama o serviço para obter os detalhes do usuário pelo ID.
     const post = await PostsService.getById(Number(id));
-    console.log("loader >>> post: ", post)
 
     // Verificação se o usuário está logado
     const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
@@ -23,7 +23,7 @@ export async function DetalhesDePostsLoader({ params }: LoaderFunctionArgs) {
     if (post instanceof AxiosError) {
 
         // Extrai informações de erro da resposta.
-        const errors = (post as ILoaderDetalhesDePosts).response?.data.errors;
+        const errors = (post as ILoaderBlogPost).response?.data.errors;
 
         // Manipulação de erros específicos
 
@@ -43,9 +43,7 @@ export async function DetalhesDePostsLoader({ params }: LoaderFunctionArgs) {
 
     }
 
-
-
-    const data: IDetalhesDePostLoader = {
+    const data: IBlogPostLoader = {
         post: post,
         logado: logado
     }

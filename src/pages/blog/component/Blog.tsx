@@ -96,7 +96,7 @@ export const Blog = () => {
                         conteudo={post.conteudo}
                         data_atualizacao={post.data_atualizacao}
                         data_criacao={post.data_criacao}
-                        capa={post.foto}
+                        capa_url={post.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`}
                         titulo={post.titulo}
                         usuario_atualizador={post.usuario_atualizador}
                         usuario_cadastrador={post.usuario_cadastrador}

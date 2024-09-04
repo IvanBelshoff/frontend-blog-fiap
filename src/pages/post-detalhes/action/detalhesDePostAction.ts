@@ -1,11 +1,9 @@
-
 import { json, LoaderFunctionArgs } from 'react-router-dom';
 import { PostsService } from '../../../shared/services';
 import { AxiosError } from 'axios';
 import { IActionEditarPost, IEditarPostAction } from '../interfaces/interfaces';
 
-
-export async function EditarPostAction({ request, params }: LoaderFunctionArgs) {
+export async function DetalhesDePostAction({ request, params }: LoaderFunctionArgs) {
 
     // Obtém o ID do usuário a partir dos parâmetros da URL.
     const idParams = params.id;
