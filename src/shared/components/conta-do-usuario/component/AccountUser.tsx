@@ -17,7 +17,7 @@ import { IAccountUserProps } from '../interfaces/interfaces';
 import { IAccountUserLoader } from '../../../interfaces';
 
 
-export const AccountUser: React.FC<IAccountUserProps> = ({ profile, logout, about }) => {
+export const AccountUser: React.FC<IAccountUserProps> = ({ profile, logout, blog, about }) => {
 
     // Estado para controlar o logout
     const loaderData = useRouteLoaderData('root') as IAccountUserLoader;
@@ -101,6 +101,10 @@ export const AccountUser: React.FC<IAccountUserProps> = ({ profile, logout, abou
 
                 {profile && (
                     profile
+                )}
+
+                {blog && (
+                    blog
                 )}
 
                 {about && (

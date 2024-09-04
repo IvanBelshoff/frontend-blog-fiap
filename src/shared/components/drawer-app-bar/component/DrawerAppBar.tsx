@@ -234,6 +234,14 @@ export const DrawerAppBar = () => {
                                 </MenuItem>
 
                             }
+                            blog={
+                                <MenuItem onClick={() => navigate('/')} >
+                                    <ListItemIcon >
+                                        <Icon><BsFilePost /></Icon>
+                                    </ListItemIcon>
+                                    <ListItemText primary='Voltar para Blog' />
+                                </MenuItem>
+                            }
                             about={
                                 <MenuItem onClick={() => setOpenModalSobre(true)}>
                                     <ListItemIcon >

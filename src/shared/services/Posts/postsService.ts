@@ -1,10 +1,8 @@
-import axios, { AxiosError, isAxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { Api } from "../api";
 import {
   IPostCompleto,
   IPostsComTotalCount,
-  IPosts,
-  IResponseErrosGeneric,
 } from "../../interfaces";
 
 const getAll = async (
@@ -18,6 +16,51 @@ const getAll = async (
         page: Number(page),
         filter: filter,
         limit: limit,
+      },
+    });
+
+    if (data.status == 200) {
+      return {
+        data: data.data,
+        totalCount: Number(data.headers["x-total-count"] || limit),
+      };
+    }
+
+    return new AxiosError(
+      "Erro ao consultar o registros.",
+      undefined,
+      data.config
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return error;
+    }
+
+    const errorMessage =
+      (error as { message: string }).message ||
+      "Erro ao consultar o registros.";
+
+    return new AxiosError(
+      errorMessage,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    );
+  }
+};
+
+const getAllLogged = async (
+  page?: string,
+  filter?: string,
+  limit?: string
+): Promise<IPostsComTotalCount | AxiosError> => {
+  try {
+    const data = await Api().get("/posts/logged", {
+      params: {
+        page: Number(page),
+        filter: filter,
+        limit: limit
       },
     });
 
@@ -160,9 +203,33 @@ export const updateById = async (
   }
 };
 
+const deleteCapaById = async (id: number): Promise<void | AxiosError> => {
+  try {
+      const data = await Api().delete(`/posts/capa/${id}`);
+
+      if (data.status == 204) {
+          return;
+      }
+
+      return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
+
+  } catch (error) {
+
+      if (axios.isAxiosError(error)) {
+          return error;
+      }
+
+      const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
+
+      return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+  }
+};
+
 export const PostsService = {
   getAll,
+  getAllLogged,
   getById,
   deleteById,
   updateById,
+  deleteCapaById
 };

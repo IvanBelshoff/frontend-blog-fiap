@@ -32,6 +32,7 @@ import {
     DetalhesDePostLoader,
     BlogPost,
     BlogPostLoader,
+    DetalhesDePostAction,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -220,7 +221,7 @@ export const routes = createBrowserRouter([
                 path: 'posts/detalhes/:pagina/:id',
                 element: <DetalhesDePost />,
                 loader: DetalhesDePostLoader,
-                action: DetalhesDeUsuariosAction
+                action: DetalhesDePostAction
             },
             {
                 path: 'usuarios',

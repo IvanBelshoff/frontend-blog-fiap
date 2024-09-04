@@ -1,13 +1,14 @@
 
-import { Form, useActionData, useFetcher, useLoaderData, useParams } from "react-router-dom";
+import { Form, useActionData, useFetcher, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { IDetalhesDePostLoader } from "../interfaces/interfaces";
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
-import { LayoutBase } from "../../../shared/layouts";
+import { LayoutBase, LayoutBaseDePagina } from "../../../shared/layouts";
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormHelperText, Grid, Icon, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { Environment } from "../../../shared/environment";
 import { IFoto } from "../../../shared/interfaces";
 import { useAuth } from "../../../shared/contexts";
 import { format } from "date-fns";
+import { FerramentasDeDetalhes } from "../../../shared/components";
 
 //DetalhesDeUsuario
 export interface IDetalhesDePostAction {
@@ -45,8 +46,10 @@ export const DetalhesDePost = () => {
   const actionData = useActionData() as IDetalhesDePostAction;
   const loaderData = useLoaderData() as IDetalhesDePostLoader;
   const fetcher = useFetcher();
+  const navigate = useNavigate();
 
   const { id } = useParams<'id'>();
+  const { pagina } = useParams<'pagina'>();
   const { regras, permissoes } = useAuth();
 
   const initialForm: IFormPost = {
@@ -165,7 +168,16 @@ export const DetalhesDePost = () => {
 
   return (
 
-    < LayoutBase>
+    < LayoutBaseDePagina
+      titulo={`${form.titulo}`}
+      barraDeFerramentas={
+        < FerramentasDeDetalhes
+          mostrarBotaoApagar={true}
+          mostrarBotaoNovo={false}
+          aoClicarEmVoltar={() => navigate(`/blog/posts?busca=&pagina=${pagina}`)}
+          aoClicarEmApagar={() => { }}
+        />}
+    >
 
       <Dialog
         open={open && tipo == 'Dialog' ? true : false}
@@ -223,9 +235,6 @@ export const DetalhesDePost = () => {
 
               <Box width='100%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
 
-                <Typography variant='h4' color='primary'>
-                  Editar Post
-                </Typography>
 
                 <img src={uploadedImage as string} width={'50%'} height='auto' alt="foto post" />
 
@@ -238,30 +247,32 @@ export const DetalhesDePost = () => {
                   accept="image/*" // Aceita apenas imagens
                 />
 
-                <label htmlFor="upload-photo">
+                <Box width='100%' display='flex' flexDirection='row' justifyContent='center' alignItems='center' gap={2}>
+                  <label htmlFor="upload-photo">
+                    <Button
+                      disabled={
+                        Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_PROFESSOR], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM])
+                      }
+                      variant="contained"
+                      startIcon={<Icon>file_upload</Icon>}
+                      component="span">
+                      Carregar Capa
+                    </Button>
+                  </label>
+
                   <Button
+                    type='submit'
                     disabled={
                       Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_PROFESSOR], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM])
                     }
-                    variant="contained"
-                    startIcon={<Icon>file_upload</Icon>}
-                    component="span">
-                    Carregar Capa
+                    variant="outlined"
+                    color="error"
+                    startIcon={<Icon>delete</Icon>}
+                    onClick={() => setFormMethod('DELETE')}
+                  >
+                    Remover Foto
                   </Button>
-                </label>
-
-                <Button
-                  type='submit'
-                  disabled={
-                    Environment.validaRegraPermissaoComponents(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_PROFESSOR], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM])
-                  }
-                  variant="outlined"
-                  color="error"
-                  startIcon={<Icon>delete</Icon>}
-                  onClick={() => setFormMethod('DELETE')}
-                >
-                  Remover Foto
-                </Button>
+                </Box>
 
                 <Grid container spacing={3} justifyContent='center' >
                   <Grid item xs={12}>
@@ -320,8 +331,8 @@ export const DetalhesDePost = () => {
                         }
                         name="visivel"
                       >
-                        <MenuItem value={'false'}>Visivel</MenuItem>
-                        <MenuItem value={'true'}>não visivel</MenuItem>
+                        <MenuItem value={'true'}>Visivel</MenuItem>
+                        <MenuItem value={'false'}>não visivel</MenuItem>
                       </Select>
                       {!!actionData?.errors?.body?.visivel && (
                         <FormHelperText >{actionData?.errors?.body?.visivel}</FormHelperText>
@@ -428,7 +439,7 @@ export const DetalhesDePost = () => {
 
       </Box >
 
-    </LayoutBase >
+    </LayoutBaseDePagina >
 
   );
 };

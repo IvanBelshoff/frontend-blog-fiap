@@ -104,14 +104,14 @@ const getAll = async (page?: string, filter?: string): Promise<IUsuarioComTotalC
             params: {
                 page: Number(page),
                 filter: filter,
-                limit: Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS,
+                limit: Environment.VITE_REACT_APP_LIMITE_DE_USUARIOS,
             }
         });
 
         if (data.status == 200) {
             return {
                 data: data.data,
-                totalCount: Number(data.headers['x-total-count'] || Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS),
+                totalCount: Number(data.headers['x-total-count'] || Environment.VITE_REACT_APP_LIMITE_DE_USUARIOS),
             };
         }
 

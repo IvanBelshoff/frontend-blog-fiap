@@ -87,7 +87,7 @@ export const Blog = () => {
 
               {loaderData?.data && loaderData?.totalCount > 0 ? (
 
-                <Grid container width='100%' marginTop={1}>
+                <Grid container width='100%' marginTop={2} spacing={2}>
 
                   {loaderData.data.map(post => (
                     <Grid key={post.id} item xs={12} >

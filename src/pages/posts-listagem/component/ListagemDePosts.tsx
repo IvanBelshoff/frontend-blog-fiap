@@ -80,14 +80,14 @@ export const Post = () => {
                     <CircularProgress size={130} />
                 </Box>
             ) : (
-                <Box width='100%' height='auto' display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+                <Box width='100%' height='auto' display='flex' justifyContent='center' alignItems='center'>
 
                     {loaderData?.data && loaderData?.totalCount > 0 ? (
 
                         <Grid container width='100%' spacing={2}  >
 
                             {loaderData.data.map(post => (
-                                <Grid key={post.id} item xs={2} sm={3} md={4} lg={6} xl={12} >
+                                <Grid key={post.id} item  md={3} lg={4} xl={6} >
                                     <CardPost
                                         key={post.id}
                                         conteudo={post.conteudo}
@@ -110,27 +110,27 @@ export const Post = () => {
                         </Typography>
                     )}
 
-                    <Box paddingLeft={1} marginTop={0.5} display='flex' justifyContent='center' alignItems='center' width='100%' >
 
-                        {loaderData?.data && loaderData?.totalCount > 3 && (
-                            <CustomPagination
-                                totalExibido={loaderData.data.length}
-                                totalPages={Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_POSTS))}
-                                totalCount={loaderData.totalCount}
-                                pagina={pagina}
-                                aoSelecionarPagina={pagina => handleSearchParams(undefined, pagina)}
-                                aoClicarEmKeyBoardArrowUp={() => handleSearchParams(undefined, `${pagina - 1}`)}
-                                aoClicarEmKeyboardArrowDown={() => handleSearchParams(undefined, `${pagina + 1}`)}
-                                aoClicarEmKeyboardDoubleArrowDown={() => handleSearchParams(undefined, `${Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_POSTS))}`)}
-                                aoClicarEmKeyboardDoubleArrowUp={() => handleSearchParams(undefined, '1')}
-                            />
-                        )}
-                    </Box>
                 </Box>
             )}
 
 
+            <Box paddingLeft={1} marginTop={0.5} display='flex' justifyContent='center' alignItems='center' width='100%' >
 
+                {loaderData?.data && loaderData?.totalCount > 3 && (
+                    <CustomPagination
+                        totalExibido={loaderData.data.length}
+                        totalPages={Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_POSTS))}
+                        totalCount={loaderData.totalCount}
+                        pagina={pagina}
+                        aoSelecionarPagina={pagina => handleSearchParams(undefined, pagina)}
+                        aoClicarEmKeyBoardArrowUp={() => handleSearchParams(undefined, `${pagina - 1}`)}
+                        aoClicarEmKeyboardArrowDown={() => handleSearchParams(undefined, `${pagina + 1}`)}
+                        aoClicarEmKeyboardDoubleArrowDown={() => handleSearchParams(undefined, `${Math.ceil(loaderData.totalCount / Number(Environment.LIMITE_DE_POSTS))}`)}
+                        aoClicarEmKeyboardDoubleArrowUp={() => handleSearchParams(undefined, '1')}
+                    />
+                )}
+            </Box>
 
         </LayoutBaseDePagina>
     )

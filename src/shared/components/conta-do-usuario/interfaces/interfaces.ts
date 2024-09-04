@@ -4,7 +4,9 @@ import { ReactNode } from 'react';
 export interface IAccountUserProps {
     profile: ReactNode,
     about: ReactNode,
+    blog: ReactNode,
     logout: ReactNode,
+
 }
 
 

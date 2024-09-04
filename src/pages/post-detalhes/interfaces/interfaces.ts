@@ -53,3 +53,5 @@ export interface IEditarPostAction {
         message: string
     }
 }
+
+

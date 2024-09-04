@@ -110,7 +110,7 @@ export const ListagemDeUsuarios = () => {
   // Efeito colateral para tratar ações após a execução da carga de dados
   useEffect(() => {
 
-    if (loaderData?.totalCount <= Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS) {
+    if (loaderData?.totalCount <= Environment.VITE_REACT_APP_LIMITE_DE_USUARIOS) {
       navigate(`/blog/usuarios?busca=${busca}&pagina=1`);
     }
 
@@ -285,14 +285,14 @@ export const ListagemDeUsuarios = () => {
                 </TableCell>
               </TableRow>
             )}
-            {(loaderData.totalCount > 0 && loaderData.totalCount > Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS) && (
+            {(loaderData.totalCount > 0 && loaderData.totalCount > Environment.VITE_REACT_APP_LIMITE_DE_USUARIOS) && (
               <TableRow>
                 <TableCell colSpan={8} >
                   <Pagination
                     color="primary"
                     style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                     page={pagina}
-                    count={Math.ceil(loaderData.totalCount / Environment.LIMITE_DE_LINHAS_TABLE_FUNCIONARIOS)}
+                    count={Math.ceil(loaderData.totalCount / Environment.VITE_REACT_APP_LIMITE_DE_USUARIOS)}
                     onChange={(_, newPage) => handleSearchParams(undefined, newPage.toString())}
                   />
                 </TableCell>

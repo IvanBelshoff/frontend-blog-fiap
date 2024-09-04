@@ -48,7 +48,7 @@ export async function LoaderBlog({ request }: LoaderFunctionArgs) {
         }
 
         // Chamando serviço para obter lista de posts
-        const posts = await PostsService.getAll(
+        const posts = await PostsService.getAllLogged(
             page ? page : '1',
             busca && busca,
             Environment.LIMITE_DE_POSTS
@@ -89,7 +89,7 @@ export async function LoaderBlog({ request }: LoaderFunctionArgs) {
     } else {
 
         // Chamando serviço para obter lista de posts
-        const posts = await PostsService.getAll(
+        const posts = await PostsService.getAllLogged(
             page ? page : '1',
             busca && busca,
             Environment.LIMITE_DE_POSTS

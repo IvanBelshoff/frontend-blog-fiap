@@ -53,7 +53,6 @@ export async function DetalhesDePostAction({ request, params }: LoaderFunctionAr
 
         }
 
-
         const response: IEditarPostAction = {
             success: {
                 message: 'Cadastro foi atualizado'
@@ -62,6 +61,51 @@ export async function DetalhesDePostAction({ request, params }: LoaderFunctionAr
 
         // Retorna sucesso caso a atualização seja bem-sucedida
         return response;
+    }
+
+    // Se a requisição for um DELETE, significa que a foto do usuário está sendo excluída.
+    if (request.method === 'DELETE') {
+
+        // Chama o serviço de exclusão de foto do usuário.
+        const capa = await PostsService.deleteCapaById(Number(idParams),);
+
+        // Verifica se ocorreu algum erro na exclusão da foto.
+        if (capa instanceof AxiosError) {
+
+            // Obtém os erros retornados pela API.
+            const errors = (capa as IActionEditarPost).response?.data.errors;
+
+            // Manipulação de erros específicos
+            if (capa.response?.status != 400) {
+
+                // Lançamento de uma resposta JSON para o cliente
+                throw json(
+                    { message: errors?.default || 'Erro Interno do Servidor' },
+                    { status: capa.response?.status || 500 }
+                );
+
+            }
+
+            const response: IEditarPostAction = {
+                success: {
+                    message: 'Cadastro foi atualizado'
+                }
+            };
+
+            // Retorna sucesso caso a atualização seja bem-sucedida
+            return response;
+        }
+
+
+        const data: IEditarPostAction = {
+            success: {
+                message: 'Foto deletada com successo'
+            }
+        };
+
+        // Retorna sucesso caso a atualização seja bem-sucedida
+        return data;
+
     }
 
 }

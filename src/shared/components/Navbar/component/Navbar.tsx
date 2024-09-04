@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, IconButton, Box, TextField, Icon, useTheme, Tooltip, Avatar, Menu, MenuItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { Outlet, useFetcher, useLoaderData, useMatch, useNavigate, useOutletContext, useParams, useResolvedPath } from 'react-router-dom';
-import { useAppThemeContext } from '../../../contexts';
+import { useAppThemeContext, useIndex } from '../../../contexts';
 import { IBlogLoader } from '../../../../pages/blog/interfaces/interfaces';
 import { IPosts } from '../../../interfaces';
 import { Environment } from '../../../environment';
@@ -16,6 +16,7 @@ export const Navbar = () => {
     // Hook personalizado para realizar chamadas a APIs
     const fetcher = useFetcher();
     const theme = useTheme();
+    const { setSelectedIndex } = useIndex();
     const navigate = useNavigate();
     const loaderData = useLoaderData() as IBlogLoader;
     const { toggleTheme } = useAppThemeContext();
@@ -36,6 +37,11 @@ export const Navbar = () => {
             { method: 'post', action: '/logout' }
         );
     };
+
+    const actionAdmin = () => {
+        setSelectedIndex(1)
+        navigate('/blog');
+    }
 
     // Manipulador de evento para abrir o menu
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -189,6 +195,14 @@ export const Navbar = () => {
                                         }
                                     }}
                                 >
+                                    <MenuItem disabled={isLoggingOut} onClick={actionAdmin}>
+
+                                        <ListItemIcon >
+                                            <Icon>admin_panel_settings</Icon>
+                                        </ListItemIcon>
+                                        <ListItemText primary='Painel de administração' />
+
+                                    </MenuItem>
 
                                     <MenuItem disabled={isLoggingOut} onClick={actionLogout}>
 
