@@ -59,6 +59,7 @@ export const Post = () => {
                     textoDaBusca={busca}
                     aoMudarTextoDeBusca={texto => handleSearch(texto)}
                     disabledBotaoNovo={false}
+                    aoClicarEmNovo={() => navigate('/blog/posts/novo')}
                 />
             }
         >

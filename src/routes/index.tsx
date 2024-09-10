@@ -33,6 +33,8 @@ import {
     BlogPost,
     BlogPostLoader,
     DetalhesDePostAction,
+    NovoPost,
+    NovoPostAction,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -222,6 +224,11 @@ export const routes = createBrowserRouter([
                 element: <DetalhesDePost />,
                 loader: DetalhesDePostLoader,
                 action: DetalhesDePostAction
+            },
+            {
+                path: 'posts/novo',
+                element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_PROFESSOR]} requiredPermissions={[Environment.PERMISSOES.PERMISSAO_CRIAR_POSTAGEM]}><NovoPost /></PrivateRoute>,
+                action: NovoPostAction,
             },
             {
                 path: 'usuarios',

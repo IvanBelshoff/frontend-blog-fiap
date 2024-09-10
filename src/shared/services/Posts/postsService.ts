@@ -225,7 +225,57 @@ const deleteCapaById = async (id: number): Promise<void | AxiosError> => {
   }
 };
 
+const create = async (
+  titulo?: string,
+  conteudo?: string,
+  visivel?: string,
+  foto?: File,
+): Promise<number | AxiosError> => {
+  try {
+      const formData = new FormData();
+
+      titulo && (
+          formData.append('titulo', titulo)
+      );
+
+      conteudo && (
+          formData.append('conteudo', conteudo)
+      );
+
+      visivel && (
+          formData.append('visivel', visivel)
+      );
+
+      foto && (
+          formData.append('foto', foto)
+      );
+
+      const data = await Api().post('/posts', formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      });
+
+      if (data.status == 201) {
+          return data.data;
+      }
+
+      return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
+
+  } catch (error) {
+
+      if (axios.isAxiosError(error)) {
+          return error;
+      }
+
+      const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
+
+      return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+  }
+};
+
 export const PostsService = {
+  create,
   getAll,
   getAllLogged,
   getById,
