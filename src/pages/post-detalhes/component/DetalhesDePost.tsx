@@ -1,45 +1,13 @@
 
 import { Form, useActionData, useFetcher, useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { IDetalhesDePostLoader } from "../interfaces/interfaces";
+import { IDetalhesDePostAction, IDetalhesDePostLoader, IFormPost } from "../interfaces/interfaces";
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
-import { LayoutBase, LayoutBaseDePagina } from "../../../shared/layouts";
+import { LayoutBaseDePagina } from "../../../shared/layouts";
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormHelperText, Grid, Icon, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { Environment } from "../../../shared/environment";
-import { IFoto } from "../../../shared/interfaces";
 import { useAuth } from "../../../shared/contexts";
 import { format } from "date-fns";
 import { FerramentasDeDetalhes } from "../../../shared/components";
-
-//DetalhesDeUsuario
-export interface IDetalhesDePostAction {
-  errors?: {
-    default?: string
-    body?: {
-      conteudo: string;
-      data_atualizacao: Date;
-      data_criacao: Date;
-      foto: IFoto;
-      id: number
-      titulo: string;
-      usuario_atualizador: string;
-      usuario_cadastrador: string
-      visivel: boolean
-    }
-  },
-  success?: {
-    message: string
-  }
-}
-
-interface IFormPost {
-  conteudo: string;
-  data_atualizacao: Date;
-  data_criacao: Date;
-  titulo: string;
-  usuario_atualizador: string;
-  usuario_cadastrador: string
-  visivel: boolean
-}
 
 export const DetalhesDePost = () => {
 
@@ -62,7 +30,7 @@ export const DetalhesDePost = () => {
     visivel: loaderData?.post?.visivel || false
   };
 
-  const [originalImage, setOriginalImage] = useState<string | ArrayBuffer | null>(loaderData?.post.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`);
+  const [originalImage, setOriginalImage] = useState<string | ArrayBuffer | null>(loaderData?.post?.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`);
   const [open, setOpen] = useState<boolean>(false);
   const [messageSnackbar, setMessageSnackbar] = useState<string>('');
   const [typeSeverity, setTypeSeverity] = useState<'success' | 'error'>('success');
@@ -71,6 +39,7 @@ export const DetalhesDePost = () => {
   const [formMethod, setFormMethod] = useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('PATCH');
   const [isModified, setIsModified] = useState<boolean>(false);
   const [form, setForm] = useState<IFormPost>(initialForm);
+  const [actionDataDeletePost, setActionDataDeletePost] = useState<IDetalhesDePostAction>();
 
   const HandleResetForm = () => {
     setForm(initialForm);
@@ -88,13 +57,13 @@ export const DetalhesDePost = () => {
     setOpen(false);
     setMessageSnackbar('');
 
-    setForm(prevState => ({
-      ...prevState,
-    }));
-
     if (typeSeverity === 'success' && actionData?.success) {
 
       setIsModified(false);
+    }
+
+    if (typeSeverity === 'success' && actionDataDeletePost?.success) {
+      navigate(`/blog/posts?busca=&pagina=${pagina}`);
     }
 
   };
@@ -148,6 +117,11 @@ export const DetalhesDePost = () => {
   };
 
   useEffect(() => {
+
+    if (fetcher?.data) {
+      setActionDataDeletePost(fetcher.data);
+    }
+
     if (actionData?.success?.message) {
       setUploadedImage(loaderData?.post?.foto?.url);
       setOriginalImage(loaderData?.post?.foto?.url);
@@ -164,7 +138,21 @@ export const DetalhesDePost = () => {
       setTypeSeverity('error');
     }
 
-  }, [loaderData]);
+    if (actionDataDeletePost?.errors?.default) {
+      setMessageSnackbar(actionDataDeletePost.errors.default);
+      setOpen(true);
+      setTipo('Snackbar');
+      setTypeSeverity('error');
+    }
+
+    if (actionDataDeletePost?.success?.message) {
+      setMessageSnackbar(actionDataDeletePost?.success.message);
+      setOpen(true);
+      setTipo('Snackbar');
+      setTypeSeverity('success');
+    }
+
+  }, [actionData, actionDataDeletePost, fetcher, loaderData]);
 
   return (
 
@@ -175,7 +163,7 @@ export const DetalhesDePost = () => {
           mostrarBotaoApagar={true}
           mostrarBotaoNovo={false}
           aoClicarEmVoltar={() => navigate(`/blog/posts?busca=&pagina=${pagina}`)}
-          aoClicarEmApagar={() => { }}
+          aoClicarEmApagar={() => { setTipo('Dialog'); setOpen(true); }}
         />}
     >
 
@@ -196,7 +184,7 @@ export const DetalhesDePost = () => {
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
           <Button onClick={handleCloseDialog}>Cancelar</Button>
-          <fetcher.Form method="DELETE" action="/post" onSubmit={handleCloseDialog}>
+          <fetcher.Form method="DELETE" action="/blog/posts" onSubmit={handleCloseDialog}>
 
             <input type="hidden" name="id" value={id} />
 

@@ -66,7 +66,7 @@ export const AcessoNegado: React.FC<IAcessoNegado> = ({ regras, permissoes }) =>
 
                 <Box paddingTop={2} display='flex' width='100%' flexDirection='row' justifyContent='center' alignItems='center' gap={2}>
 
-                    <img src={'/assets/ilustrations/lupi-bolado.png'} height='auto' width='25%' />
+                    <img src={'/assets/ilustrations/500.png'} height='auto' width='25%' />
 
                 </Box>
                 <Box paddingTop={1} width='100%' display='flex' flexDirection={xsOnly || smOnly || mdOnly || lgOnly ? 'row' : 'column'} justifyContent='center' alignItems='center' gap={2}>

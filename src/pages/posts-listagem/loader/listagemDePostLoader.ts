@@ -1,6 +1,5 @@
 import { AxiosError } from 'axios';
 import {
-    LoaderFunctionArgs,
     json
 } from 'react-router-dom';
 
@@ -8,7 +7,7 @@ import { Environment } from '../../../shared/environment';
 import { PostsService } from '../../../shared/services';
 import { ILoaderPost, IPostLoader } from '../interfaces/interfaces';
 
-export async function LoaderPost({ request }: LoaderFunctionArgs) {
+export async function ListagemDePostLoader(request: Request) {
 
     // Verificação se o usuário está logado
     const logado = Boolean(JSON.parse(localStorage.getItem('token') || '""'));
@@ -30,7 +29,7 @@ export async function LoaderPost({ request }: LoaderFunctionArgs) {
 
         // Obtendo mensagem de erro da resposta
         const errors = (posts as ILoaderPost).response?.data.errors;
-
+        console.log('Erro Listagem')
         // Manipulação de erros específicos
         if ((posts.response?.status == 401 || posts.response?.status == 500) && logado == true) {
             // Lançamento de uma resposta JSON para o cliente

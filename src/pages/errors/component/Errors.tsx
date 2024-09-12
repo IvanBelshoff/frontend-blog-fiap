@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     isRouteErrorResponse,
     useFetcher,
@@ -56,9 +56,11 @@ export const Errors: React.FC = () => {
         setOpen(!open);
     };
 
+    useEffect(() => { console.log(error) }, [])
     return (
         <div className="account-user-error-container">
             <Paper elevation={3} sx={{ borderRadius: '16px', padding: 3 }} >
+
                 <Box width='100%' display='flex' alignItems='center' justifyContent='center'>
                     {(isRouteErrorResponse(error) && error.status == 401) ? (
                         <Typography variant="h4" component="div" gutterBottom>
@@ -75,11 +77,26 @@ export const Errors: React.FC = () => {
                     )}
                 </Box>
 
-                <Box paddingTop={2} display='flex' width='100%' flexDirection='column' justifyContent='center' alignItems='center' gap={2}>
+                {(isRouteErrorResponse(error) && error.status == 401) ? (
+                    <Box paddingTop={2} display='flex' width='100%' flexDirection='column' justifyContent='center' alignItems='center' gap={2}>
 
-                    <img src={'/assets/ilustrations/lupi-pensativo.png'} height='auto' width='30%' />
+                        <img src={'/assets/ilustrations/expired_session.png'} height='auto' width='30%' />
 
-                </Box>
+                    </Box>
+                ) : (isRouteErrorResponse(error) && error.status == 404) ? (
+                    <Box paddingTop={2} display='flex' width='100%' flexDirection='column' justifyContent='center' alignItems='center' gap={2}>
+
+                        <img src={'/assets/ilustrations/404.png'} height='auto' width='30%' />
+
+                    </Box>
+                ) : (
+                    <Box paddingTop={2} display='flex' width='100%' flexDirection='column' justifyContent='center' alignItems='center' gap={2}>
+
+                        <img src={'/assets/ilustrations/500.png'} height='auto' width='30%' />
+
+                    </Box>
+                )}
+
 
                 {(isRouteErrorResponse(error) && error.status == 401) ? (
                     <Box paddingTop={3} width='100%' display='flex' flexDirection={xsOnly || smOnly || mdOnly || lgOnly ? 'row' : 'column'} justifyContent='center' alignItems='center' gap={2}>
@@ -205,7 +222,7 @@ export const Errors: React.FC = () => {
                                         startIcon={<Icon>meeting_room</Icon>}
                                     >
                                         <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
-                                           Ir para tela de login
+                                            Ir para tela de login
                                         </Typography>
                                     </Button>
                                 </Box>

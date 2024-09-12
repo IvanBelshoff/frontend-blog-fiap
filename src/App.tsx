@@ -9,7 +9,7 @@ function App() {
       <AuthProvider>
         <AppThemeProvider>
           <IndexProvider>
-            <RouterProvider router={routes} fallbackElement={<Loading />} />
+            <RouterProvider router={routes} fallbackElement={<Loading />}  />
           </IndexProvider>
         </AppThemeProvider>
       </AuthProvider>

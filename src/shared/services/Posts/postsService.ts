@@ -1,8 +1,9 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, isAxiosError } from "axios";
 import { Api } from "../api";
 import {
   IPostCompleto,
   IPostsComTotalCount,
+  IResponseErrosGeneric,
 } from "../../interfaces";
 
 const getAll = async (
@@ -126,29 +127,28 @@ const getById = async (id: number): Promise<IPostCompleto | AxiosError> => {
   }
 };
 
-const deleteById = async (id: number): Promise<IPostCompleto | AxiosError> => {
+const deleteById = async (id: number): Promise<void | AxiosError> => {
   try {
     const data = await Api().delete(`/posts/${id}`);
 
-    if (data.status == 200) {
-      return data.data;
+    console.log(data.status)
+    if (data.status == 204) {
+      return;
     }
 
     return new AxiosError("Erro ao deletar o post.", undefined, data.config);
+
   } catch (error) {
-    if (axios.isAxiosError(error)) {
+    
+    const errors = (error as IResponseErrosGeneric).response;
+
+    if (isAxiosError(error)) {
       return error;
     }
-    const errorMessage =
-      (error as { message: string }).message || "Erro ao deletar o post.";
 
     return new AxiosError(
-      errorMessage,
-      undefined,
-      undefined,
-      undefined,
-      undefined
-    );
+      errors?.data?.errors?.default || 'Erro ao consultar o registros.',
+      errors?.status || '500');
   }
 };
 
@@ -205,23 +205,23 @@ export const updateById = async (
 
 const deleteCapaById = async (id: number): Promise<void | AxiosError> => {
   try {
-      const data = await Api().delete(`/posts/capa/${id}`);
+    const data = await Api().delete(`/posts/capa/${id}`);
 
-      if (data.status == 204) {
-          return;
-      }
+    if (data.status == 204) {
+      return;
+    }
 
-      return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
+    return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
 
   } catch (error) {
 
-      if (axios.isAxiosError(error)) {
-          return error;
-      }
+    if (axios.isAxiosError(error)) {
+      return error;
+    }
 
-      const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
+    const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
 
-      return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+    return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
   }
 };
 
@@ -232,45 +232,45 @@ const create = async (
   foto?: File,
 ): Promise<number | AxiosError> => {
   try {
-      const formData = new FormData();
+    const formData = new FormData();
 
-      titulo && (
-          formData.append('titulo', titulo)
-      );
+    titulo && (
+      formData.append('titulo', titulo)
+    );
 
-      conteudo && (
-          formData.append('conteudo', conteudo)
-      );
+    conteudo && (
+      formData.append('conteudo', conteudo)
+    );
 
-      visivel && (
-          formData.append('visivel', visivel)
-      );
+    visivel && (
+      formData.append('visivel', visivel)
+    );
 
-      foto && (
-          formData.append('foto', foto)
-      );
+    foto && (
+      formData.append('foto', foto)
+    );
 
-      const data = await Api().post('/posts', formData, {
-          headers: {
-              'Content-Type': 'multipart/form-data'
-          }
-      });
-
-      if (data.status == 201) {
-          return data.data;
+    const data = await Api().post('/posts', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
+    });
 
-      return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
+    if (data.status == 201) {
+      return data.data;
+    }
+
+    return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
 
   } catch (error) {
 
-      if (axios.isAxiosError(error)) {
-          return error;
-      }
+    if (axios.isAxiosError(error)) {
+      return error;
+    }
 
-      const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
+    const errorMessage = (error as { message: string }).message || 'Erro ao consultar o registros.';
 
-      return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
+    return new AxiosError(errorMessage, undefined, undefined, undefined, undefined);
   }
 };
 

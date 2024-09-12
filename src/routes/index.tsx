@@ -23,8 +23,7 @@ import {
     NovoUsuarioAction,
     NovoUsuario,
     LoaderBlog,
-    Post,
-    LoaderPost,
+    ListagemDePosts,
     RegrasEPermissoes,
     RegrasEPermissoesAction,
     RegrasEPermissoesLoader,
@@ -35,6 +34,8 @@ import {
     DetalhesDePostAction,
     NovoPost,
     NovoPostAction,
+    ListagemDePostLoader,
+    ListagemDePostAction,
 } from '../pages';
 import {
     AccountUserLoader,
@@ -110,6 +111,8 @@ const PrivateRoute = ({ children, requiredRoles, requiredPermissions }: { childr
     return children;
 };
 
+
+
 // Componente de redirecionamento para a página de login
 const RedirectLogin = ({ children }: { children: JSX.Element }) => {
 
@@ -154,8 +157,38 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 // Configuração das rotas
 export const routes = createBrowserRouter([
     {
+        path: 'login', // Rota de login
+        async action({ request }) {
+            return LoginAction(request);
+        },
+        element: <RedirectLogin><Login /></RedirectLogin>,
+        errorElement: <Errors />
+    },
+    {
+        path: 'logout',
+        async action({ request }: LoaderFunctionArgs) {
+
+            if (request.method === 'POST') {
+
+                try {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('userId');
+                    Api().defaults.headers.Authorization = null;
+
+                    logado = false;
+
+                    return (redirect('/login'));
+
+                } catch (error) {
+                    console.log(error);
+                }
+
+            }
+
+        },
+    },
+    {
         path: '/',   // Rota principal do blog
-        errorElement: <Errors />,
         element: <Navbar />,
         loader: LoaderBlog,
         children: [
@@ -176,22 +209,22 @@ export const routes = createBrowserRouter([
                 element: <BlogPost />,
                 loader: BlogPostLoader
             }
-        ]
-    },
-    {
-        path: 'login', // Rota de login
-        async action({ request }) {
-            return LoginAction(request);
-        },
-        element: <RedirectLogin><Login /></RedirectLogin>,
-        errorElement: <Errors />
+        ],
+        errorElement: <Errors />,
     },
     {
         path: 'blog',  // Rota principal de gerenciamento do blog
         id: 'root',
         element: <ProtectedRoute ><DrawerAppBar /></ProtectedRoute >,
-        loader: AccountUserLoader,
-        errorElement: <Errors />,
+        async loader() {
+
+            if (logado == true) {
+                return AccountUserLoader();
+            } else {
+                return null;
+            }
+
+        },
         async action({ request }) {
 
             if (logado == true) {
@@ -210,20 +243,34 @@ export const routes = createBrowserRouter([
 
                     return {
                         element: <Home />,
-                        //loader: HomeLoader
                     };
                 }
             },
             {
                 path: 'posts',
-                element: <Post />,
-                loader: LoaderPost
+                element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_PROFESSOR]}><ListagemDePosts /></PrivateRoute>,
+                action: ListagemDePostAction,
+                async loader({ request }) {
+
+                    if (Environment.validaRegraPermissaoComponentsMetodos(regras, [Environment.REGRAS.REGRA_PROFESSOR])) {
+                        return ListagemDePostLoader(request);
+                    } else {
+                        return null;
+                    }
+                }
+
             },
             {
                 path: 'posts/detalhes/:pagina/:id',
-                element: <DetalhesDePost />,
-                loader: DetalhesDePostLoader,
-                action: DetalhesDePostAction
+                element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_PROFESSOR]}><DetalhesDePost /></PrivateRoute>,
+                action: DetalhesDePostAction,
+                async loader({ params }) {
+                    if (Environment.validaRegraPermissaoComponentsMetodos(regras, [Environment.REGRAS.REGRA_PROFESSOR])) {
+                        return DetalhesDePostLoader(params);
+                    } else {
+                        return null;
+                    }
+                },
             },
             {
                 path: 'posts/novo',
@@ -275,30 +322,7 @@ export const routes = createBrowserRouter([
                 ]
             }
         ]
-    },
-    {
-        path: 'logout',
-        async action({ request }: LoaderFunctionArgs) {
-
-            if (request.method === 'POST') {
-
-                try {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userId');
-                    Api().defaults.headers.Authorization = null;
-
-                    logado = false;
-
-                    return (redirect('/login'));
-
-                } catch (error) {
-                    console.log(error);
-                }
-
-            }
-
-        },
-    },
+    }
 ]);
 
 

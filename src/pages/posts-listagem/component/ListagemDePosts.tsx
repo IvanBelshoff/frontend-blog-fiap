@@ -2,12 +2,12 @@ import { LayoutBaseDePagina } from '../../../shared/layouts'
 import { CardPost, CustomPagination, FerramentasDaListagem } from '../../../shared/components'
 import { useLoaderData, useNavigate, useNavigation, useSearchParams } from 'react-router-dom'
 import { IPostLoader } from '../interfaces/interfaces';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { Environment } from '../../../shared/environment';
 import { useDebouncedCallback } from 'use-debounce';
 
-export const Post = () => {
+export const ListagemDePosts = () => {
 
     //const { permissoes, regras } = useAuth();
 
@@ -44,10 +44,6 @@ export const Post = () => {
             pagina: paramPagina,
         }, { replace: true });
     };
-
-    useEffect(() => {
-        console.log(loaderData)
-    }, [])
 
     return (
         <LayoutBaseDePagina
@@ -88,7 +84,7 @@ export const Post = () => {
                         <Grid container width='100%' spacing={2}  >
 
                             {loaderData.data.map(post => (
-                                <Grid key={post.id} item  md={3} lg={4} xl={6} >
+                                <Grid key={post.id} item md={3} lg={4} xl={6} >
                                     <CardPost
                                         key={post.id}
                                         conteudo={post.conteudo}

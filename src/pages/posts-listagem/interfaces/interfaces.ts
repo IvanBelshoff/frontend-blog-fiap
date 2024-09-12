@@ -15,3 +15,25 @@ export interface IPostLoader {
     totalCount: number;
     logado: boolean
 }
+
+export interface IActionListagemDePosts {
+    response?: {
+        data: {
+            errors?: {
+                default?: string
+            },
+            success?: {
+                message?: string
+            }
+        }
+    }
+}
+
+export interface IListagemDePostsAction {
+    errors?: {
+        default?: string
+    },
+    success?: {
+        message?: string
+    }
+}

@@ -44,8 +44,6 @@ export async function DetalhesDePostAction({ request, params }: LoaderFunctionAr
 
             }
 
-            console.log(errors);
-
             const response: IEditarPostAction = {
                 errors: errors
             };

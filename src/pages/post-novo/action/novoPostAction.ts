@@ -16,11 +16,6 @@ export async function NovoPostAction({ request }: LoaderFunctionArgs) {
         const visivel = formData.get('visivel') as string;
         const foto = formData.get('foto') as File;
 
-        console.log(titulo);
-        console.log(conteudo);
-        console.log(visivel);
-        console.log(foto);
-
         // Chama a função de criação do funcionário, passando os dados obtidos
         const post = await PostsService.create(
             titulo || undefined,
