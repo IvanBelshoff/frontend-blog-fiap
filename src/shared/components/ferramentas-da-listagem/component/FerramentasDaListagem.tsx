@@ -37,6 +37,7 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
             marginX={1}
             padding={1}
             paddingX={2}
+            overflow={'auto'}
             display='flex'
             alignItems='center'
             height={theme.spacing(7)}

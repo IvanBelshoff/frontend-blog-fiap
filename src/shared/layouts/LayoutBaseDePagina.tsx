@@ -52,7 +52,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
                     </Box>
                 )}
 
-            <Box flex={1} overflow='auto'>
+            <Box flex={1} overflow='auto' width={smDown || mdDown ? '85vw' : 'auto'}>
                 {children}
             </Box>
         </Box>

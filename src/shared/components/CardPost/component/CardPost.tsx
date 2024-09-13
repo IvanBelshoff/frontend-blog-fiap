@@ -38,6 +38,7 @@ export const CardPost: React.FC<ICardPostProps> = ({
             objectFit: "cover",
             objectPosition: "center",
             backgroundColor: "#f4729c",
+            marginLeft: '2vw'
           }}
         />
         <CardContent

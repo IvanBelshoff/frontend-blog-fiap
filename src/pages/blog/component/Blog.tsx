@@ -83,7 +83,7 @@ export const Blog = () => {
           </Box>
         ) : (
           <Box width='100%' height='auto' display='flex' justifyContent='center' alignItems='center'>
-            <Box width='60%' height='auto' display='flex' justifyContent='center' alignItems='center'>
+            <Box width='80%' height='auto' display='flex' justifyContent='center' alignItems='center'>
 
               {loaderData?.data && loaderData?.totalCount > 0 ? (
 
