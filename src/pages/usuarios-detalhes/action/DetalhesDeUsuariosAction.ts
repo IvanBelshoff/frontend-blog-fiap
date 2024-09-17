@@ -143,7 +143,7 @@ export async function DetalhesDeUsuariosAction({ request, params }: LoaderFuncti
 
         const data: IDetalhesDeUsuarioAction = {
             success: {
-                message: 'Foto deletada com successo'
+                message: 'Foto deletada com sucesso'
             },
             tipo: 'foto'
         };

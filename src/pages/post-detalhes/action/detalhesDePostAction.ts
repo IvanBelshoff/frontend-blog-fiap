@@ -98,7 +98,7 @@ export async function DetalhesDePostAction({ request, params }: LoaderFunctionAr
 
         const data: IEditarPostAction = {
             success: {
-                message: 'Foto deletada com successo'
+                message: 'Foto deletada com sucesso'
             }
         };
 
