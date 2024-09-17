@@ -1,7 +1,4 @@
-import {
-    useEffect,
-    useState
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Avatar,
@@ -19,31 +16,25 @@ import {
     TextField,
     Tooltip,
     Typography,
-    useTheme
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
-import {
-    useFetcher,
-    useRouteLoaderData
-} from 'react-router-dom';
+import { useFetcher, useRouteLoaderData } from 'react-router-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-import {
-    IDetalhesDeUsuarios,
-    IModalUsuarioProps,
-    IResponseModalUsuarioAction,
-    IUsuarioModal
-} from '../../../interfaces';
+import { IDetalhesDeUsuarios, IModalUsuarioProps, IResponseModalUsuarioAction, IUsuarioModal } from '../../../interfaces';
 import { useAuth } from '../../../contexts';
 import { Environment } from '../../../environment';
 import { CropperModal } from '../..';
 
 export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoClicarEmFecharModal }) => {
-
-    // Hooks e variáveis de estado
     const theme = useTheme();
+    const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
     const { userId } = useAuth();
     const fetcher = useFetcher();
-    const isLoading = fetcher.state != 'idle';
+    const isLoading = fetcher.state !== 'idle';
     const loaderData = useRouteLoaderData('root') as IDetalhesDeUsuarios;
     const [actionData, setActionData] = useState<IResponseModalUsuarioAction>(fetcher.data);
     const [originalImage, setOriginalImage] = useState<string | ArrayBuffer | null>(loaderData?.data?.foto?.url || `${Environment.BASE_URL}/profile/profile.jpg`);
@@ -68,7 +59,6 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
     const [formMethod, setFormMethod] = useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('PATCH');
     const [isModified, setIsModified] = useState<boolean>(false);
 
-    // Função para resetar o formulário
     const resetForm = () => {
         setForm(initialForm);
         setIsModified(false);
@@ -78,34 +68,22 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
         setActionData({} as IResponseModalUsuarioAction);
     };
 
-    // Manipulação de input do formulário
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
         const name = e.target.name as keyof typeof initialForm;
-
         const value = e.target.value;
-
         setForm(prevState => ({ ...prevState, [name]: value }));
-
         if (initialForm[name] !== value) {
-
             setIsModified(true);
-
         }
     };
 
-    // Manipulação de cópia de senha
     const handleCopyPassword = () => {
-
         setIcone('done');
-
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
-
         if (file) {
-
             reader.onloadend = () => {
                 setUploadedImage(reader.result);
                 setStatePhoto('edição');
@@ -116,20 +94,13 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
     };
 
     const handleSaveEditedImage = (blob: Blob, state?: 'original' | 'edição' | 'preview') => {
-
         reader.onloadend = () => {
-
             setUploadedImage(blob);
-
-            // Criando uma FileList simulando a seleção de arquivos pelo usuário
             const editedFile = new File([blob], filename || 'edited_photo.jpg', { type: blob.type });
             const fileList = new DataTransfer();
             fileList.items.add(editedFile);
-
-            // Setando o valor do input para a FileList criada
             const uploadedPhotoInput = document.getElementById('upload-photo-modal') as HTMLInputElement;
             uploadedPhotoInput.files = fileList.files;
-
             if (state) {
                 setStatePhoto(state);
                 setIsModified(true);
@@ -138,131 +109,130 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
         reader.readAsDataURL(blob);
     };
 
-    // Função para remover a imagem
     const handleRemoveImage = () => {
-
-
         setIsModified(false);
-        // Resetando o valor do input para garantir que o evento onChange seja acionado novamente
         if (document.getElementById('upload-photo-modal')) {
             (document.getElementById('upload-photo-modal') as HTMLInputElement).value = '';
             setUploadedImage(originalImage || `${Environment.BASE_URL}/profile/profile.jpg`);
         }
         setStatePhoto('original');
-
     };
 
-    // Manipulação de fechamento do modal
     const handleCloseModal = () => {
         aoClicarEmFecharModal();
-        resetForm(); // Adicione a chamada para resetar o formulário
+        resetForm();
     };
 
-    // Manipulação de fechamento do Snackbar
     const handleCloseSnackbar = (_event: React.SyntheticEvent | Event, reason?: string) => {
-
         if (reason === 'clickaway') {
             return;
         }
-
         setOpen(false);
         setMessageSnackbar('');
-
-
         if (typeSeverity === 'success' && actionData?.success && actionData.tipo === 'foto') {
-
             setIsModified(false);
         }
-
         if (typeSeverity === 'success' && actionData?.success && actionData.tipo === 'atributos') {
-
             setIsModified(false);
         }
-
         if (typeSeverity === 'success' && actionData?.success && actionData.tipo === 'senha') {
-
             fetcher.submit(
                 { idle: true },
                 { method: 'post', action: '/logout' }
             );
-
         }
-
     };
 
-    // Efeito para atualizar dados quando há mudanças
     useEffect(() => {
-
         if (loaderData?.data?.foto?.url) {
             setUploadedImage(loaderData.data.foto.url);
             setOriginalImage(loaderData.data.foto.url);
         }
-        
         if (fetcher?.data) {
             setActionData(fetcher.data);
         }
-
-        if (actionData?.success?.message && actionData?.tipo == 'foto') {
-
+        if (actionData?.success?.message && actionData?.tipo === 'foto') {
             setMessageSnackbar(actionData.success?.message || '');
             setOpen(true);
             setTypeSeverity('success');
         }
-
-        if (actionData?.errors?.default && actionData?.tipo == 'foto') {
+        if (actionData?.errors?.default && actionData?.tipo === 'foto') {
             setMessageSnackbar(actionData?.errors?.default || '');
             setOpen(true);
             setTypeSeverity('error');
         }
-
-        if (actionData?.success?.message && actionData?.tipo == 'atributos') {
+        if (actionData?.success?.message && actionData?.tipo === 'atributos') {
             setMessageSnackbar(actionData.success?.message || '');
             setOpen(true);
             setTypeSeverity('success');
         }
-
-        if (actionData?.errors?.default && actionData?.tipo == 'atributos') {
+        if (actionData?.errors?.default && actionData?.tipo === 'atributos') {
             setMessageSnackbar(actionData?.errors?.default || '');
             setOpen(true);
             setTypeSeverity('error');
         }
-
-        if (actionData?.success?.message && actionData?.tipo == 'senha') {
+        if (actionData?.success?.message && actionData?.tipo === 'senha') {
             setMessageSnackbar(actionData.success?.message || '');
             setOpen(true);
             setTypeSeverity('success');
         }
-
-        if (actionData?.errors?.default && actionData?.tipo == 'senha') {
+        if (actionData?.errors?.default && actionData?.tipo === 'senha') {
             setMessageSnackbar(actionData?.errors?.default || '');
             setOpen(true);
             setTypeSeverity('error');
         }
-
     }, [openModalConta, fetcher, loaderData]);
 
     return (
         <Modal
             open={openModalConta}
+            onClose={handleCloseModal}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
-
+            
         >
-            <Box width='100%' height='100%' display="flex" alignItems='center' justifyContent='center'>
-
-                <Snackbar
-                    open={open}
-                    autoHideDuration={2000}
-                    onClose={handleCloseSnackbar}
+            <Box
+                width={isMobile || isTablet ? '100%' : '80%'}
+                maxWidth='900px'
+                height={isMobile || isTablet ? 'auto' : '100%'}
+                margin='auto'
+                display="flex"
+                alignItems='center'
+                justifyContent='center'
+                padding={2}
+                sx={{
+                    overflowY: 'auto',
+                }}
+            >
+                <Paper
+                    sx={{
+                        width: '100%',
+                        padding: theme.spacing(2),
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: theme.spacing(2),
+                        borderRadius: 2,
+                        boxShadow: theme.shadows[5],
+                        maxHeight: '95vh',
+                        overflowY: 'auto',
+                    }}
                 >
-                    <Alert onClose={handleCloseSnackbar} severity={typeSeverity} sx={{ width: '100%' }}>
-                        {messageSnackbar}
-                    </Alert>
-                </Snackbar>
+                    <Snackbar
+                        open={open}
+                        autoHideDuration={2000}
+                        onClose={handleCloseSnackbar}
+                    >
+                        <Alert onClose={handleCloseSnackbar} severity={typeSeverity} sx={{ width: '100%' }}>
+                            {messageSnackbar}
+                        </Alert>
+                    </Snackbar>
 
-                <Box width='80%' justifyContent="center" component={Paper} elevation={2}  >
-                    <fetcher.Form key={userId} action="/blog/usuarios/detalhes/:pagina/:id" method={formMethod} encType='multipart/form-data'>
-
+                    <fetcher.Form
+                        key={userId}
+                        action="/blog/usuarios/detalhes/:pagina/:id"
+                        method={formMethod}
+                        encType='multipart/form-data'
+                    >
                         <input type="hidden" name="id" value={Number(userId)} />
                         <input type="hidden" name="nome" value={form.nome} />
                         <input type="hidden" name="sobrenome" value={form.sobrenome} />
@@ -273,10 +243,10 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                             type="file"
                             name='foto'
                             onChange={handleImageChange}
-                            accept="image/*" // Aceita apenas imagens
+                            accept="image/*"
                         />
 
-                        <Box padding={1} width='100%' display='flex' justifyContent='right'>
+                        <Box padding={1} width='100%' display='flex' justifyContent='flex-end'>
                             <Button
                                 variant='text'
                                 color='primary'
@@ -284,48 +254,63 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                 startIcon={<Icon>close</Icon>}
                                 onClick={handleCloseModal}
                             >
-                                <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
+                                <Typography variant='button'>
                                     Fechar
                                 </Typography>
                             </Button>
-
                         </Box>
 
                         <Divider variant='middle' />
 
-                        <Box width='100%' height='70%' display="flex" flexDirection="row" gap={2} padding={2}>
-
+                        <Box
+                            width='100%'
+                            display="flex"
+                            flexDirection={isMobile || isTablet? 'column' : 'row'}
+                            justifyItems={'center'}
+                            alignItems={'center'}
+                            gap={2}
+                            padding={2}
+                        >
                             {isLoading ? (
-                                <Box width='30%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' >
+                                <Box width='100%' display='flex' justifyContent='center' alignItems='center'>
                                     <CircularProgress size={130} />
                                 </Box>
                             ) : (
-                                <Box width='30%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
-
+                                <Box
+                                    width={isMobile ? '100%' : isTablet ? '50%': '30%'}
+                                    display='flex'
+                                    flexDirection='column'
+                                    justifyItems={'center'}
+                                    alignItems={'center'}
+                                    gap={2}
+                                >
                                     <Typography variant='h5'>
                                         Foto do Usuário
                                     </Typography>
-
-                                    {(statePhoto == 'original' || statePhoto == 'preview') ? (
+                                    {(statePhoto === 'original' || statePhoto === 'preview') ? (
                                         <>
                                             <Avatar
-                                                src={typeof uploadedImage == 'string' ? uploadedImage : URL.createObjectURL(uploadedImage as Blob)}
+                                                src={typeof uploadedImage === 'string' ? uploadedImage : URL.createObjectURL(uploadedImage as Blob)}
                                                 alt="Foto do usuário"
                                                 style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
                                             />
-
                                             <label htmlFor="upload-photo-modal">
                                                 <Button
                                                     variant="contained"
                                                     component="span"
                                                     startIcon={<Icon>file_upload</Icon>}
-                                                    disabled={form.senha != ''}>
+                                                    sx={{ width: '100%', maxWidth: '180px' }}
+                                                >
                                                     Carregar Foto
                                                 </Button>
                                             </label>
-
-                                            {statePhoto != 'original' ? (
-                                                <Button variant="outlined" color="error" onClick={(e) => { e?.preventDefault(); handleRemoveImage(); }}>
+                                            {statePhoto !== 'original' ? (
+                                                <Button
+                                                    variant="outlined"
+                                                    color="error"
+                                                    onClick={handleRemoveImage}
+                                                    sx={{ width: '100%', maxWidth: '180px' }}
+                                                >
                                                     Cancelar alteração
                                                 </Button>
                                             ) : (
@@ -334,13 +319,13 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                                     variant="outlined"
                                                     color="error"
                                                     startIcon={<Icon>delete</Icon>}
-                                                    disabled={form.senha != ''}
+                                                    disabled={loaderData?.data?.foto?.url == `${Environment.BASE_URL}/profile/profile.jpg`}
                                                     onClick={() => setFormMethod('DELETE')}
+                                                    sx={{ width: '100%', maxWidth: '180px' }}
                                                 >
                                                     Remover Foto
                                                 </Button>
                                             )}
-
                                         </>
                                     ) : (
                                         <CropperModal
@@ -350,120 +335,107 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                             onSave={handleSaveEditedImage}
                                         />
                                     )}
-                                    
                                 </Box>
-
                             )}
 
-                            <Box width='40%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
-
-                                <Grid container spacing={3} justifyContent='center' alignItems='center'> {/* Defina alignItems para 'center' */}
-                                    <Grid item xs={12} sm={12} md={11} lg={10} xl={8}>
-                                        <Typography variant="h6" align="center">Dados do Usuário</Typography> {/* Centralize o texto */}
+                            <Box
+                                width={isMobile || isTablet ? '100%' : '40%'}
+                                display='flex'
+                                flexDirection='column'
+                                alignItems='center'
+                                gap={2}
+                            >
+                                <Typography variant="h6" align="center">
+                                    Dados do Usuário
+                                </Typography>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            error={!!actionData?.errors?.body?.nome}
+                                            helperText={actionData?.errors?.body?.nome && ('Nome: ' + actionData?.errors?.body.nome)}
+                                            color={actionData?.errors?.body?.nome ? 'error' : 'primary'}
+                                            focused={!(actionData?.errors?.body?.nome)}
+                                            disabled={form.senha !== ''}
+                                            fullWidth
+                                            name='nome'
+                                            variant="outlined"
+                                            label="Nome"
+                                            value={form.nome}
+                                            onChange={handleInputChange}
+                                        />
                                     </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                error={!!actionData?.errors?.body?.nome}
-                                                helperText={!!actionData?.errors?.body?.nome && ('Nome: ' + actionData?.errors?.body.nome)}
-                                                color={!!actionData?.errors?.body?.nome === false ? ('primary') : 'error'}
-                                                focused={!!actionData?.errors?.body?.nome === false}
-                                                disabled={form.senha != '' ? true : false}
-                                                fullWidth
-                                                name='nome'
-                                                variant="outlined"
-                                                label="Nome"
-                                                value={form.nome}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                error={!!actionData?.errors?.body?.sobrenome}
-                                                helperText={!!actionData?.errors?.body?.sobrenome && ('Sobrenome: ' + actionData?.errors?.body.sobrenome)}
-                                                color={!!actionData?.errors?.body?.sobrenome === false ? ('primary') : 'error'}
-                                                focused={!!actionData?.errors?.body?.sobrenome === false}
-                                                disabled={form.senha != '' ? true : false}
-                                                fullWidth
-                                                name='sobrenome'
-                                                variant="outlined"
-                                                label="Sobrenome"
-                                                value={form.sobrenome}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} sm={12}>
-                                            <TextField
-                                                error={!!actionData?.errors?.body?.email}
-                                                helperText={!!actionData?.errors?.body?.email && ('E-mail: ' + actionData?.errors?.body.email)}
-                                                color={!!actionData?.errors?.body?.email === false ? ('primary') : 'error'}
-                                                focused={!!actionData?.errors?.body?.email === false}
-                                                disabled={form.senha != '' ? true : false}
-                                                fullWidth
-                                                name='email'
-                                                variant="outlined"
-                                                label="E-mail"
-                                                value={form.email}
-                                                InputProps={{
-                                                    endAdornment: (
-                                                        <InputAdornment position="end">
-                                                            <CopyToClipboard text={form.email} onCopy={handleCopyPassword}>
-                                                                <IconButton size='small' color='primary'>
-                                                                    <Tooltip title={icone === 'done' ? 'E-mail Copiado' : 'Copiar E-mail'}>
-                                                                        <Icon color='primary'>
-                                                                            {icone}
-                                                                        </Icon>
-                                                                    </Tooltip>
-                                                                </IconButton>
-                                                            </CopyToClipboard>
-                                                        </InputAdornment>
-                                                    )
-                                                }}
-                                            />
-                                        </Grid>
-                                </Grid>
-
-                            </Box>
-
-                            <Box>
-                                <Divider orientation='vertical' />
-                            </Box>
-                            <Box width='40%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
-                                <Grid container spacing={3} justifyContent='center' >
-                                    <Grid item>
-                                        <Typography variant="h6">Alterar Senha</Typography>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            error={!!actionData?.errors?.body?.sobrenome}
+                                            helperText={actionData?.errors?.body?.sobrenome && ('Sobrenome: ' + actionData?.errors?.body.sobrenome)}
+                                            color={actionData?.errors?.body?.sobrenome ? 'error' : 'primary'}
+                                            focused={!(actionData?.errors?.body?.sobrenome)}
+                                            disabled={form.senha !== ''}
+                                            fullWidth
+                                            name='sobrenome'
+                                            variant="outlined"
+                                            label="Sobrenome"
+                                            value={form.sobrenome}
+                                            onChange={handleInputChange}
+                                        />
                                     </Grid>
-                                        <Grid container item justifyContent='center'>
-                                            <Grid item xs={12} sm={12}>
-                                                <TextField
-                                                    error={!!actionData?.errors?.body?.senha}
-                                                    helperText={!!actionData?.errors?.body?.senha && ('Senha: ' + actionData?.errors?.body.senha)}
-                                                    color={!!actionData?.errors?.body?.senha === false ? ('primary') : 'error'}
-                                                    focused={!!actionData?.errors?.body?.senha === false}
-                                                    disabled={form.nome != initialForm.nome ? true : form.email != initialForm.email ? true : form.sobrenome != initialForm.sobrenome ? true : uploadedImage != originalImage ? true : false}
-                                                    fullWidth
-                                                    type='password'
-                                                    name='senha'
-                                                    variant="outlined"
-                                                    label="Nova senha"
-                                                    value={form.senha}
-                                                    onChange={handleInputChange}
-                                                />
-                                            </Grid>
-                                        </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            error={!!actionData?.errors?.body?.email}
+                                            helperText={actionData?.errors?.body?.email && ('E-mail: ' + actionData?.errors?.body.email)}
+                                            color={actionData?.errors?.body?.email ? 'error' : 'primary'}
+                                            focused={!(actionData?.errors?.body?.email)}
+                                            disabled={form.senha !== ''}
+                                            fullWidth
+                                            name='email'
+                                            variant="outlined"
+                                            label="E-mail"
+                                            value={form.email}
+                                            onChange={handleInputChange}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <CopyToClipboard text={form.email} onCopy={handleCopyPassword}>
+                                                            <IconButton size='small' color='primary'>
+                                                                <Tooltip title={icone === 'done' ? 'E-mail Copiado' : 'Copiar E-mail'}>
+                                                                    <Icon color='primary'>{icone}</Icon>
+                                                                </Tooltip>
+                                                            </IconButton>
+                                                        </CopyToClipboard>
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                        />
+                                    </Grid>
                                 </Grid>
-
                             </Box>
 
+                            <Box width={isMobile || isTablet ? '100%' : '40%'} display='flex' flexDirection='column' alignItems='center'>
+                                <Typography variant="h6" align="center">
+                                    Alterar Senha
+                                </Typography>
+                                <TextField
+                                    error={!!actionData?.errors?.body?.senha}
+                                    helperText={actionData?.errors?.body?.senha && ('Senha: ' + actionData?.errors?.body.senha)}
+                                    color={actionData?.errors?.body?.senha ? 'error' : 'primary'}
+                                    focused={!(actionData?.errors?.body?.senha)}
+                                    disabled={form.nome !== initialForm.nome || form.email !== initialForm.email || form.sobrenome !== initialForm.sobrenome || uploadedImage !== originalImage}
+                                    fullWidth
+                                    type='password'
+                                    name='senha'
+                                    variant="outlined"
+                                    label="Nova senha"
+                                    value={form.senha}
+                                    onChange={handleInputChange}
+                                />
+                            </Box>
                         </Box>
 
                         {isModified && (
                             <>
                                 <Divider variant='middle' />
-
                                 <Box width='100%' display='flex' justifyContent='center' alignItems='center' margin={2}>
-
-                                    <Box width='100%' display='flex' justifyContent='center' alignItems='center' gap={2}>
-
+                                    <Box display='flex' gap={2}>
                                         <Button
                                             variant='contained'
                                             color='primary'
@@ -472,27 +444,20 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                                             startIcon={<Icon>save</Icon>}
                                             onClick={() => setFormMethod('PATCH')}
                                         >
-                                            <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
+                                            <Typography variant='button'>
                                                 Salvar alteração
                                             </Typography>
                                         </Button>
-
-
                                         <IconButton aria-label="refresh" color="primary" onClick={resetForm}>
-                                            <Icon>
-                                                refresh
-                                            </Icon>
+                                            <Icon>refresh</Icon>
                                         </IconButton>
                                     </Box>
                                 </Box>
                             </>
                         )}
-
                     </fetcher.Form>
-                </Box>
-            </Box >
-
-        </Modal >
+                </Paper>
+            </Box>
+        </Modal>
     );
 };
-
