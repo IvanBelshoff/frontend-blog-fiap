@@ -1,111 +1,128 @@
 import {
-    Box,
-    Breadcrumbs,
-    Card,
-    CardContent,
-    Typography,
-    CardMedia,
-    Button,
-    Icon,
-  } from "@mui/material";
-  import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
-  import { LayoutBase } from "../../../shared/layouts";
-  import { PostsService } from "../../../shared/services/Posts/postsService";
+  Box,
+  Breadcrumbs,
+  Card,
+  CardContent,
+  Typography,
+  CardMedia,
+  Button,
+  Icon,
+} from "@mui/material";
+import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { LayoutBase } from "../../../shared/layouts";
 import { IBlogPostLoader } from "../interfaces/interfaces";
-  
-  export const BlogPost = () => {
-    const loaderData = useLoaderData() as IBlogPostLoader;
-    const { pagina } = useParams<"pagina">();
-    const { id, titulo, conteudo, usuario_cadastrador, data_atualizacao, foto } =
-      loaderData.post;
-    const navigate = useNavigate();
 
-    return (
-      <LayoutBase>
+export const BlogPost = () => {
+  const loaderData = useLoaderData() as IBlogPostLoader;
+  const { pagina } = useParams<"pagina">();
+  const { id, titulo, conteudo, usuario_cadastrador, data_atualizacao, foto } =
+    loaderData.post;
+
+  return (
+    <LayoutBase>
+      <Box
+        width="100%"
+        height="auto"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        padding={2}
+      >
         <Box
           width="100%"
+          maxWidth="900px"
           height="auto"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
+          sx={{
+            padding: 2,
+            boxSizing: 'border-box',
+          }}
         >
-          <Box width="60%" height="auto">
-            {/* Breadcrumbs */}
-            <Breadcrumbs
-              aria-label="breadcrumb"
-              sx={{ marginBottom: 2, marginTop: 2 }}
-            >
-              <Link style={{ color: "inherit" }} to={`/?busca=&pagina=${pagina}`}>
-                <Typography color="text.primary">Posts</Typography>
-              </Link>
-              <Typography color="text.primary">{titulo}</Typography>
-            </Breadcrumbs>
-  
-            {/* Post Details */}
-            <Card sx={{ marginBottom: 2 }}>
+          {/* Breadcrumbs */}
+          <Breadcrumbs
+            aria-label="breadcrumb"
+            sx={{ marginBottom: 2, marginTop: 2 }}
+          >
+            <Link style={{ color: "inherit" }} to={`/?busca=&pagina=${pagina}`}>
+              <Typography color="text.primary" variant="body1">
+                Posts
+              </Typography>
+            </Link>
+            <Typography color="text.primary" variant="body1">
+              {titulo}
+            </Typography>
+          </Breadcrumbs>
+
+          {/* Post Details */}
+          <Card sx={{ marginBottom: 2 }}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-                {foto && (
-                  <CardMedia
-                    sx={{
-                      width: "100%",
-                      maxWidth: 400,
-                      height: "auto",
-                      objectFit: "cover",
-                      marginTop: 5
-                    }}
-                    component="img"
-                    height="auto"
-                    image={foto.url}
-                    alt={foto.nome}
-                  />
-                )}
-              </Box>
-              <CardContent sx={{ display: "flex", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-                <Typography variant="h4" component="div" gutterBottom>
-                  {titulo}
-                </Typography>
-                <Typography variant="body1" color="text.secondary" paragraph>
-                  {conteudo}
-                </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                  Autor: {usuario_cadastrador}
-                </Typography>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Última atualização:{" "}
-                  {new Date(data_atualizacao).toLocaleDateString()}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Box>
-          {loaderData.logado && (
-            <Box display="flex" gap="10px">
-              <Button
-                variant="contained"
-                color="primary"
-                disableElevation
-                onClick={() => {
-                  navigate(`/blog/posts/edit/${pagina}/${id}`); //temporario, alterar para tela de edicao que precisa ser criada
-                }}
-                endIcon={<Icon>edit</Icon>}
-              >
-                Editar
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                disableElevation
-                onClick={() => {
-                  PostsService.deleteById(id);
-                }}
-                endIcon={<Icon>delete</Icon>}
-              >
-                Deletar
-              </Button>
+              {foto && (
+                <CardMedia
+                  sx={{
+                    width: "100%",
+                    maxWidth: '100%',
+                    height: "auto",
+                    maxHeight: 'auto',
+                    objectFit: "cover",
+                    marginTop: 2,
+                    borderRadius: 1,
+                  }}
+                  component="img"
+                  image={foto.url}
+                  alt={foto.nome}
+                />
+              )}
             </Box>
-          )}
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                textAlign: "center",
+                padding: 2,
+              }}
+            >
+              <Typography
+                variant="h4"
+                component="div"
+                gutterBottom
+                sx={{
+                  fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+                }}
+              >
+                {titulo}
+              </Typography>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                paragraph
+                sx={{
+                  fontSize: { xs: '0.875rem', sm: '1rem', md: '1.125rem' },
+                }}
+              >
+                {conteudo}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                sx={{
+                  fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
+                }}
+              >
+                Autor: {usuario_cadastrador}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                sx={{
+                  fontSize: { xs: '0.65rem', sm: '0.75rem', md: '0.875rem' },
+                }}
+              >
+                Última atualização: {new Date(data_atualizacao).toLocaleDateString()}
+              </Typography>
+            </CardContent>
+          </Card>
         </Box>
-      </LayoutBase>
-    );
-  };
-  
+      </Box>
+    </LayoutBase>
+  );
+};
