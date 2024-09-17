@@ -5,10 +5,8 @@ import {
   CardContent,
   Typography,
   CardMedia,
-  Button,
-  Icon,
 } from "@mui/material";
-import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { Link, useLoaderData, useParams } from "react-router-dom";
 import { LayoutBase } from "../../../shared/layouts";
 import { IBlogPostLoader } from "../interfaces/interfaces";
 
