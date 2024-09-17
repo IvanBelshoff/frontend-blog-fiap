@@ -175,11 +175,11 @@ export const DetalhesDePost = () => {
         hidden={!open || tipo !== 'Dialog'}
       >
         <DialogTitle id="alert-dialog-title" align="center">
-          Deletar Usuário
+          Deletar Post
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description" align="center">
-            Deseja Realmente apagar este Usuário?
+            Deseja Realmente apagar esta Postagem?
           </DialogContentText>
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
@@ -219,7 +219,7 @@ export const DetalhesDePost = () => {
 
           <Box display="flex" width='auto' height='auto' flexDirection="column" justifyContent="center" marginLeft={1} marginRight={1} marginBottom={1} component={Paper} elevation={3}  >
 
-            <Box width='100%' height='100%' display="flex" flexDirection="column" gap={2} padding={3}>
+            <Box width='100%' height='100%' display="flex" flexDirection="column" gap={2} padding={1}>
 
               <Box width='100%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
 
