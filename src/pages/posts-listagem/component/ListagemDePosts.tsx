@@ -104,7 +104,6 @@ export const ListagemDePosts = () => {
               container
               spacing={2}
               alignItems={"center"}
-              justifyContent={"space-between"}
               sx={{ maxWidth: "100%", overflowX: "hidden" }}
             >
               {loaderData.data.map((post) => (
