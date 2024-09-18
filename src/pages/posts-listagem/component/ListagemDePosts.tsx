@@ -107,7 +107,7 @@ export const ListagemDePosts = () => {
               sx={{ maxWidth: "100%", overflowX: "hidden" }}
             >
               {loaderData.data.map((post) => (
-                <Grid key={post.id} item xs={12} sm={6} md={4} lg={3} >
+                <Grid key={post.id} item xs={12}>
                   <CardPost
                     key={post.id}
                     conteudo={post.conteudo}

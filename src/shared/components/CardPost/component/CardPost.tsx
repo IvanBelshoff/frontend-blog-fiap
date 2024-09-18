@@ -22,12 +22,15 @@ export const CardPost: React.FC<ICardPostProps> = ({
   return (
     <Card
       onClick={aoCliclarNoCard}
+      sx={{
+        marginTop: 2,
+      }}
     >
       <CardActionArea
         sx={{
           display: "flex",
           flexDirection: { xs: "column", sm: "row" },
-          height: "auto",
+          height: { xs: 230, sm: 200 },
         }}
       >
         <CardMedia
@@ -37,8 +40,9 @@ export const CardPost: React.FC<ICardPostProps> = ({
             width: { xs: "100%", sm: "30%" },
             objectFit: "cover",
             objectPosition: "center",
+            minHeight: { xs: 100, sm: 200 },
+            maxHeight: { xs: 100, sm: 200 },
             backgroundColor: "#f4729c",
-            marginLeft: '2vw'
           }}
         />
         <CardContent
@@ -47,15 +51,17 @@ export const CardPost: React.FC<ICardPostProps> = ({
             flexDirection: "column",
             width: { xs: "100%", sm: "70%" },
             justifyContent: "space-between",
-            py: 2,
-            px: 3,
+            py: 1,
+            px: 2,
+            height: { xs: 230, sm: 200 },
           }}
         >
           <Box>
             <Typography
               variant="h5"
+              component="div"
               sx={{
-
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
                 textAlign: { xs: "center", sm: "left" },
                 whiteSpace: "nowrap",
                 overflow: "hidden",
@@ -65,12 +71,12 @@ export const CardPost: React.FC<ICardPostProps> = ({
               {titulo}
             </Typography>
           </Box>
-          <Box sx={{ mt: 1 }}>
+          <Box>
             <Typography
               variant="body2"
               color="text.secondary"
               sx={{
-                fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
+                fontSize: { xs: "0.8rem", sm: "1rem", md: "1.5rem" },
                 display: "-webkit-box",
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
@@ -81,12 +87,12 @@ export const CardPost: React.FC<ICardPostProps> = ({
               {conteudo}
             </Typography>
           </Box>
-          <Box sx={{ mt: 2 }}>
+          <Box display="flex" flexDirection={"column"}>
             <Typography
               variant="caption"
               color="text.secondary"
               sx={{
-                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
+                fontSize: { xs: "0.6rem", sm: "0.65rem", md: "0.75rem" },
                 overflow: "hidden",
                 textOverflow: "ellipsis",
               }}
@@ -98,7 +104,7 @@ export const CardPost: React.FC<ICardPostProps> = ({
               variant="caption"
               color="text.secondary"
               sx={{
-                fontSize: { sm: "0.8rem", md: "0.9rem" },
+                fontSize: { sm: "0.65rem", md: "0.75rem" },
                 display: { xs: "none", sm: "flex" },
               }}
             >

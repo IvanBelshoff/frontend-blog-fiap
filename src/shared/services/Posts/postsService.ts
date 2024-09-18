@@ -152,7 +152,7 @@ const deleteById = async (id: number): Promise<void | AxiosError> => {
   }
 };
 
-export const updateById = async (
+const updateById = async (
   id: number,
   titulo?: string,
   conteudo?: string,

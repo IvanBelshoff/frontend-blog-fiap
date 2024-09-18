@@ -109,7 +109,7 @@ export const Blog = () => {
                 </Grid>
               ) : (
                 <Typography variant="h5" component="div" color="textSecondary" align="center" style={{ width: '100%', marginTop: 20 }}>
-                  Não existe posts
+                  Não existem posts
                 </Typography>
               )}
 
