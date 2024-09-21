@@ -122,7 +122,7 @@ export const DetalhesDeUsuario = () => {
 
         if (typeSeverity === 'success' && actionDataDeleteUsuario?.success) {
 
-            navigate(`/usuarios?busca=&pagina=${pagina}`);
+            navigate(`/blog/usuarios?busca=&pagina=${pagina}`);
 
         }
 
@@ -326,10 +326,11 @@ export const DetalhesDeUsuario = () => {
         < LayoutBaseDePagina
             titulo={`${form.nome} ${form.sobrenome}`}
             barraDeFerramentas={< FerramentasDeDetalhes
-                mostrarBotaoApagar={true}
+                mostrarBotaoApagar={Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_USUARIO], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_DELETAR_USUARIO])}
                 mostrarBotaoNovo={false}
                 aoClicarEmVoltar={() => navigate(`/blog/usuarios?busca=&pagina=${pagina}`)}
                 aoClicarEmApagar={handleDeleteModalUsuario}
+
             />}
         >
 
@@ -350,7 +351,7 @@ export const DetalhesDeUsuario = () => {
                 </DialogContent>
                 <DialogActions style={{ justifyContent: 'center' }}>
                     <Button onClick={handleCloseDialog}>Cancelar</Button>
-                    <fetcher.Form method="DELETE" action="/usuarios" onSubmit={handleCloseDialog}>
+                    <fetcher.Form method="DELETE" action="/blog/usuarios" onSubmit={handleCloseDialog}>
 
                         <input type="hidden" name="id" value={id} />
 
