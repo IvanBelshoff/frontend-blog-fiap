@@ -86,7 +86,7 @@ export const CardPost: React.FC<ICardPostProps> = ({
               variant="caption"
               color="text.secondary"
               sx={{
-                fontSize: { xs: "0.6rem", sm: "0.65rem", md: "0.75rem" },
+                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
                 overflow: "hidden",
                 textOverflow: "ellipsis",
               }}
