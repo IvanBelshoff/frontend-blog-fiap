@@ -84,7 +84,6 @@ export const Navbar = () => {
             flexWrap: "wrap",
           }}
         >
-          <Box>
           {/* Logo */}
           <IconButton
             edge="start"
@@ -94,30 +93,14 @@ export const Navbar = () => {
           >
             <Icon>home</Icon> {/* Substitua pelo seu logo */}
           </IconButton>
-          {theme.palette.mode === "light" ? (
-              <Tooltip title="Alterar para tema escuro" placement="left">
-                <IconButton size="large" onClick={toggleTheme}>
-                  <Icon sx={{ color: "#FFF" }} fontSize="medium">
-                    dark_mode
-                  </Icon>
-                </IconButton>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Alterar para tema claro" placement="left">
-                <IconButton size="large" onClick={toggleTheme}>
-                  <Icon sx={{ color: "#FFF" }} fontSize="medium">
-                    light_mode
-                  </Icon>
-                </IconButton>
-              </Tooltip>
-            )}
-            </Box>
+
           {/* Search for mobile view */}
           {isMobile ? (
             <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
               <IconButton
                 color="inherit"
                 onClick={() => setSearchOpen(!searchOpen)}
+                sx={{ marginRight: 2 }}
               >
                 <Icon>search</Icon>
               </IconButton>
@@ -136,7 +119,6 @@ export const Navbar = () => {
                   }}
                   variant="outlined"
                   sx={{
-                    mx: 2,
                     width: "100%",
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
@@ -189,9 +171,7 @@ export const Navbar = () => {
                   }}
                   variant="outlined"
                   sx={{
-                    width: {sm: "80%", md: "70%" },
-                     mx: {sm: "10%", md: "15%" },
-                    transition: "transform 0.3s",
+                    width: "40%",
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "white",
@@ -222,31 +202,45 @@ export const Navbar = () => {
           )}
 
           <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="right"
             alignItems="center"
+            gap={0}
             sx={{
-              display: 'flex',
-              flexDirection: 'row', 
-              justifyContent: 'flex-end'
+              flexGrow: 1,
+              display: searchOpen ? "none" : "flex",
             }}
           >
-            
+            {theme.palette.mode === "light" ? (
+              <Tooltip title="Alterar para tema escuro" placement="left">
+                <IconButton size="large" onClick={toggleTheme}>
+                  <Icon sx={{ color: "#FFF" }} fontSize="medium">
+                    dark_mode
+                  </Icon>
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Alterar para tema claro" placement="left">
+                <IconButton size="large" onClick={toggleTheme}>
+                  <Icon sx={{ color: "#FFF" }} fontSize="medium">
+                    light_mode
+                  </Icon>
+                </IconButton>
+              </Tooltip>
+            )}
+
+            {!isMobile && loaderData?.usuario && (
               <Typography
                 color={"white"}
                 variant="h6"
                 component="div"
-                sx={{ 
-                  flexGrow: 1,
-                  display: isMobile && searchOpen ? "none" : "flex" ,
-                  mx: 1,
-                  fontSize: isMobile ? "0.90rem" : "1rem"
-                 }}
+                sx={{ flexGrow: 1 }}
               >
-                {loaderData?.usuario ?
-                `Bem-vindo, ${loaderData.usuario.nome}!` :
-                `Bem-vindo!`
-              }
+                Bem-vindo, {loaderData.usuario.nome}!
               </Typography>
-            
+            )}
+
             {loaderData?.usuario ? (
               <Box>
                 <Avatar
@@ -254,8 +248,6 @@ export const Navbar = () => {
                   src={loaderData.usuario.foto.url}
                   onClick={handleMenuOpen}
                   sx={{
-                    flexGrow: 1,
-                    mx: 1,
                     cursor: "pointer",
                     width: isMobile ? 40 : 45,
                     height: isMobile ? 40 : 45,
