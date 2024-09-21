@@ -157,7 +157,7 @@ export const DetalhesDePost = () => {
   return (
 
     < LayoutBaseDePagina
-      titulo={`${form.titulo}`}
+      titulo={`${""}`}
       barraDeFerramentas={
         < FerramentasDeDetalhes
           mostrarBotaoApagar={true}
@@ -235,7 +235,7 @@ export const DetalhesDePost = () => {
                   accept="image/*" // Aceita apenas imagens
                 />
 
-                <Box width='100%' display='flex' flexDirection='row' justifyContent='center' alignItems='center' gap={2}>
+                <Box width='100%' display='flex' flexDirection='row' justifyContent='center' alignItems='center' textAlign={'center'} gap={2}>
                   <label htmlFor="upload-photo">
                     <Button
                       disabled={

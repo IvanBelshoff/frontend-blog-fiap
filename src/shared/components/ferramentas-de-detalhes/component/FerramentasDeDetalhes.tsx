@@ -47,10 +47,11 @@ export const FerramentasDeDetalhes: React.FC<IFerramentasDeDetalhesProps> = ({
 
     return (
         <Box
-            gap={1}
-            marginX={1}
-            padding={1}
-            paddingX={2}
+        gap={1}
+        marginX={1}
+        padding={1}
+        paddingX={2}
+            justifyContent={'center'}
             display='flex'
             alignItems='center'
             height={theme.spacing(7)}
