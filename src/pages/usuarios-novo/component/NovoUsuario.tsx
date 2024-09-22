@@ -1,12 +1,5 @@
-import {
-  useEffect,
-  useState
-} from 'react';
-import {
-  Form,
-  useActionData,
-  useNavigate
-} from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Form, useActionData, useNavigate } from "react-router-dom";
 import {
   Alert,
   Avatar,
@@ -18,57 +11,68 @@ import {
   Snackbar,
   TextField,
   Typography,
-  useTheme
-} from '@mui/material';
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
-import { CropperModal, FerramentasDeDetalhes } from '../../../shared/components';
-import { Environment } from '../../../shared/environment';
-import { LayoutBaseDePagina } from '../../../shared/layouts';
-import { IFormUsuario, INovoUsuarioAction } from '../interfaces/interfaces';
+import {
+  CropperModal,
+  FerramentasDeDetalhes,
+} from "../../../shared/components";
+import { Environment } from "../../../shared/environment";
+import { LayoutBaseDePagina } from "../../../shared/layouts";
+import { IFormUsuario, INovoUsuarioAction } from "../interfaces/interfaces";
 
 export const NovoUsuario = () => {
-
   const actionData = useActionData() as INovoUsuarioAction;
   const navigate = useNavigate();
 
   // Hook para obter o tema atual do Material-UI
   const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down("sm"));
+  const mdDown = useMediaQuery(theme.breakpoints.down("md"));
 
   const [open, setOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
-  const [severity, setSeverity] = useState<'success' | 'error'>('success');
-  const [filename, setFilename] = useState<string>('');
-  const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | Blob | null>(`${Environment.BASE_URL}/profile/profile.jpg`);
-  const [statePhoto, setStatePhoto] = useState<'original' | 'edição' | 'preview'>('original');
+  const [message, setMessage] = useState<string>("");
+  const [severity, setSeverity] = useState<"success" | "error">("success");
+  const [filename, setFilename] = useState<string>("");
+  const [uploadedImage, setUploadedImage] = useState<
+    string | ArrayBuffer | Blob | null
+  >(`${Environment.BASE_URL}/profile/profile.jpg`);
+  const [statePhoto, setStatePhoto] = useState<
+    "original" | "edição" | "preview"
+  >("original");
   const [form, setForm] = useState<IFormUsuario>({
-    nome: '',
-    sobrenome: '',
-    email: '',
-    senha: ''
+    nome: "",
+    sobrenome: "",
+    email: "",
+    senha: "",
   });
 
   const reader = new FileReader();
 
   // Função para fechar o Snackbar
-  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleClose = (
+    _event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
-    setStatePhoto('original');
+    setStatePhoto("original");
     setOpen(false);
-    setMessage('');
+    setMessage("");
 
-    if (severity == 'success') {
-      navigate('/blog/usuarios');
+    if (severity == "success") {
+      navigate("/blog/usuarios");
     }
-
   };
 
   // Manipulador de evento para a mudança de entrada no formulário
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm(prevState => ({ ...prevState, [name]: value }));
+    setForm((prevState) => ({ ...prevState, [name]: value }));
   };
 
   // Manipulador de evento para a mudança de imagem
@@ -76,10 +80,9 @@ export const NovoUsuario = () => {
     const file = e.target.files && e.target.files[0];
 
     if (file) {
-
       reader.onloadend = () => {
         setUploadedImage(reader.result);
-        setStatePhoto('edição');
+        setStatePhoto("edição");
         setFilename(file.name);
       };
       reader.readAsDataURL(file);
@@ -89,27 +92,32 @@ export const NovoUsuario = () => {
   // Função para remover a imagem
   const handleRemoveImage = () => {
     setUploadedImage(null);
-    setStatePhoto('original');
+    setStatePhoto("original");
     // Resetando o valor do input para garantir que o evento onChange seja acionado novamente
-    if (document.getElementById('upload-photo')) {
-      (document.getElementById('upload-photo') as HTMLInputElement).value = '';
+    if (document.getElementById("upload-photo")) {
+      (document.getElementById("upload-photo") as HTMLInputElement).value = "";
       setUploadedImage(`${Environment.BASE_URL}/profile/profile.jpg`);
     }
   };
 
-  const handleSaveEditedImage = (blob: Blob, state?: 'original' | 'edição' | 'preview') => {
-
+  const handleSaveEditedImage = (
+    blob: Blob,
+    state?: "original" | "edição" | "preview"
+  ) => {
     reader.onloadend = () => {
-
       setUploadedImage(blob);
 
       // Criando uma FileList simulando a seleção de arquivos pelo usuário
-      const editedFile = new File([blob], filename || 'edited_photo.jpg', { type: blob.type });
+      const editedFile = new File([blob], filename || "edited_photo.jpg", {
+        type: blob.type,
+      });
       const fileList = new DataTransfer();
       fileList.items.add(editedFile);
 
       // Setando o valor do input para a FileList criada
-      const uploadedPhotoInput = document.getElementById('upload-photo') as HTMLInputElement;
+      const uploadedPhotoInput = document.getElementById(
+        "upload-photo"
+      ) as HTMLInputElement;
       uploadedPhotoInput.files = fileList.files;
 
       if (state) {
@@ -121,38 +129,40 @@ export const NovoUsuario = () => {
 
   // Efeito colateral para lidar com os dados de ação
   useEffect(() => {
-
     if (actionData?.errors?.default) {
-      setSeverity('error');
+      setSeverity("error");
       setMessage(actionData.errors.default);
       setOpen(true);
     }
 
     if (actionData?.success?.message) {
-      setSeverity('success');
+      setSeverity("success");
       setMessage(actionData.success.message);
       setOpen(true);
     }
-
   }, [actionData]);
 
   return (
     <LayoutBaseDePagina
-      titulo='Crie um novo Usuário'
+      titulo=""
       barraDeFerramentas={
         <FerramentasDeDetalhes
           mostrarBotaoApagar={false}
           mostrarBotaoNovo={false}
-          aoClicarEmVoltar={() => navigate('/blog/usuarios')}
+          aoClicarEmVoltar={() => navigate("/blog/usuarios")}
           salvar={
-            <Form method="POST" replace encType='multipart/form-data'>
-
-              <input id='nome' type="hidden" name="nome" value={form.nome} />
-              <input id='sobrenome' type="hidden" name="sobrenome" value={form.sobrenome} />
-              <input id='email' type="hidden" name="email" value={form.email} />
-              <input id='senha' type="hidden" name="senha" value={form.senha} />
+            <Form method="POST" replace encType="multipart/form-data">
+              <input id="nome" type="hidden" name="nome" value={form.nome} />
               <input
-                style={{ display: 'none' }}
+                id="sobrenome"
+                type="hidden"
+                name="sobrenome"
+                value={form.sobrenome}
+              />
+              <input id="email" type="hidden" name="email" value={form.email} />
+              <input id="senha" type="hidden" name="senha" value={form.senha} />
+              <input
+                style={{ display: "none" }}
                 id="upload-photo"
                 name="foto"
                 type="file"
@@ -161,50 +171,104 @@ export const NovoUsuario = () => {
               />
 
               <Button
-                variant='contained'
-                color='primary'
+                variant="contained"
+                color="primary"
                 disableElevation
-                type='submit'
+                type="submit"
                 startIcon={<Icon>save</Icon>}
               >
-
-                <Typography variant='button' whiteSpace='nowrap' textOverflow='ellipsis' overflow='hidden'>
+                <Typography
+                  variant="button"
+                  whiteSpace="nowrap"
+                  textOverflow="ellipsis"
+                  overflow="hidden"
+                >
                   Salvar
                 </Typography>
-
               </Button>
             </Form>
-
           }
-        />}
+        />
+      }
     >
-      <Box display="flex" width='auto' height='auto' flexDirection="column" justifyContent="center" margin={1} component={Paper} elevation={3} >
+      <Box
+            display="flex"
+            width="auto"
+            height="auto"
+            flexDirection="column"
+            justifyContent="center"
+            marginLeft={1}
+            marginRight={1}
+            marginBottom={1}
+            paddingBottom={3}
+            component={Paper}
+            elevation={3}
+            overflow={"hidden"}
+      >
+        <Box
+              width={smDown || mdDown ? "100" : "90%"}
+              height="100%"
+              display="flex"
+              flexDirection={smDown || mdDown ? "column" : "row"}
+              gap={2}
+              padding={1}
+        >
+          <Box
+                width="100%"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                gap={2}
+          >
+            <Typography variant="h5">Foto do Usuário</Typography>
 
-        <Box width='100%' height='100%' display="flex" flexDirection="row" gap={2} padding={3}>
-
-          <Box width='30%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
-
-            <Typography variant='h5'>
-              Foto do Usuário
-            </Typography>
-
-            {(statePhoto == 'original' || statePhoto == 'preview') ? (
+            {statePhoto == "original" || statePhoto == "preview" ? (
               <>
                 <Avatar
-                  src={typeof uploadedImage == 'string' ? uploadedImage : URL.createObjectURL(uploadedImage as Blob)}
+                  src={
+                    typeof uploadedImage == "string"
+                      ? uploadedImage
+                      : URL.createObjectURL(uploadedImage as Blob)
+                  }
                   alt="Foto do funcionário"
-                  style={{ width: '65%', height: 'auto', border: `2px solid ${theme.palette.primary.main}` }}
+                  // width={"50%"}
+                  
+                  style={{
+                    width: smDown || mdDown ? "50%" : "30%",
+                    height:"auto",
+                    border: `2px solid ${theme.palette.primary.main}`,
+                  }}
                 />
+                <Box
+                  width="100%"
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  textAlign={"center"}
+                  gap={2}
+                >
                 <label htmlFor="upload-photo">
-                  <Button variant="contained" component="span" startIcon={<Icon>file_upload</Icon>}>
+                  <Button
+                    variant="contained"
+                    component="span"
+                    startIcon={<Icon>file_upload</Icon>}
+                  >
                     Carregar Foto
                   </Button>
                 </label>
-                {statePhoto != 'original' && (
-                  <Button variant="outlined" color="error" startIcon={<Icon>delete</Icon>} onClick={handleRemoveImage}>
+                {statePhoto != "original" && (
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<Icon>delete</Icon>}
+                    onClick={handleRemoveImage}
+                  >
                     Remover Foto
                   </Button>
                 )}
+                </Box>
               </>
             ) : (
               <CropperModal
@@ -214,22 +278,32 @@ export const NovoUsuario = () => {
                 onSave={handleSaveEditedImage}
               />
             )}
-
           </Box>
 
-          <Box width='70%' display='flex' flexDirection="column" justifyContent='center' alignItems='center' gap={2}>
-
-
-            <Grid container spacing={3} justifyContent='center' alignItems='center'>
-
-              <Grid item xs={12} sm={6} >
+          <Box
+            width={smDown || mdDown ? "100%" : "100%"}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            gap={2}
+          >
+            <Grid container spacing={3} justifyContent="center">
+              <Grid item xs={12} sm={6}>
                 <TextField
                   error={!!actionData?.errors?.body?.nome}
-                  helperText={!!actionData?.errors?.body?.nome && ('Nome: ' + actionData?.errors?.body.nome)}
-                  color={!!actionData?.errors?.body?.nome === false ? ('primary') : 'error'}
+                  helperText={
+                    !!actionData?.errors?.body?.nome &&
+                    "Nome: " + actionData?.errors?.body.nome
+                  }
+                  color={
+                    !!actionData?.errors?.body?.nome === false
+                      ? "primary"
+                      : "error"
+                  }
                   focused={!!actionData?.errors?.body?.nome === false}
                   fullWidth
-                  name='nome'
+                  name="nome"
                   variant="outlined"
                   label="Nome"
                   onChange={handleInputChange}
@@ -239,11 +313,18 @@ export const NovoUsuario = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   error={!!actionData?.errors?.body?.sobrenome}
-                  helperText={!!actionData?.errors?.body?.sobrenome && ('Sobrenome: ' + actionData?.errors?.body.sobrenome)}
-                  color={!!actionData?.errors?.body?.sobrenome === false ? ('primary') : 'error'}
+                  helperText={
+                    !!actionData?.errors?.body?.sobrenome &&
+                    "Sobrenome: " + actionData?.errors?.body.sobrenome
+                  }
+                  color={
+                    !!actionData?.errors?.body?.sobrenome === false
+                      ? "primary"
+                      : "error"
+                  }
                   focused={!!actionData?.errors?.body?.sobrenome === false}
                   fullWidth
-                  name='sobrenome'
+                  name="sobrenome"
                   variant="outlined"
                   label="Sobrenome"
                   onChange={handleInputChange}
@@ -253,27 +334,41 @@ export const NovoUsuario = () => {
               <Grid item xs={12}>
                 <TextField
                   error={!!actionData?.errors?.body?.email}
-                  helperText={!!actionData?.errors?.body?.email && ('E-mail: ' + actionData?.errors?.body.email)}
-                  color={!!actionData?.errors?.body?.email === false ? ('primary') : 'error'}
+                  helperText={
+                    !!actionData?.errors?.body?.email &&
+                    "E-mail: " + actionData?.errors?.body.email
+                  }
+                  color={
+                    !!actionData?.errors?.body?.email === false
+                      ? "primary"
+                      : "error"
+                  }
                   focused={!!actionData?.errors?.body?.email === false}
                   fullWidth
-                  name='email'
+                  name="email"
                   variant="outlined"
                   label="E-mail"
                   onChange={handleInputChange}
                 />
               </Grid>
 
-              <Grid container item justifyContent='center'>
+              <Grid container item justifyContent="center">
                 <Grid item xs={12} sm={12}>
                   <TextField
                     error={!!actionData?.errors?.body?.senha}
-                    helperText={!!actionData?.errors?.body?.senha && ('Senha: ' + actionData?.errors?.body.senha)}
-                    color={!!actionData?.errors?.body?.senha === false ? ('primary') : 'error'}
+                    helperText={
+                      !!actionData?.errors?.body?.senha &&
+                      "Senha: " + actionData?.errors?.body.senha
+                    }
+                    color={
+                      !!actionData?.errors?.body?.senha === false
+                        ? "primary"
+                        : "error"
+                    }
                     focused={!!actionData?.errors?.body?.senha === false}
                     fullWidth
-                    type='password'
-                    name='senha'
+                    type="password"
+                    name="senha"
                     variant="outlined"
                     label="Nova senha"
                     value={form.senha}
@@ -281,25 +376,20 @@ export const NovoUsuario = () => {
                   />
                 </Grid>
               </Grid>
-
             </Grid>
-
           </Box>
-
         </Box>
 
-        <Snackbar
-          open={open}
-          autoHideDuration={2000}
-          onClose={handleClose}
-        >
-          <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
+        <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity={severity}
+            sx={{ width: "100%" }}
+          >
             {message}
           </Alert>
         </Snackbar>
-
       </Box>
-
     </LayoutBaseDePagina>
   );
 };

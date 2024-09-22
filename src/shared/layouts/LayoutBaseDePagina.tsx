@@ -44,7 +44,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
               overflow="hidden"
               whiteSpace="nowrap"
               textOverflow="ellipsis"
-              variant={smDown ? "h7" : mdDown ? "h4" : "h3"}
+              variant={smDown ? "h7" : mdDown ? "h5" : "h3"}
             >
               {titulo}
             </Typography>
