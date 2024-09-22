@@ -12,6 +12,8 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down("sm"));
   const mdDown = useMediaQuery(theme.breakpoints.down("md"));
+  const xlDown = useMediaQuery(theme.breakpoints.down("xl"));
+  const xsDown = useMediaQuery(theme.breakpoints.down("xs"));
 
   return (
     <Box
@@ -83,7 +85,11 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
           (smDown || mdDown) && !titulo
             ? "auto"
             : smDown || mdDown
-            ? "85vw"
+            ? "90vw"
+            : xlDown
+            ? "auto"
+            : xsDown
+            ? "100vw"
             : "auto"
         }
       >
