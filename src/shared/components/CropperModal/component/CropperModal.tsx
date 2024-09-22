@@ -25,7 +25,8 @@ export const CropperModal: React.FC<CropperModalProps> = ({
   onSave,
 }) => {
   const theme = useTheme();
-
+  const smDown = useMediaQuery(theme.breakpoints.down("sm"));
+  const mdDown = useMediaQuery(theme.breakpoints.down("md"));
   const [slideValue, setSlideValue] = useState(10);
   const cropRef = useRef<AvatarEditor>(null);
 
@@ -54,7 +55,7 @@ export const CropperModal: React.FC<CropperModalProps> = ({
   return (
     <Box
       sx={{
-        width: "80%",
+        width: smDown ? "80%" : mdDown ? "30%" : "30%",
         height: "100%",
         display: "flex",
         flexFlow: "column",
@@ -95,25 +96,25 @@ export const CropperModal: React.FC<CropperModalProps> = ({
         gap={2}
       >
         <Box
-        sx={{
-            width: '100%',
-            padding: '16px',
+          sx={{
+            width: "100%",
+            padding: "16px",
             backgroundColor: theme.palette.background.paper,
-            borderRadius: '8px',
+            borderRadius: "8px",
             boxShadow: theme.shadows[2],
-            [theme.breakpoints.down('sm')]: {
-              width: '12rem',
-              padding: '8px',
+            [theme.breakpoints.down("sm")]: {
+              width: "14rem",
+              padding: "8px",
               backgroundColor: theme.palette.background.default,
             },
-            [theme.breakpoints.between('sm', 'md')]: {
-              width: '8rem',
-              padding: '12px',
+            [theme.breakpoints.between("sm", "md")]: {
+              width: "12rem",
+              padding: "12px",
               backgroundColor: theme.palette.background.paper,
             },
-            [theme.breakpoints.up('md')]: {
-                width: '10rem',
-              padding: '16px',
+            [theme.breakpoints.up("md")]: {
+              width: "16rem",
+              padding: "16px",
               backgroundColor: theme.palette.background.paper,
             },
           }}
@@ -144,7 +145,7 @@ export const CropperModal: React.FC<CropperModalProps> = ({
           justifyContent="center"
           alignItems="center"
           display="flex"
-          flexDirection="column"
+          flexDirection="row"
           gap={2}
         >
           <Button
@@ -158,7 +159,7 @@ export const CropperModal: React.FC<CropperModalProps> = ({
                 padding: "8px 16px",
                 margin: "0 auto",
                 width: "100%",
-                maxWidth: '200px',
+                maxWidth: "200px",
                 "& isMobile": {
                   fontSize: "0.75rem",
                   padding: "4px 8px",
@@ -177,32 +178,32 @@ export const CropperModal: React.FC<CropperModalProps> = ({
             Salvar
           </Button>
           <Button
-            size="small"
+            // size="small"
             color="error"
-            variant="outlined"
+            variant="contained"
             onClick={cancelPhoto}
             startIcon={<Icon>close</Icon>}
             sx={{
-                "& button": {
+              "& button": {
+                fontSize: "1rem",
+                padding: "8px 16px",
+                margin: "0 auto",
+                width: "100%",
+                maxWidth: "200px",
+                "& isMobile": {
+                  fontSize: "0.75rem",
+                  padding: "4px 8px",
+                },
+                "& isTablet": {
+                  fontSize: "0.875rem",
+                  padding: "6px 12px",
+                },
+                "& isDesktop": {
                   fontSize: "1rem",
                   padding: "8px 16px",
-                  margin: "0 auto",
-                  width: "100%",
-                  maxWidth: '200px',
-                  "& isMobile": {
-                    fontSize: "0.75rem",
-                    padding: "4px 8px",
-                  },
-                  "& isTablet": {
-                    fontSize: "0.875rem",
-                    padding: "6px 12px",
-                  },
-                  "& isDesktop": {
-                    fontSize: "1rem",
-                    padding: "8px 16px",
-                  },
                 },
-              }}
+              },
+            }}
           >
             Cancelar
           </Button>
