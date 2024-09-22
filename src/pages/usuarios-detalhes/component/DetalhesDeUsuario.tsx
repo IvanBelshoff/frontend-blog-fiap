@@ -25,6 +25,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {
@@ -62,6 +63,8 @@ export const DetalhesDeUsuario = () => {
   const location = useLocation();
 
   const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down("sm"));
+  const mdDown = useMediaQuery(theme.breakpoints.down("md"));
   const { userId, regras, permissoes } = useAuth();
 
   const { pagina } = useParams<"pagina">();
@@ -422,7 +425,13 @@ export const DetalhesDeUsuario = () => {
         </Alert>
       </Snackbar>
 
-      <Box display="flex" flexDirection={"column"} width="100%" height="100%">
+      <Box
+        width="100%"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Form replace method={formMethod} encType="multipart/form-data">
           <Box
             display="flex"
@@ -430,6 +439,7 @@ export const DetalhesDeUsuario = () => {
             height="auto"
             flexDirection="column"
             justifyContent="center"
+            paddingY={2}
             marginLeft={1}
             marginRight={1}
             marginBottom={1}
@@ -440,12 +450,14 @@ export const DetalhesDeUsuario = () => {
               width="100%"
               height="100%"
               display="flex"
-              flexDirection="row"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
               gap={2}
-              padding={3}
+              padding={1}
             >
               <Box
-                width="30%"
+                width="100%"
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
@@ -485,60 +497,75 @@ export const DetalhesDeUsuario = () => {
                       }
                       alt="Foto do usuário"
                       style={{
-                        width: "65%",
+                        width: smDown ? "70%" : mdDown ? "30%" : "15%",
                         height: "auto",
                         border: `2px solid ${theme.palette.primary.main}`,
                       }}
                     />
+                    <Box
+                      width="100%"
+                      display="flex"
+                      flexDirection="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      textAlign="center"
+                      gap={2}
+                    >
+                      <label htmlFor="upload-photo">
+                        <Button
+                          disabled={
+                            Environment.validaRegraPermissaoComponents(
+                              JSON.parse(regras || ""),
+                              [Environment.REGRAS.REGRA_USUARIO],
+                              JSON.parse(permissoes || ""),
+                              [
+                                Environment.PERMISSOES
+                                  .PERMISSAO_ATUALIZAR_USUARIO,
+                              ]
+                            ) || form.bloqueado == "true"
+                          }
+                          variant="contained"
+                          startIcon={<Icon>file_upload</Icon>}
+                          component="span"
+                        >
+                          Carregar Foto
+                        </Button>
+                      </label>
 
-                    <label htmlFor="upload-photo">
-                      <Button
-                        disabled={
-                          Environment.validaRegraPermissaoComponents(
-                            JSON.parse(regras || ""),
-                            [Environment.REGRAS.REGRA_USUARIO],
-                            JSON.parse(permissoes || ""),
-                            [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]
-                          ) || form.bloqueado == "true"
-                        }
-                        variant="contained"
-                        startIcon={<Icon>file_upload</Icon>}
-                        component="span"
-                      >
-                        Carregar Foto
-                      </Button>
-                    </label>
-
-                    {statePhoto != "original" ? (
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={(e) => {
-                          e?.preventDefault();
-                          handleRemoveImage();
-                        }}
-                      >
-                        Cancelar alteração
-                      </Button>
-                    ) : (
-                      <Button
-                        type="submit"
-                        disabled={
-                          Environment.validaRegraPermissaoComponents(
-                            JSON.parse(regras || ""),
-                            [Environment.REGRAS.REGRA_USUARIO],
-                            JSON.parse(permissoes || ""),
-                            [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]
-                          ) || form.bloqueado == "true"
-                        }
-                        variant="outlined"
-                        color="error"
-                        startIcon={<Icon>delete</Icon>}
-                        onClick={() => setFormMethod("DELETE")}
-                      >
-                        Remover Foto
-                      </Button>
-                    )}
+                      {statePhoto != "original" ? (
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={(e) => {
+                            e?.preventDefault();
+                            handleRemoveImage();
+                          }}
+                        >
+                          Cancelar alteração
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          disabled={
+                            Environment.validaRegraPermissaoComponents(
+                              JSON.parse(regras || ""),
+                              [Environment.REGRAS.REGRA_USUARIO],
+                              JSON.parse(permissoes || ""),
+                              [
+                                Environment.PERMISSOES
+                                  .PERMISSAO_ATUALIZAR_USUARIO,
+                              ]
+                            ) || form.bloqueado == "true"
+                          }
+                          variant="outlined"
+                          color="error"
+                          startIcon={<Icon>delete</Icon>}
+                          onClick={() => setFormMethod("DELETE")}
+                        >
+                          Remover Foto
+                        </Button>
+                      )}
+                    </Box>
                   </>
                 ) : (
                   <CropperModal
@@ -551,15 +578,15 @@ export const DetalhesDeUsuario = () => {
               </Box>
 
               <Box
-                width="70%"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
+                width={smDown || mdDown ? "100" : "80%"}
+                // display="flex"
+                // flexDirection="column"
+                // justifyContent="center"
+                // alignItems="center"
                 gap={2}
               >
                 <Grid container spacing={3} justifyContent="center">
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <TextField
                       error={!!actionData?.errors?.body?.nome}
                       helperText={
@@ -591,7 +618,7 @@ export const DetalhesDeUsuario = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <TextField
                       error={!!actionData?.errors?.body?.sobrenome}
                       helperText={
@@ -623,7 +650,7 @@ export const DetalhesDeUsuario = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <TextField
                       error={!!actionData?.errors?.body?.email}
                       helperText={
@@ -677,7 +704,7 @@ export const DetalhesDeUsuario = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <FormControl
                       fullWidth
                       disabled={
@@ -718,7 +745,7 @@ export const DetalhesDeUsuario = () => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <TextField
                       color={"primary"}
                       focused={true}
@@ -731,7 +758,7 @@ export const DetalhesDeUsuario = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <TextField
                       color={"primary"}
                       focused={true}
@@ -744,7 +771,7 @@ export const DetalhesDeUsuario = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <TextField
                       color={"primary"}
                       focused={true}
@@ -758,7 +785,7 @@ export const DetalhesDeUsuario = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xl={4} xs={12} md={6} sm={6}>
                     <TextField
                       color={"primary"}
                       focused={true}
@@ -777,12 +804,8 @@ export const DetalhesDeUsuario = () => {
 
                   {form.bloqueado == "false" && userId != id && (
                     <>
-                      <Grid item>
-                        <Typography variant="h6">Nova Senha</Typography>
-                      </Grid>
-
                       <Grid container item justifyContent="center">
-                        <Grid item xs={12} sm={12}>
+                        <Grid item xl={4} xs={12} md={6} sm={6}>
                           <TextField
                             error={!!actionData?.errors?.body?.senha}
                             helperText={
@@ -858,6 +881,7 @@ export const DetalhesDeUsuario = () => {
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
+                      paddingTop={2}
                       gap={2}
                     >
                       <Button
