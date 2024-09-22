@@ -297,6 +297,7 @@ export const DetalhesDePost = () => {
                 justifyContent="center"
                 alignItems="center"
                 gap={2}
+                marginBottom={!isModified ? 1 : 0}
               >
                 <img
                   src={uploadedImage as string}
@@ -554,6 +555,7 @@ export const DetalhesDePost = () => {
                       justifyContent="center"
                       alignItems="center"
                       gap={2}
+                      marginBottom={1}
                     >
                       <Button
                         variant="contained"
