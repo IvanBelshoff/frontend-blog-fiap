@@ -188,12 +188,15 @@ export const DetalhesDePost = () => {
     }
   }, [actionData, actionDataDeletePost, fetcher, loaderData]);
 
+  const permissaoAtualizar = Environment.validaRegraPermissaoComponentsMetodos( JSON.parse(regras || ""), [Environment.REGRAS.REGRA_PROFESSOR], JSON.parse(permissoes || ""), [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM]);
+  const permissaoDeletar = Environment.validaRegraPermissaoComponentsMetodos( JSON.parse(regras || ""), [Environment.REGRAS.REGRA_PROFESSOR], JSON.parse(permissoes || ""), [Environment.PERMISSOES.PERMISSAO_DELETAR_POSTAGEM]);
+
   return (
     <LayoutBaseDePagina
       titulo={`${""}`}
       barraDeFerramentas={
         <FerramentasDeDetalhes
-          mostrarBotaoApagar={true}
+          mostrarBotaoApagar={permissaoAtualizar && permissaoDeletar}
           mostrarBotaoNovo={false}
           aoClicarEmVoltar={() =>
             navigate(`/blog/posts?busca=&pagina=${pagina}`)
@@ -315,6 +318,7 @@ export const DetalhesDePost = () => {
                   accept="image/*" // Aceita apenas imagens
                 />
 
+                {permissaoAtualizar && 
                 <Box
                   width="100%"
                   display="flex"
@@ -326,12 +330,7 @@ export const DetalhesDePost = () => {
                 >
                   <label htmlFor="upload-photo">
                     <Button
-                      disabled={Environment.validaRegraPermissaoComponents(
-                        JSON.parse(regras || ""),
-                        [Environment.REGRAS.REGRA_PROFESSOR],
-                        JSON.parse(permissoes || ""),
-                        [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM]
-                      )}
+                      disabled={!permissaoAtualizar}
                       variant="contained"
                       startIcon={<Icon>file_upload</Icon>}
                       component="span"
@@ -342,12 +341,7 @@ export const DetalhesDePost = () => {
 
                   <Button
                     type="submit"
-                    disabled={Environment.validaRegraPermissaoComponents(
-                      JSON.parse(regras || ""),
-                      [Environment.REGRAS.REGRA_PROFESSOR],
-                      JSON.parse(permissoes || ""),
-                      [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM]
-                    )}
+                    disabled={!permissaoAtualizar}
                     variant="outlined"
                     color="error"
                     startIcon={<Icon>delete</Icon>}
@@ -355,7 +349,7 @@ export const DetalhesDePost = () => {
                   >
                     Remover Foto
                   </Button>
-                </Box>
+                </Box>}
 
                 <Grid container spacing={3} justifyContent="center">
                   <Grid item xs={12}>
@@ -376,13 +370,9 @@ export const DetalhesDePost = () => {
                       variant="outlined"
                       label="Titulo"
                       value={form.titulo}
+                      disabled={!permissaoAtualizar}
                       onChange={
-                        Environment.validaRegraPermissaoComponentsMetodos(
-                          JSON.parse(regras || ""),
-                          [Environment.REGRAS.REGRA_PROFESSOR],
-                          JSON.parse(permissoes || ""),
-                          [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM]
-                        )
+                        permissaoAtualizar
                           ? handleInputChange
                           : undefined
                       }
@@ -409,13 +399,9 @@ export const DetalhesDePost = () => {
                       multiline
                       maxRows={5}
                       value={form.conteudo}
+                      disabled={!permissaoAtualizar}
                       onChange={
-                        Environment.validaRegraPermissaoComponentsMetodos(
-                          JSON.parse(regras || ""),
-                          [Environment.REGRAS.REGRA_PROFESSOR],
-                          JSON.parse(permissoes || ""),
-                          [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM]
-                        )
+                        permissaoAtualizar
                           ? handleInputChange
                           : undefined
                       }
@@ -427,6 +413,7 @@ export const DetalhesDePost = () => {
                       fullWidth
                       focused={!!actionData?.errors?.body?.visivel === false}
                       error={!!actionData?.errors?.body?.visivel}
+                      disabled={!permissaoAtualizar}
                       color={
                         !!actionData?.errors?.body?.visivel === false
                           ? "primary"
@@ -438,15 +425,7 @@ export const DetalhesDePost = () => {
                         value={String(form.visivel)}
                         label="Status"
                         onChange={
-                          Environment.validaRegraPermissaoComponentsMetodos(
-                            JSON.parse(regras || ""),
-                            [Environment.REGRAS.REGRA_PROFESSOR],
-                            JSON.parse(permissoes || ""),
-                            [
-                              Environment.PERMISSOES
-                                .PERMISSAO_ATUALIZAR_POSTAGEM,
-                            ]
-                          )
+                          permissaoAtualizar
                             ? handleChangeVisibility
                             : undefined
                         }
@@ -543,12 +522,8 @@ export const DetalhesDePost = () => {
                 />
 
                 {isModified &&
-                  Environment.validaRegraPermissaoComponentsMetodos(
-                    JSON.parse(regras || ""),
-                    [Environment.REGRAS.REGRA_PROFESSOR],
-                    JSON.parse(permissoes || ""),
-                    [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_POSTAGEM]
-                  ) && (
+                  permissaoAtualizar
+                 && (
                     <Box
                       width="100%"
                       display="flex"
