@@ -135,7 +135,6 @@ export const Login = () => {
                 py={3}
                 px={2}
                 >
-                   {/* <Box component={Paper} elevation={24} variant='elevation' padding={3} width='70%'  > */}
 
                     <Form method="post" replace>
 
