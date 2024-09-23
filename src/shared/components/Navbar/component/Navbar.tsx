@@ -59,7 +59,7 @@ export const Navbar = () => {
   };
 
   const actionAdmin = () => {
-    setSelectedIndex(1);
+    setSelectedIndex(2);
     navigate("/blog");
   };
 

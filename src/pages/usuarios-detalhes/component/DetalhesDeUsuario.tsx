@@ -88,7 +88,7 @@ export const DetalhesDeUsuario = () => {
     string | ArrayBuffer | null
   >(
     loaderData?.usuario?.foto?.url ||
-      `${Environment.BASE_URL}/profile/profile.jpg`
+    `${Environment.BASE_URL}/profile/profile.jpg`
   );
   const [statePhoto, setStatePhoto] = useState<
     "original" | "edição" | "preview"
@@ -109,7 +109,7 @@ export const DetalhesDeUsuario = () => {
   const [isModified, setIsModified] = useState<boolean>(false);
   const [form, setForm] = useState<IFormUsuario>(initialForm);
   const [formMethod, setFormMethod] = useState<
-    "GET" | "POST" | "PATCH" | "DELETE"
+    "GET" | "POST" | "PATCH" | "DELETE" | "PUT"
   >("PATCH");
 
   const reader = new FileReader();
@@ -121,7 +121,7 @@ export const DetalhesDeUsuario = () => {
     setUploadedImage(originalImage);
     setOriginalImage(
       loaderData?.usuario?.foto?.url ||
-        `${Environment.BASE_URL}/profile/profile.jpg`
+      `${Environment.BASE_URL}/profile/profile.jpg`
     );
   };
 
@@ -470,20 +470,20 @@ export const DetalhesDeUsuario = () => {
                   JSON.parse(permissoes || ""),
                   [Environment.PERMISSOES.PERMISSAO_ATUALIZAR_USUARIO]
                 ) && (
-                  <Box
-                    width="100%"
-                    marginBottom={1}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={1}
-                  >
-                    <Typography variant="h6">
-                      modo de edição está bloqueado
-                    </Typography>
-                    <Icon color="primary">lock</Icon>
-                  </Box>
-                )}
+                    <Box
+                      width="100%"
+                      marginBottom={1}
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      gap={1}
+                    >
+                      <Typography variant="h6">
+                        modo de edição está bloqueado
+                      </Typography>
+                      <Icon color="primary">lock</Icon>
+                    </Box>
+                  )}
 
                 <Typography variant="h5">Foto do Usuário</Typography>
 
@@ -890,7 +890,7 @@ export const DetalhesDeUsuario = () => {
                         disableElevation
                         type="submit"
                         startIcon={<Icon>save</Icon>}
-                        onClick={() => setFormMethod("PATCH")}
+                        onClick={() => setFormMethod('PUT')}
                       >
                         <Typography
                           variant="button"
