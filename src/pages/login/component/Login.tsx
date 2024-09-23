@@ -20,7 +20,8 @@ import {
     Divider,
     IconButton,
     Tooltip,
-    useTheme
+    useTheme,
+    useMediaQuery,
 } from '@mui/material';
 import { BsFilePost } from "react-icons/bs";
 
@@ -51,6 +52,10 @@ export const Login = () => {
             setRecuperaSenha(false);
         }
     };
+
+    // Hook para obter o tema atual do Material-UI
+    const smDown = useMediaQuery(theme.breakpoints.down("sm"));
+    const mdDown = useMediaQuery(theme.breakpoints.down("md"));
 
     // Função para fechar a Snackbar (mensagem de feedback)
     const handleCloseSnackbar = (_event: React.SyntheticEvent | Event, reason?: string) => {
@@ -108,17 +113,29 @@ export const Login = () => {
                     {messageSnackbar}
                 </Alert>
             </Snackbar>
+<Box>
+            <Box
+            display="flex"
+            height="auto"
+            width={smDown || mdDown ? "100" : "90%"}
+            justifyContent="center"
+            marginLeft={1}
+            marginRight={1}
+      >
 
-            <Box sx={{ background: 'nome' }} width='50%' height={'auto'} display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+                <Box 
+                component={Paper} 
+                elevation={24} 
+                variant='elevation'  
+                width={smDown || mdDown ? "100" : "90%"}
+                height="100%"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                py={3}
+                px={2}
+                >
 
-                <img src={theme.palette.mode == 'light' ? '/assets/logos/logo-sol-light.png' : '/assets/logos/logo-sol-dark.png'} width={'80%'} height={'100%'} />
-
-            </Box>
-
-            <Box width='50%' height={'auto'} display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
-
-                <Box component={Paper} elevation={24} variant='elevation' padding={3} width='70%'  >
-                    
                     <Form method="post" replace>
 
                         <input type="hidden" name="tipo" value={'login'} />
@@ -282,6 +299,7 @@ export const Login = () => {
                     }
 
 
+                </Box>
                 </Box>
             </Box>
 

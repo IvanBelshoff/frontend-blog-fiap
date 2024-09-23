@@ -73,7 +73,8 @@ export const Navbar = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed">
+      <AppBar position="fixed"
+      >
         <Toolbar
           sx={{
             justifyContent: "space-between",
@@ -82,6 +83,7 @@ export const Navbar = () => {
             padding: "8px 16px",
             alignItems: "center",
             flexWrap: "wrap",
+            minHeight:"64px"
           }}
         >
           {/* Logo */}
@@ -171,7 +173,8 @@ export const Navbar = () => {
                   }}
                   variant="outlined"
                   sx={{
-                    width: "40%",
+                    width: "70%",
+                    mx: "15%",
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "white",
@@ -202,17 +205,31 @@ export const Navbar = () => {
           )}
 
           <Box
-            display="flex"
             flexDirection="row"
-            justifyContent="right"
             alignItems="center"
             gap={0}
             sx={{
-              flexGrow: 1,
               display: searchOpen ? "none" : "flex",
+              flexDirection:"row",
+              justifyContent: "flex-end"
             }}
           >
-            {theme.palette.mode === "light" ? (
+
+            {!isMobile && loaderData?.usuario && (
+              <Typography
+                color={"white"}
+                variant="h6"
+                component="div"
+                sx={{ 
+                  flexGrow: 1,
+                  marginRight: 1
+                 }}
+              >
+                Bem-vindo, {loaderData.usuario.nome}!
+              </Typography>
+            )}
+
+{theme.palette.mode === "light" ? (
               <Tooltip title="Alterar para tema escuro" placement="left">
                 <IconButton size="large" onClick={toggleTheme}>
                   <Icon sx={{ color: "#FFF" }} fontSize="medium">
@@ -228,17 +245,6 @@ export const Navbar = () => {
                   </Icon>
                 </IconButton>
               </Tooltip>
-            )}
-
-            {!isMobile && loaderData?.usuario && (
-              <Typography
-                color={"white"}
-                variant="h6"
-                component="div"
-                sx={{ flexGrow: 1 }}
-              >
-                Bem-vindo, {loaderData.usuario.nome}!
-              </Typography>
             )}
 
             {loaderData?.usuario ? (
