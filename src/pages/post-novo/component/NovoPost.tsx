@@ -11,6 +11,8 @@ import {
   Snackbar,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import { FerramentasDeDetalhes } from "../../../shared/components";
@@ -20,6 +22,8 @@ import { Environment } from "../../../shared/environment";
 import { useAuth } from "../../../shared/contexts";
 
 export const NovoPost = () => {
+  const theme = useTheme();
+  const xlUp = useMediaQuery(theme.breakpoints.up("xl"));
   // Hook para obter dados de ação
   const actionData = useActionData() as INovoPostAction;
 
@@ -202,7 +206,7 @@ export const NovoPost = () => {
           >
             <img
               src={uploadedImage as string}
-              width={"50%"}
+              width={xlUp ? "30%" : "50%"}
               height="auto"
               alt="foto post"
             />
@@ -245,7 +249,7 @@ export const NovoPost = () => {
                     "Titulo: " + actionData?.errors?.body.titulo
                   }
                   color={
-                    !!actionData?.errors?.body?.titulo === false
+                    !!actionData?.errors?.body?.titulo === false 
                       ? "primary"
                       : "error"
                   }
