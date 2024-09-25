@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { Environment } from "../../../shared/environment";
 import { useDebouncedCallback } from "use-debounce";
+import { useAuth } from "../../../shared/contexts";
 
 export const ListagemDePosts = () => {
   const theme = useTheme();
@@ -51,6 +52,8 @@ export const ListagemDePosts = () => {
       { replace: true }
     );
   };
+  const { regras, permissoes } = useAuth();
+  const permissaoNovo = Environment.validaRegraPermissaoComponentsMetodos( JSON.parse(regras || ""), [Environment.REGRAS.REGRA_PROFESSOR], JSON.parse(permissoes || ""), [Environment.PERMISSOES.PERMISSAO_CRIAR_POSTAGEM]);
 
   return (
     <LayoutBaseDePagina
@@ -61,21 +64,12 @@ export const ListagemDePosts = () => {
           mostrarInputBusca={true}
           textoDaBusca={busca}
           aoMudarTextoDeBusca={(texto) => handleSearch(texto)}
-          disabledBotaoNovo={false}
+          disabledBotaoNovo={!permissaoNovo}
+          mostrarBotaoNovo={permissaoNovo}
           aoClicarEmNovo={() => navigate("/blog/posts/novo")}
         />
       }
     >
-      {/*
-             {(
-                Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_PROFESSOR], JSON.parse(permissoes || ''), [Environment.PERMISSOES.PERMISSAO_CRIAR_POSTAGEM])
-            ) ? (
-
-                componentVerdadeiro
-            ) : (
-                componenteFalso
-            )}
-            */}
 
       {isLoading ? (
         <Box

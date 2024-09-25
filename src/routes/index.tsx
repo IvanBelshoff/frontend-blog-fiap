@@ -64,18 +64,6 @@ if (regrasString) {
     }
 }
 
-let permissoes: string[] | null = null;
-
-const permissoesString = localStorage.getItem('permissoes');
-
-if (permissoesString) {
-    try {
-        permissoes = JSON.parse(permissoesString);
-    } catch (error) {
-        console.error('Erro ao fazer parse do JSON:', error);
-    }
-}
-
 const PrivateRoute = ({ children, requiredRoles, requiredPermissions }: { children: JSX.Element, requiredRoles: string[], requiredPermissions?: string[] }) => {
 
     const { regras, permissoes } = useAuth();
@@ -106,12 +94,8 @@ const PrivateRoute = ({ children, requiredRoles, requiredPermissions }: { childr
         return <AcessoNegado regras={requiredRoles} permissoes={requiredPermissions} />;
     }
 
-    // console.log('permitido');
-
     return children;
 };
-
-
 
 // Componente de redirecionamento para a página de login
 const RedirectLogin = ({ children }: { children: JSX.Element }) => {
@@ -127,7 +111,7 @@ const RedirectLogin = ({ children }: { children: JSX.Element }) => {
     const location = useLocation();
 
     if (authenticated == true && logado == true) {
-        return <Navigate to="/blog" state={{ from: location }} replace />;
+        return <Navigate to="/blog/posts" state={{ from: location }} replace />;
     }
 
     return children;
@@ -148,6 +132,13 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
     if (authenticated == false && logado == false) {
         return <Login />;
+    }
+
+    const location = useLocation();
+
+    if (authenticated == true && logado == true && (location.pathname == '/blog' || location.pathname == '/blog/')) {
+
+        return <Navigate to="/blog/posts" state={{ from: location }} replace />;
     }
 
     return children;
@@ -235,17 +226,6 @@ export const routes = createBrowserRouter([
 
         },
         children: [
-            {
-                index: true,
-                async lazy() {
-
-                    const { Home } = await import('../pages');
-
-                    return {
-                        element: <Home />,
-                    };
-                }
-            },
             {
                 path: 'posts',
                 element: <PrivateRoute requiredRoles={[Environment.REGRAS.REGRA_PROFESSOR]}><ListagemDePosts /></PrivateRoute>,

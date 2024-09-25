@@ -133,26 +133,6 @@ export const DrawerAppBar = () => {
         }),
     );
 
-    // Função auxiliar para definir o índice padrão com base no caminho da rota
-    const defaultIndex = (path: string) => {
-
-        const resolvedPath = useResolvedPath(path);
-
-        const match = useMatch({ path: resolvedPath.pathname, end: false });
-
-        if (path == '/blog' && !!match) {
-            return 1;
-        } else if (path == '/blog/posts' && !!match) {
-            return 2;
-        } else if (path == '/blog/usuarios' && !!match) {
-            return 3;
-        }
-
-    };
-
-    // Índice padrão para a rota atual
-    const selectedIndexHome = defaultIndex(location.pathname);
-
     const handleListItemClick = (
         _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
@@ -275,28 +255,6 @@ export const DrawerAppBar = () => {
                 <Divider />
                 <Box flex={1}>
                     <List component='nav'>
-
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
-
-                            selected={selectedIndex != undefined ? selectedIndex == 1 : selectedIndexHome == 1}
-                            onClick={(event) => { handleListItemClick(event, 1), navigate('/blog'); }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <Icon>home</Icon>
-                            </ListItemIcon>
-                            <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
 
                         {Environment.validaRegraPermissaoComponentsMetodos(JSON.parse(regras || ''), [Environment.REGRAS.REGRA_PROFESSOR]) && (
                             <ListItemButton

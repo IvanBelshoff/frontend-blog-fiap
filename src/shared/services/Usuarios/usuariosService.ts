@@ -283,6 +283,49 @@ export const updateById = async (
     }
 };
 
+export const updatePasswordById = async (
+    id: number,
+    senha?: string,
+    foto?: File,
+): Promise<void | AxiosError> => {
+    try {
+
+        const formData = new FormData();
+
+        senha && (
+            formData.append('senha', senha)
+        );
+
+        foto && (
+            formData.append('foto', foto)
+        );
+
+        const data = await Api().patch(`/usuarios/password/${id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        if (data.status == 204) {
+            return;
+        }
+
+        return new AxiosError('Erro ao consultar o registros.', undefined, data.config);
+
+    } catch (error) {
+
+        const errors = (error as IResponseErrosGeneric).response;
+
+        if (isAxiosError(error)) {
+            return error;
+        }
+
+        return new AxiosError(
+            errors?.data?.errors?.default || 'Erro ao consultar o registros.',
+            errors?.status || '500');
+    }
+};
+
 const UpdateRolesAndPermissionsById = async (id: number, regras: number[], permissoes: number[]): Promise<void | Error> => {
     try {
         const { data } = await Api().patch(`/usuarios/autenticacao/${id}`, { regras: regras, permissoes: permissoes });
@@ -316,5 +359,6 @@ export const UsuariosService = {
     login,
     recoverPassword,
     updateById,
-    UpdateRolesAndPermissionsById
+    UpdateRolesAndPermissionsById,
+    updatePasswordById
 };

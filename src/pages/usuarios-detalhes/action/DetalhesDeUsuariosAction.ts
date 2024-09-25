@@ -10,7 +10,7 @@ export async function DetalhesDeUsuariosAction({ request, params }: LoaderFuncti
     const idParams = params.id;
 
     // Se a requisição for um PATCH, significa que os dados do usuário estão sendo atualizados.
-    if (request.method === 'PATCH') {
+    if (request.method === 'PUT') {
 
         // Obtém os dados do formulário enviado na requisição.
         const formData = await request.formData();
@@ -100,6 +100,83 @@ export async function DetalhesDeUsuariosAction({ request, params }: LoaderFuncti
         };
 
         return data;
+
+    }
+
+    if (request.method === 'PATCH') {
+
+        // Obtém os dados do formulário enviado na requisição.
+        const formData = await request.formData();
+
+        const id = formData.get('id') as string;
+        const senha = formData.get('senha') as string;
+        const foto = formData.get('foto') as File;
+
+        // Chama o serviço de atualização de usuário com os dados fornecidos.
+        const usuario = await UsuariosService.updatePasswordById(
+            Number(id) || Number(idParams),
+            senha || undefined,
+            foto && foto
+        );
+
+        // Verifica se ocorreu algum erro na atualização.
+        if (usuario instanceof AxiosError) {
+
+            // Obtém os erros retornados pela API.
+            const errors = (usuario as IActionDetalhesDeUsuarios).response?.data.errors;
+
+            // Manipulação de erros específicos
+            if (usuario.response?.status != 400) {
+
+                // Lançamento de uma resposta JSON para o cliente
+                throw json(
+                    { message: errors?.default || 'Erro Interno do Servidor' },
+                    { status: usuario.response?.status || 500 }
+                );
+
+            }
+
+            // Se a atualização envolvia a senha, retorna os erros relacionados à senha.
+            if (senha) {
+
+                const response: IDetalhesDeUsuarioAction = {
+                    errors: errors,
+                    tipo: 'senha'
+                };
+
+                return response;
+            }
+
+            const response: IDetalhesDeUsuarioAction = {
+                errors: errors,
+                tipo: 'atributos'
+            };
+
+            return response;
+
+        }
+
+        // Se a atualização envolvia a senha, retorna uma mensagem de successo relacionada à senha.
+        if (senha) {
+
+            const response: IDetalhesDeUsuarioAction = {
+                success: {
+                    message: 'Senha foi atualizada',
+                },
+                tipo: 'senha'
+            };
+
+            return response;
+        }
+
+        const response: IDetalhesDeUsuarioAction = {
+            success: {
+                message: 'Cadastro foi atualizado',
+            },
+            tipo: 'atributos'
+        };
+
+        return response;
 
     }
 
