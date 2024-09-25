@@ -20,11 +20,12 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
       height="100%"
       display="flex"
       flexDirection="column"
+      boxSizing={"border-box"}
       gap={1}
       sx={{
         scrollBehavior: "smooth",
         overflowX: "hidden",
-        msOverflowY: "scroll",
+        msOverflowY: "scroll"
       }}
     >
       {titulo ? (
@@ -34,6 +35,17 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
           alignItems="center"
           gap={1}
           height={theme.spacing(smDown ? 6 : mdDown ? 8 : 12)}
+          width={
+            (smDown || mdDown) && !titulo
+              ? "auto"
+              : smDown || mdDown
+              ? "85vw"
+              : xlDown
+              ? "auto"
+              : xsDown
+              ? "100vw"
+              : "auto"
+          }
         >
           <Box
             display="flex"
@@ -66,6 +78,17 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
         </Box>
       ) : (
         <Box
+        width={
+            (smDown || mdDown) && !titulo
+              ? "auto"
+              : smDown || mdDown
+              ? "85vw"
+              : xlDown
+              ? "auto"
+              : xsDown
+              ? "100vw"
+              : "auto"
+          }
           paddingX={0.5}
           display="flex"
           alignItems="center"
@@ -80,12 +103,13 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
 
       <Box
         flex={1}
-        overflow="auto"
+        overflowX="hidden"
+        boxSizing={"border-box"}
         width={
           (smDown || mdDown) && !titulo
             ? "auto"
             : smDown || mdDown
-            ? "90vw"
+            ? "85vw"
             : xlDown
             ? "auto"
             : xsDown
