@@ -27,6 +27,7 @@ export const CropperModal: React.FC<CropperModalProps> = ({
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down("sm"));
   const mdDown = useMediaQuery(theme.breakpoints.down("md"));
+  const xlDown = useMediaQuery(theme.breakpoints.up("md"));
   const [slideValue, setSlideValue] = useState(10);
   const cropRef = useRef<AvatarEditor>(null);
 
@@ -113,7 +114,7 @@ export const CropperModal: React.FC<CropperModalProps> = ({
               backgroundColor: theme.palette.background.paper,
             },
             [theme.breakpoints.up("md")]: {
-              width: "16rem",
+              width: "12rem",
               padding: "16px",
               backgroundColor: theme.palette.background.paper,
             },
@@ -145,7 +146,7 @@ export const CropperModal: React.FC<CropperModalProps> = ({
           justifyContent="center"
           alignItems="center"
           display="flex"
-          flexDirection="row"
+          flexDirection={xlDown ? "column": "row"}
           gap={2}
         >
           <Button
