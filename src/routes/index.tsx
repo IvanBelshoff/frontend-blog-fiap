@@ -84,14 +84,17 @@ const PrivateRoute = ({ children, requiredRoles, requiredPermissions }: { childr
 
         console.log('não possui a regra desejada');
         //return <Navigate to={`/acesso-negado${location.pathname}`} state={{ from: location }} replace />;
-        return <AcessoNegado regras={requiredRoles} permissoes={requiredPermissions} />;
+        // return <AcessoNegado regras={requiredRoles} permissoes={requiredPermissions} />;
+        return <Navigate to="/error" />;
     }
 
     if (requiredPermissions && !hasRequiredPermissions) {
 
         console.log('não possui a permissao desejada');
         //return <Navigate to={`/acesso-negado${location.pathname}`} state={{ from: location }} replace />;
-        return <AcessoNegado regras={requiredRoles} permissoes={requiredPermissions} />;
+        // return <AcessoNegado regras={requiredRoles} permissoes={requiredPermissions} />;
+        return <Navigate to="/error" />;
+
     }
 
     return children;
@@ -177,6 +180,10 @@ export const routes = createBrowserRouter([
             }
 
         },
+    },
+    {
+        path: 'error',
+        element: <AcessoNegado regras={[]} permissoes={[]} />
     },
     {
         path: '/',   // Rota principal do blog
