@@ -31,11 +31,10 @@ export const AcessoNegado: React.FC<IAcessoNegado> = ({
   const { isAuthenticated } = useAuth();
 
   const theme = useTheme();
-
-  const xsOnly = useMediaQuery(theme.breakpoints.only("xs"));
-  const smOnly = useMediaQuery(theme.breakpoints.only("sm"));
-  const mdOnly = useMediaQuery(theme.breakpoints.only("md"));
-  const lgOnly = useMediaQuery(theme.breakpoints.only("lg"));
+  const smDown = useMediaQuery(theme.breakpoints.down("sm"));
+  const mdDown = useMediaQuery(theme.breakpoints.down("md"));
+  const xlDown = useMediaQuery(theme.breakpoints.down("xl"));
+  const xlUp = useMediaQuery(theme.breakpoints.up("xl"));
 
   const isLoading = fetcher.formData != null;
 
@@ -61,44 +60,63 @@ export const AcessoNegado: React.FC<IAcessoNegado> = ({
           : "account-user-error-container-dark"
       }
     >
-      <Box
-        component={Paper}
-        variant="elevation"
-        elevation={24}
-        width="auto"
-        minWidth={"40%"}
-        height={"auto"}
-        maxHeight={"100%"}
-        sx={{ borderRadius: "16px", padding: 3 }}
+      <Paper
+        sx={{
+          maxWidth: "100vw",
+          paddingX: theme.spacing(1),
+          paddingBottom: theme.spacing(4),
+          display: "flex",
+          flexDirection: "column",
+          gap: theme.spacing(2),
+          borderRadius: 2,
+          boxShadow: theme.shadows[5],
+          maxHeight: "100vh",
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
       >
-        <Box
-          display="flex"
-          width="100%"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Typography variant="h4" component="div" gutterBottom>
-            Oops! você não tem acesso a esta tela
-          </Typography>
-        </Box>
-
         <Box
           paddingTop={2}
           display="flex"
-          width="100%"
-          flexDirection="row"
+          width="90vw"
+          flexDirection="column"
           justifyContent="center"
           alignItems="center"
           gap={2}
         >
-          <img src={"/assets/ilustrations/500.png"} height="auto" width="25%" />
+          <Typography
+            variant={smDown ? "h6" : mdDown ? "h5" : xlUp ? "h4" : "h5"}
+            component="div"
+            gutterBottom
+            textAlign={"center"}
+            margin={2}
+          >
+            401 - Não autorizado
+          </Typography>
+
+          <Typography
+            variant={smDown ? "h7" : mdDown ? "h6" : xlUp ? "h5" : "h6"}
+            component="div"
+            gutterBottom
+            textAlign={"center"}
+            margin={2}
+          >
+            Você não está autorizado a acessar esta página
+          </Typography>
+
+          <img
+            src={"/assets/ilustrations/500.png"}
+            height="auto"
+            width={smDown ? "50%" : mdDown ? "40%" : "25%"}
+          />
         </Box>
         <Box
           paddingTop={1}
           width="100%"
           display="flex"
           flexDirection={
-            xsOnly || smOnly || mdOnly || lgOnly ? "row" : "column"
+            // xlUp  ? "row" : "column"
+            "column"
           }
           justifyContent="center"
           alignItems="center"
@@ -108,17 +126,38 @@ export const AcessoNegado: React.FC<IAcessoNegado> = ({
             width="auto"
             gap={2}
             display="flex"
-            flexDirection={
-              xsOnly || smOnly || mdOnly || lgOnly ? "column" : "row"
-            }
+            flexDirection={xlUp ? "row" : "column"}
             justifyContent="center"
             alignItems="center"
           >
             <Button
+              sx={{
+                fontSize: "1rem",
+                padding: "8px 16px",
+                margin: "0 auto",
+                width: "100%",
+                maxWidth: "300px",
+                "& smDown": {
+                  fontSize: "0.75rem",
+                  padding: "4px 8px",
+                },
+                "& mdDown": {
+                  fontSize: "0.875rem",
+                  padding: "6px 12px",
+                },
+                "& xlDown": {
+                  fontSize: "0.875rem",
+                  padding: "6px 12px",
+                },
+                "& xlUp": {
+                  fontSize: "1rem",
+                  padding: "8px 16px",
+                },
+              }}
               variant="contained"
               color="primary"
               disabled={isLoading}
-              onClick={() => navigate("/dashprivate")}
+              onClick={() => navigate("/?busca=&pagina=1")}
               startIcon={
                 <Icon>
                   <BsFilePost />
@@ -131,11 +170,34 @@ export const AcessoNegado: React.FC<IAcessoNegado> = ({
                 textOverflow="ellipsis"
                 overflow="hidden"
               >
-                meus Professors
+                Página Inicial
               </Typography>
             </Button>
             <fetcher.Form method="post" action="/logout">
               <Button
+                sx={{
+                  fontSize: "1rem",
+                  padding: "8px 16px",
+                  margin: "0 auto",
+                  width: "100%",
+                  maxWidth: "300px",
+                  "& smDown": {
+                    fontSize: "0.75rem",
+                    padding: "4px 8px",
+                  },
+                  "& mdDown": {
+                    fontSize: "0.875rem",
+                    padding: "6px 12px",
+                  },
+                  "& xlDown": {
+                    fontSize: "0.875rem",
+                    padding: "6px 12px",
+                  },
+                  "& xlUp": {
+                    fontSize: "1rem",
+                    padding: "8px 16px",
+                  },
+                }}
                 variant={isAuthenticated ? "outlined" : "contained"}
                 color="primary"
                 disabled={isLoading}
@@ -153,76 +215,8 @@ export const AcessoNegado: React.FC<IAcessoNegado> = ({
               </Button>
             </fetcher.Form>
           </Box>
-
-          <Box
-            width={xsOnly || smOnly || mdOnly || lgOnly ? "auto" : "100%"}
-            height={xsOnly || smOnly || mdOnly || lgOnly ? "6rem" : "auto"}
-          >
-            <Divider
-              variant="middle"
-              orientation={
-                xsOnly || smOnly || mdOnly || lgOnly ? "vertical" : "horizontal"
-              }
-            />
-          </Box>
-
-          <Box
-            width="100%"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-          >
-            <Accordion
-              elevation={3}
-              expanded={open}
-              onChange={handleOpenAccordion}
-            >
-              <AccordionSummary
-                expandIcon={<Icon>expand_more</Icon>}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography variant="h6" component="div" gutterBottom>
-                  Visualizar detalhes:
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Box
-                  width="100%"
-                  padding={2}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  flexDirection="column"
-                  sx={{
-                    border: "2px solid",
-                    borderColor: theme.palette.primary.main,
-                    borderRadius: "16px",
-                  }}
-                >
-                  <Typography variant="h6">
-                    contate o administrador do sistema e solicite os seguintes
-                    acessos:
-                  </Typography>
-
-                  <Typography variant="h6">
-                    Regras: {regras.map((regra) => HandleformatarString(regra))}
-                  </Typography>
-
-                  {permissoes && (
-                    <Typography variant="h6">
-                      Permissoes:{" "}
-                      {permissoes.map((permissao) =>
-                        HandleformatarString(permissao)
-                      )}
-                    </Typography>
-                  )}
-                </Box>
-              </AccordionDetails>
-            </Accordion>
-          </Box>
         </Box>
-      </Box>
+      </Paper>{" "}
     </div>
   );
 };
