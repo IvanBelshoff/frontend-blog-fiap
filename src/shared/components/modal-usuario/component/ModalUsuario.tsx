@@ -411,7 +411,7 @@ export const ModalUsuario: React.FC<IModalUsuarioProps> = ({ openModalConta, aoC
                             </Box>
 
                             <Box width={isMobile || isTablet ? '100%' : '40%'} display='flex' flexDirection='column' alignItems='center'>
-                                <Typography variant="h6" align="center">
+                                <Typography variant="h6" align="center" paddingBottom={"10px"}>
                                     Alterar Senha
                                 </Typography>
                                 <TextField
