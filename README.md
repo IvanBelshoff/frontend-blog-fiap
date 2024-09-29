@@ -1,30 +1,49 @@
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+ ## Inicialização do Sistema
+ 
+ Para configurar o sistema, siga os passos abaixo:
+ 1. Na raiz do projeto, execute o comando:
+ 
+```bash
+ npm install
+```
+ 
+Para instalar as dependências necessárias.
+ 
+ 2. Após a instalação, inicie a aplicação com o comando:
+```bash
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Observação: Certifique-se de que o backend esteja rodando corretamente. Localizado no [link](https://github.com/IvanBelshoff/backend-blog-fiap)
+
+
+
+## Funcionalidades
+
+### Página Inicial
+
+Na página inicial, é possível visualizar uma listagem de posts. É possível pesquisar e navegar pela lista de posts.
+
+### Visualização Detalhada de Post
+
+Ao clicar em um post é possível acessar uma visão detalhada do conteúdo do post.
+
+### Página de Login
+
+A aplicação possui uma página de login que permite ao usuário se autenticar e também recuperar a senha.
+
+### Página de Gerenciamento de Posts
+
+Após o login, os usuários têm acesso à tela de gerenciamento de posts, onde podem administrar todo o conteúdo.
+
+
+### Criação de Posts
+É possível criar posts através do botão "Novo".
+
+### Edição de Posts
+
+Na parte administrativa, ao clicar em um post, é possível editar diversas informações ou excluir a postagem.
+
+### Gerenciamento de Usuários
+
+Na tela administrativa, usuários com permissão podem gerenciar outros usuários. Isso inclui criar novos usuários, editar informações e ajustar permissões conforme necessário.
